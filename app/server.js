@@ -67,7 +67,7 @@ const dbLogger = getChildLogger({
     // SIDENOTE: Routes can be done with react I believe.
     // We can create our main architecture through this component
     app.get('/', (req, res) => {
-        var html = ReactDOMServer.renderToString(React.createElement(Routes));
+        const html = ReactDOMServer.renderToString(React.createElement(Routes));
         res.send(html);
     });
 

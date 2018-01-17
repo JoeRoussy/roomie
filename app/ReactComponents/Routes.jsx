@@ -8,7 +8,7 @@ import { makeUppercase, makeLowercase } from '../redux/actions/sampleActions';
 		projectName: store.sampleReducer.name,
 		owners: store.sampleReducer.owners
 	}
-}) 
+})
 class Routes extends React.Component {
 	constructor(){
 		super();

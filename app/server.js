@@ -8,10 +8,6 @@ import { getLogger, getChildLogger } from './components/log-factory';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
 
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import Routes from './ReactComponents/Routes';
-
 const app = express();
 const MongoStore = connectMongo(session);
 
@@ -61,15 +57,6 @@ const dbLogger = getChildLogger({
         extended: true
     }));
     app.use(bodyParser.json());
-
-
-    // TODO: Configure actual routes here:
-    // SIDENOTE: Routes can be done with react I believe.
-    // We can create our main architecture through this component
-    app.get('/', (req, res) => {
-        const html = ReactDOMServer.renderToString(React.createElement(Routes));
-        res.send(html);
-    });
 
     app.listen(3000, () => Logger.info('App listening on port 3000'));
 })();

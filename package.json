@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app/index.js",
     "client-dev": "webpack-dev-server --content-base public --no-inline --hot",
-    "server-dev": "node app/index.js",
+    "server-dev": "nodemon --watch app app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -49,5 +49,8 @@
     "semantic-ui-react": "^0.77.2",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "1.14.11"
   }
 }

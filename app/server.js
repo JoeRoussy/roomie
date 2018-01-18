@@ -3,20 +3,26 @@ import express from 'express';
 import session from 'express-session';
 import connectMongo from 'connect-mongo';
 import bodyParser from 'body-parser';
+import { config as enviornmentVariableConfig } from 'dotenv';
 
 import { getLogger, getChildLogger } from './components/log-factory';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
 
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import Routes from './ReactComponents/Routes';
-
 const app = express();
 const MongoStore = connectMongo(session);
 
+enviornmentVariableConfig();
+
+const {
+    LOG_ROTATING_FILE,
+    LOG_ERROR_FILE
+} = process.env;
+
 global.Logger = getLogger({
-    name: 'roomie'
+    name: 'roomie',
+    rotatingFile: LOG_ROTATING_FILE,
+    errorFile: LOG_ERROR_FILE
 });
 
 const dbLogger = getChildLogger({
@@ -46,13 +52,25 @@ const dbLogger = getChildLogger({
         return;
     }
 
+    // Load in required enviornment variables
+    const {
+        SESSION_SECRET,
+        DB_URI
+    } = process.env;
+
+    if (!SESSION_SECRET || !DB_URI) {
+        Logger.error({env: process.env}, 'Missing required enviornment variables for server startup: SESSION_SECRET, DB_URI');
+
+        return;
+    }
+
     // Now that we know that the db is connected, continue setting up the app
     app.use(session({
-        secret: 'some_super_secret_thing', // TODO: Better secret when we get env variables set up
+        secret: SESSION_SECRET,
         resave: false, // don't save the session if unmodified
         saveUninitialized: false, // don't create session until something stored
         store: new MongoStore({
-           url: 'mongodb://127.0.0.1:27017/roomie', // Open a new connection for session stuff
+           url: DB_URI, // Open a new connection for session stuff
            touchAfter: 24 * 3600 // Only update the session every 24 hours unless a modification to the session is made
         })
     }));
@@ -61,15 +79,6 @@ const dbLogger = getChildLogger({
         extended: true
     }));
     app.use(bodyParser.json());
-
-
-    // TODO: Configure actual routes here:
-    // SIDENOTE: Routes can be done with react I believe.
-    // We can create our main architecture through this component
-    app.get('/', (req, res) => {
-        const html = ReactDOMServer.renderToString(React.createElement(Routes));
-        res.send(html);
-    });
 
     app.listen(3000, () => Logger.info('App listening on port 3000'));
 })();

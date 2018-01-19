@@ -10,8 +10,6 @@ export const getListings = ({
 
     let result;
 
-    req.session.test = '2';
-
     try {
         result = yield findListings({
             listingsCollection,

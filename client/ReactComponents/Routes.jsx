@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
-import { connect } from 'react-redux'; 
+import { connect } from 'react-redux';
 import { makeUppercase, makeLowercase } from '../redux/actions/sampleActions';
+import NavBar from './navbar.jsx';
 
 @connect((store)=>{
 	return {
@@ -37,6 +38,7 @@ class Routes extends React.Component {
 		});
 		return (
 			<div>
+				<NavBar/>
 				Hello World!
 				<ul> {names} </ul>
 				<button onClick={this.clickNormalButton}>Normal Button</button>

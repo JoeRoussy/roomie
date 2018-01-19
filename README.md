@@ -19,6 +19,7 @@ Environment variables are loaded into the app from a `.env` file. These key valu
 Required environment variables are:
 * SESSION_SECRET: Some random string
 * DB_URI: The mongo connection string
+* DB_NAME: The name of the database
 
 Optional environment variables are:
 * LOG_ROTATING_FILE: Rotating file for logs of all levels other than errors (this is `/var/log/roomie/log.log` by default)

@@ -9,6 +9,8 @@ import { getLogger, getChildLogger } from './components/log-factory';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
 
+import apiRouteConfig from './routes/api';
+
 const app = express();
 const MongoStore = connectMongo(session);
 
@@ -70,7 +72,7 @@ const dbLogger = getChildLogger({
         resave: false, // don't save the session if unmodified
         saveUninitialized: false, // don't create session until something stored
         store: new MongoStore({
-           url: DB_URI, // Open a new connection for session stuff
+           db,
            touchAfter: 24 * 3600 // Only update the session every 24 hours unless a modification to the session is made
         })
     }));
@@ -79,6 +81,14 @@ const dbLogger = getChildLogger({
         extended: true
     }));
     app.use(bodyParser.json());
+
+    apiRouteConfig({
+        app,
+        db,
+        baseLogger: Logger
+    });
+
+    // TODO: Other kind of route configs here (like auth for example)
 
     app.listen(3000, () => Logger.info('App listening on port 3000'));
 })();

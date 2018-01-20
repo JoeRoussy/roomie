@@ -3,7 +3,6 @@ const config = {
 }
 
 const listingReducer = (state = config, actions) => {
-
     switch(actions.type) {
         case 'GET_LISTINGS_FULFILLED': {
 

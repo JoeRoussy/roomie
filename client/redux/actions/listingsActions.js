@@ -7,10 +7,8 @@ import axios from 'axios';
 
     So GET_LISTINGS_PENDING will be dispathced after this action is dispatched and then GET_LISTINGS_FULFILLED or GET_LISTINGS_REJECTED
     will be dispatched once the promise is rejecred or fulfilled
-
-    // TODO: Better url configuration
 */
 export const getListings = () => ({
     type: 'GET_LISTINGS',
-    payload: axios.get('http://localhost:3000/api/listings')
+    payload: axios.get(`${process.env.API_ROOT}/api/listings`)
 });

@@ -3,19 +3,10 @@ import { wrap as coroutine } from 'co';
 import { getDocById, getUserByEmail } from '../data';
 import { insert as saveToDb } from '../db/service';
 import passportLocal from 'passport-local';
-import { required } from '../custom-utils';
-
-const {
-    AUTH_SALT_ROUNDS,
-    AUTH_LOCAL_LOGIN_STRATEGY
-} = process.env;
-
-if (!AUTH_SALT_ROUNDS || !AUTH_LOCAL_LOGIN_STRATEGY) {
-    throw new Error('Missing env variables for the authentication component: AUTH_SALT_ROUNDS, AUTH_LOCAL_LOGIN_STRATEGY');
-}
+import { required, getEnvVariable } from '../custom-utils';
 
 // TODO: Do these functions really need to be exported?
-export const generateHash = async (password) => await bcrypt.hash(password, AUTH_SALT_ROUNDS);
+export const generateHash = async (password) => await bcrypt.hash(password, +getEnvVariable('AUTH_SALT_ROUNDS'));
 
 export const comparePasswords = async (password, hash) => await bcrypt.compare(password, hash);
 
@@ -44,7 +35,7 @@ export default ({
         return done(null, user);
     }));
 
-    passport.use(AUTH_LOCAL_LOGIN_STRATEGY, new LocalStrategy({
+    passport.use(getEnvVariable('AUTH_LOCAL_LOGIN_STRATEGY'), new LocalStrategy({
         usernameField : 'email',
         passwordField : 'password',
     }, coroutine(function* (email, password, done) {

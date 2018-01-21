@@ -8,6 +8,16 @@ export const required = (param, customMessage) => {
     }
 }
 
+export class RuntimeError extends Error {
+    constructor({ msg, err }) {
+        super(msg);
+        Error.captureStackTrace(this, RuntimeError); // This takes the ctor for this class out of the stack trace
+
+        this.msg = msg;
+        this.err = err;
+    }
+}
+
 export const print = (obj, message) => {
     if (message) {
         console.log(message);
@@ -92,4 +102,20 @@ export const getRegex = query => {
     }
 
     return regex;
+}
+
+// Allows for inline fetching of an env variable without having to worry about weather the
+// .env file has been parsed yet (assuming this function is called after the .env file is parsed).
+// This avoids the paradigm of destructuring process.env at the top of a module which is sure
+// to fail as the .env file would not have been parsed yet
+export const getEnvVariable = (key) => {
+    const {
+        [key]: value
+    } = process.env;
+
+    if (!value) {
+        throw new Error(`${key} must be set in the .env file`);
+    }
+
+    return value;
 }

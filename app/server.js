@@ -5,11 +5,14 @@ import connectMongo from 'connect-mongo';
 import bodyParser from 'body-parser';
 import { config as enviornmentVariableConfig } from 'dotenv';
 import passport from 'passport';
+import cors from 'cors';
 
 import { getLogger, getChildLogger } from './components/log-factory';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
 import configureAuth from './components/authentication';
+
+import apiRouteConfig from './routes/api';
 
 const app = express();
 const MongoStore = connectMongo(session);
@@ -67,12 +70,13 @@ const dbLogger = getChildLogger({
     }
 
     // Now that we know that the db is connected, continue setting up the app
+    app.use(cors());
     app.use(session({
         secret: SESSION_SECRET,
         resave: false, // don't save the session if unmodified
         saveUninitialized: false, // don't create session until something stored
         store: new MongoStore({
-           url: DB_URI, // Open a new connection for session stuff
+           db,
            touchAfter: 24 * 3600 // Only update the session every 24 hours unless a modification to the session is made
         })
     }));
@@ -88,6 +92,14 @@ const dbLogger = getChildLogger({
         passport,
         db
     });
+
+    apiRouteConfig({
+        app,
+        db,
+        baseLogger: Logger
+    });
+
+    // TODO: Other kind of route configs here (like auth for example)
 
     app.listen(3000, () => Logger.info('App listening on port 3000'));
 })();

@@ -3,19 +3,19 @@ import { Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { makeUppercase, makeLowercase } from '../redux/actions/sampleActions';
 
-import { getListings } from '../redux/actions/listingsActions';
+/* Import components here */
+import Listings from './Listing';
 
 @connect((store)=>{
 	return {
 		projectName: store.sampleReducer.name,
-		owners: store.sampleReducer.owners,
-        listings: store.listingsReducer.listings
+		owners: store.sampleReducer.owners
 	}
 })
+
 class Routes extends React.Component {
 	constructor(){
 		super();
-
 		this.clickNormalButton = this.clickNormalButton.bind(this);
 		this.clickSemanticButton = this.clickSemanticButton.bind(this);
 		this.getProjectName = this.getProjectName.bind(this);
@@ -33,21 +33,11 @@ class Routes extends React.Component {
 	getOwners(){
 		return this.props.owners;
 	}
-    getListings() {
-        return this.props.listings;
-    }
-    componentWillMount() {
-        this.props.dispatch(getListings());
-    }
 	/* Create rendering routes here? */
 	render(){
-		const names = this.getOwners().map((owner)=>{
-			return <li> {owner} </li>
+		const names = this.getOwners().map((owner, i)=>{
+			return <li key={i}> {owner} </li>
 		});
-
-        const listings = this.getListings().map((listing, i) => {
-            return <li key={i}>{listing.name}</li>
-        });
 
 		return (
 			<div>
@@ -55,8 +45,7 @@ class Routes extends React.Component {
 				<ul> {names} </ul>
 				<button onClick={this.clickNormalButton}>Normal Button</button>
 				<Button onClick={this.clickSemanticButton}>Semantic Button</Button>
-                <span>Listings:</span>
-                <ul>{listings}</ul>
+				<Listings />
 			</div>
 		)
 	}

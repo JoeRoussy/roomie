@@ -8,6 +8,16 @@ export const required = (param, customMessage) => {
     }
 }
 
+export class RuntimeError extends Error {
+    constructor({ msg, err }) {
+        super(msg);
+        Error.captureStackTrace(this, RuntimeError); // This takes the ctor for this class out of the stack trace
+
+        this.msg = msg;
+        this.err = err;
+    }
+}
+
 export const print = (obj, message) => {
     if (message) {
         console.log(message);

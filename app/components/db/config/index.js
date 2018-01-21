@@ -1,9 +1,39 @@
 import mongodb from 'mongodb';
+import { RuntimeError } from '../../custom-utils';
 
 // Returns a promise that resolves into a DB connection
-export default () => {
+export default (async() => {
     const MongoClient = mongodb.MongoClient;
+    const {
+        DB_URI,
+        DB_NAME
+    } = process.env;
 
-    // TODO: Figure out how we are doing constants/enviornment variables and make this connection string one of them
-    return MongoClient.connect('mongodb://127.0.0.1:27017/roomie');
-}
+    if (!DB_URI || !DB_NAME) {
+        throw new Error('Missing DB_URI or DN_NAME enviornment variables');
+    }
+
+    let client = null;
+
+    try {
+        client = await MongoClient.connect(DB_URI);
+    } catch (e) {
+        throw new RuntimeError({
+            err: e,
+            msg: 'Could not connect to database client'
+        });
+    }
+
+    let db;
+
+    try {
+        db = client.db(DB_NAME);
+    } catch (e) {
+        throw new RuntimeError({
+            err: e,
+            msg: 'Could not get a db instance from the current client'
+        });
+    }
+
+    return db;
+});

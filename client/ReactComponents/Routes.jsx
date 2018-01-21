@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { makeUppercase, makeLowercase } from '../redux/actions/sampleActions';
 
 /* Import components here */
-import Listings from './Listing';
+import Listings from './Listings';
 
 @connect((store)=>{
 	return {

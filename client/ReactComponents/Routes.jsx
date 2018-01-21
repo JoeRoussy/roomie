@@ -3,6 +3,7 @@ import { Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { makeUppercase, makeLowercase } from '../redux/actions/sampleActions';
 import NavBar from './navbar.jsx';
+import { Container} from 'semantic-ui-react';
 
 @connect((store)=>{
 	return {
@@ -39,10 +40,13 @@ class Routes extends React.Component {
 		return (
 			<div>
 				<NavBar/>
-				Hello World!
-				<ul> {names} </ul>
-				<button onClick={this.clickNormalButton}>Normal Button</button>
-				<Button onClick={this.clickSemanticButton}>Semantic Button</Button>
+				<Container style={{ marginTop: '3em' }}>
+					Hello World!
+					<ul> {names} </ul>
+					<button onClick={this.clickNormalButton}>Normal Button</button>
+					<Button onClick={this.clickSemanticButton}>Semantic Button</Button>
+				</Container>
+
 			</div>
 		)
 	}

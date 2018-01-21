@@ -53,23 +53,15 @@ class Routes extends React.Component {
 
 		return (
 			<div>
-<<<<<<< HEAD
 				<NavBar/>
 				<Container style={{ marginTop: '3em' }}>
 					Hello World!
 					<ul> {names} </ul>
 					<button onClick={this.clickNormalButton}>Normal Button</button>
 					<Button onClick={this.clickSemanticButton}>Semantic Button</Button>
+					<span>Listings:</span>
+					<ul>{listings}</ul>
 				</Container>
-
-=======
-				Hello World!
-				<ul> {names} </ul>
-				<button onClick={this.clickNormalButton}>Normal Button</button>
-				<Button onClick={this.clickSemanticButton}>Semantic Button</Button>
-                <span>Listings:</span>
-                <ul>{listings}</ul>
->>>>>>> master
 			</div>
 		)
 	}

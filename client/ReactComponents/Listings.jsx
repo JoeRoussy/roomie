@@ -14,6 +14,25 @@ export default class Listings extends React.Component {
   retrievetListings() {
       this.props.dispatch(getListings());
   }
+
+  mapListings (listing, i) {
+    const extra = (
+      <a>
+        <Icon name = 'user' />
+        { listing.views } Views
+      </a>
+    )
+      return (
+        <Card
+          header = {listing.name}
+          meta = {listing.address}
+          description = {listing.description}
+          extra = { extra }
+          key = { i }
+        />
+      )
+  }
+
   componentWillMount() {
       // this.props.dispatch(getListings());
   }
@@ -26,22 +45,7 @@ export default class Listings extends React.Component {
     }
 
     const mappedListings = listings.map((listing, i) => {
-
-      const extra = (
-        <a>
-          <Icon name = 'user' />
-          { listing.views } Views
-        </a>
-      )
-        return (
-          <Card
-            header = {listing.name}
-            meta = {listing.address}
-            description = {listing.description}
-            extra = { extra }
-            key = { i }
-          />
-        )
+      return this.mapListings(listing, i);
     });
 
     return (

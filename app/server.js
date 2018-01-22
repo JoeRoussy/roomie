@@ -4,11 +4,13 @@ import session from 'express-session';
 import connectMongo from 'connect-mongo';
 import bodyParser from 'body-parser';
 import { config as enviornmentVariableConfig } from 'dotenv';
+import passport from 'passport';
 import cors from 'cors';
 
 import { getLogger, getChildLogger } from './components/log-factory';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
+import configureAuth from './components/authentication';
 
 import apiRouteConfig from './routes/api';
 
@@ -78,11 +80,18 @@ const dbLogger = getChildLogger({
            touchAfter: 24 * 3600 // Only update the session every 24 hours unless a modification to the session is made
         })
     }));
+    app.use(passport.initialize());
+    app.use(passport.session());
     app.use(express.static('public'));
     app.use(bodyParser.urlencoded({
         extended: true
     }));
     app.use(bodyParser.json());
+
+    configureAuth({
+        passport,
+        db
+    });
 
     apiRouteConfig({
         app,

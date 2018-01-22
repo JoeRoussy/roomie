@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Card, Icon, Image } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { getListings } from '../redux/actions/listingsActions';
+import { getListings } from '../../redux/actions/listingsActions';
 
 
 @connect((store)=>{

@@ -1,19 +1,18 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { makeUppercase, makeLowercase } from '../redux/actions/sampleActions';
+import { makeUppercase, makeLowercase } from '../../redux/actions/sampleActions';
 
-/* Import components here */
-import Listings from './Listings';
+import { getListings } from '../../redux/actions/listingsActions';
 
-@connect((store)=>{
-	return {
-		projectName: store.sampleReducer.name,
-		owners: store.sampleReducer.owners
-	}
-})
+import Listings from '../components/Listings.jsx';
 
-class Routes extends React.Component {
+@connect((store)=>({
+    projectName: store.sampleReducer.name,
+    owners: store.sampleReducer.owners,
+    listings: store.listingsReducer.listings
+}))
+class Home extends React.Component {
 	constructor(){
 		super();
 		this.clickNormalButton = this.clickNormalButton.bind(this);
@@ -51,4 +50,4 @@ class Routes extends React.Component {
 	}
 }
 
-export default Routes;
+export default Home;

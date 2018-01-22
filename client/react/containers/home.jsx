@@ -5,13 +5,11 @@ import { makeUppercase, makeLowercase } from '../../redux/actions/sampleActions'
 
 import { getListings } from '../../redux/actions/listingsActions';
 
-@connect((store)=>{
-	return {
-		projectName: store.sampleReducer.name,
-		owners: store.sampleReducer.owners,
-        listings: store.listingsReducer.listings
-	}
-})
+@connect((store)=>({
+    projectName: store.sampleReducer.name,
+    owners: store.sampleReducer.owners,
+    listings: store.listingsReducer.listings
+}))
 class Home extends React.Component {
 	constructor(){
 		super();
@@ -31,6 +29,8 @@ class Home extends React.Component {
 		return this.props.projectName;
 	}
 	getOwners(){
+        console.log('Props');
+        console.log(this.props);
 		return this.props.owners;
 	}
     getListings() {
@@ -55,7 +55,7 @@ class Home extends React.Component {
 				<ul> {names} </ul>
 				<button onClick={this.clickNormalButton}>Normal Button</button>
 				<Button onClick={this.clickSemanticButton}>Semantic Button</Button>
-                <span>Listings:</span>
+                <div>Listings:</div>
                 <ul>{listings}</ul>
 			</div>
 		)

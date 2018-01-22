@@ -5,7 +5,6 @@ import { ConnectedRouter } from 'react-router-redux'
 import store, { history } from './redux/store';
 import App from './react/containers/app';
 
-
 const target = document.getElementById('app');
 
 ReactDOM.render(

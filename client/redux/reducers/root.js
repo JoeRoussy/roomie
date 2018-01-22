@@ -3,10 +3,12 @@
 import { combineReducers } from 'redux';
 import sampleReducer from './sampleReducer';
 import listingsReducer from './listingsReducer';
+import userReducer from './userReducer';
 
 const reducers = combineReducers({
 	sampleReducer,
-    listingsReducer
+    listingsReducer,
+    userReducer
 });
 
 export default reducers;

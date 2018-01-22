@@ -4,7 +4,8 @@ import { Form, Icon, Button } from 'semantic-ui-react';
 import { LabelInputField } from 'react-semantic-redux-form';
 
 const SignUpForm = ({
-    onSubmit
+    onSubmit,
+    validate = () => ({}) // Return no errors by default
 }) => (
     <Form onSubmit={onSubmit}>
         <Field
@@ -32,8 +33,5 @@ const SignUpForm = ({
 );
 
 export default reduxForm({
-    form: 'signUp',
-    validate: values => {
-        return {};
-    }
+    form: 'signUp'
 })(SignUpForm);

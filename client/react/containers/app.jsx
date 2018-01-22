@@ -6,7 +6,7 @@ import SignUp from './signup';
 import { history } from '../../redux/store';
 
 const style = {
-    marginTop: '50px'
+    marginTop: '3em'
 };
 
 // We pass location off to the NavBar so it updates when the location changes
@@ -14,7 +14,7 @@ const app = ({
 
 }) => (
     <div>
-        <Navbar location={location}/>
+        <Navbar />
         <main style={style}>
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />

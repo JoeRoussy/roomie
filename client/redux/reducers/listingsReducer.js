@@ -1,6 +1,6 @@
 const config = {
     listings: []
-}
+};
 
 const listingReducer = (state = config, actions) => {
     switch(actions.type) {

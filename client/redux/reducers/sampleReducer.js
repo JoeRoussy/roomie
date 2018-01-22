@@ -1,6 +1,6 @@
 const config = {
-		name: 'Roomie',
-		owners: ['Brandon Baksh', 'Alex Lee Chan', 'Jugal Patel', 'Joe Roussy']
+    name: 'Roomie',
+    owners: ['Brandon Baksh', 'Alex Lee Chan', 'Jugal Patel', 'Joe Roussy']
 };
 
 const sampleReducer = (state = config, actions) => {

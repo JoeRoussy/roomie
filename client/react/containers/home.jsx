@@ -29,8 +29,6 @@ class Home extends React.Component {
 		return this.props.projectName;
 	}
 	getOwners(){
-        console.log('Props');
-        console.log(this.props);
 		return this.props.owners;
 	}
     getListings() {

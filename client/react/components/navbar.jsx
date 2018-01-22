@@ -52,10 +52,11 @@ const NavBar = ({
             <Menu.Item onClick={() => navigateTo('/search')}>Search </Menu.Item>
             <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
             <Menu.Item onClick={() => navigateTo('/groups')}><Icon name='group'/> Groups</Menu.Item>
+            <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='user'/> Listings</Menu.Item>
             //right side
             <Menu.Menu position='right'>
-    			{getRightSection({ navigateTo, user })}
-    		</Menu.Menu>
+                {getRightSection({ navigateTo, user })}
+            </Menu.Menu>
         </Container>
     </Menu>
 );

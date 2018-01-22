@@ -1,11 +1,9 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { makeUppercase, makeLowercase } from '../redux/actions/sampleActions';
-import NavBar from './navbar.jsx';
-import { Container} from 'semantic-ui-react';
+import { makeUppercase, makeLowercase } from '../../redux/actions/sampleActions';
 
-import { getListings } from '../redux/actions/listingsActions';
+import { getListings } from '../../redux/actions/listingsActions';
 
 @connect((store)=>{
 	return {
@@ -14,7 +12,7 @@ import { getListings } from '../redux/actions/listingsActions';
         listings: store.listingsReducer.listings
 	}
 })
-class Routes extends React.Component {
+class Home extends React.Component {
 	constructor(){
 		super();
 
@@ -53,18 +51,15 @@ class Routes extends React.Component {
 
 		return (
 			<div>
-				<NavBar/>
-				<Container style={{ marginTop: '3em' }}>
-					Hello World!
-					<ul> {names} </ul>
-					<button onClick={this.clickNormalButton}>Normal Button</button>
-					<Button onClick={this.clickSemanticButton}>Semantic Button</Button>
-					<span>Listings:</span>
-					<ul>{listings}</ul>
-				</Container>
+				Hello World!
+				<ul> {names} </ul>
+				<button onClick={this.clickNormalButton}>Normal Button</button>
+				<Button onClick={this.clickSemanticButton}>Semantic Button</Button>
+                <span>Listings:</span>
+                <ul>{listings}</ul>
 			</div>
 		)
 	}
 }
 
-export default Routes;
+export default Home;

@@ -1,17 +1,19 @@
-import { combineReducers, createStore, applyMiddleware } from 'redux';
-import sampleReducer from './reducers/sampleReducer';
-import listingsReducer from './reducers/listingsReducer';
+import { createStore, applyMiddleware } from 'redux';
+import { routerMiddleware } from 'react-router-redux';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
+import createHistory from 'history/createBrowserHistory';
+import reducers from './reducers/root';
 
-/* Combines all reducers into one */
-const reducer = combineReducers({
-	sampleReducer,
-    listingsReducer
-});
+// Export this so we can access it from elsewhere
+export const history = createHistory();
+
+const initialState = {};
 
 /* Combines middleware all into one */
-const middleware = applyMiddleware(promise(), thunk);
+const middleware = applyMiddleware(promise(), thunk, routerMiddleware(history));
 
-/* Global store used throughout the app */
-export default createStore(reducer, middleware);
+/* Create the store using our reducers, initialState, and middleware */
+const store = createStore(reducers, initialState, middleware);
+
+export default store;

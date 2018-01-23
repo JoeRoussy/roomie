@@ -28,7 +28,7 @@ export default ({
     // Connect the user router to the main router under /users
     router.use('/listings', listingsRouter);
 
-    // A separate router for users because there are some different endpoints for this resource
+    // A separate router for users
     const userRouter = express.Router();
 
     userRouter.get('/me', getCurrentUser)

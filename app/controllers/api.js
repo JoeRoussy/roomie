@@ -44,4 +44,17 @@ export const createUser = ({
     }, 3000);
 });
 
+// Inspects the current session to see if there is a user logged in.
+// If there is a user they are returned, otherwise null is returned
+export const getCurrentUser = (req, res) => {
+    // NOTE: Passport will populate req.user if their session is still active
+    const {
+        user = null
+    } = req;
+
+    return res.json({
+        user
+    });
+}
+
 // TODO: More api route handlers here

@@ -52,7 +52,7 @@ const SignUpForm = ({
             placeholder='Confirm Password'
             type='password'
         />
-        <Input type='hidden' value={userType} />
+        <Input type='hidden' name="userType" value={userType} />
         <Button type='submit' color='green' loading={isProcessing} disabled={isProcessing}>Join</Button>
     </Form>
 );

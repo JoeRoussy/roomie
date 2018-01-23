@@ -5,6 +5,19 @@ const config = {
     // }
 };
 
+function handlePayloadWithUser(state, payload) {
+    const {
+        data: {
+            user
+        } = {}
+    } = payload;
+
+    return {
+        ...state,
+        user
+    };
+}
+
 const userReducer = (state = config, actions) => {
     const {
         type,
@@ -13,16 +26,12 @@ const userReducer = (state = config, actions) => {
 
     switch (type) {
         case 'SIGN_UP_FORM_SUBMITTED_FULFILLED': {
-            const {
-                data: {
-                    user
-                } = {}
-            } = payload;
+            state = handlePayloadWithUser(state, payload);
 
-            state = {
-                ...state,
-                user
-            }
+            break;
+        }
+        case 'GET_CURRENT_USER_FULFILLED': {
+            state = handlePayloadWithUser(state, payload);
 
             break;
         }

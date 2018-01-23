@@ -29,4 +29,19 @@ export const getListings = ({
     });
 });
 
+export const createUser = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You must pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+
+    setTimeout(() => {
+        return res.json({
+            user: {
+                name: 'Joe Roussy',
+                email: 'joeroussy@gmail.com'
+            }
+        });
+    }, 3000);
+});
+
 // TODO: More api route handlers here

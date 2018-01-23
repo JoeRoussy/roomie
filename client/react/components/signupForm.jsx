@@ -1,11 +1,18 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Form, Icon, Button } from 'semantic-ui-react';
-import { LabelInputField } from 'react-semantic-redux-form';
+import { Form, Icon, Button, Input } from 'semantic-ui-react';
+import { LabelInputField, InputField } from 'react-semantic-redux-form';
+
+const validate = (values) => {
+    // TODO ...
+
+    return {};
+}
 
 const SignUpForm = ({
     onSubmit,
-    validate = () => ({}) // Return no errors by default
+    userType = '',
+    isProcessing
 }) => (
     <Form onSubmit={onSubmit}>
         <Field
@@ -18,20 +25,39 @@ const SignUpForm = ({
         <Field
             name='email'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='user' size='large' /> }}
+            label={{ content: <Icon color='blue' name='mail' size='large' /> }}
             labelPosition='left'
             placeholder='Email'
         />
         <Field
+            name='confirmEmail'
+            component={LabelInputField}
+            label={{ content: <Icon color='blue' name='mail' size='large' /> }}
+            labelPosition='left'
+            placeholder='Confirm Email'
+        />
+        <Field
             name='password'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='user' size='large' /> }}
+            label={{ content: <Icon color='blue' name='lock' size='large' /> }}
             labelPosition='left'
             placeholder='Password'
+            type='password'
         />
+        <Field
+            name='confirmPassword'
+            component={LabelInputField}
+            label={{ content: <Icon color='blue' name='lock' size='large' /> }}
+            labelPosition='left'
+            placeholder='Confirm Password'
+            type='password'
+        />
+        <Input type='hidden' value={userType} />
+        <Button type='submit' color='green' loading={isProcessing} disabled={isProcessing}>Join</Button>
     </Form>
 );
 
 export default reduxForm({
-    form: 'signUp'
+    form: 'signUp',
+    validate
 })(SignUpForm);

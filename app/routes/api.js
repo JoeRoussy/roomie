@@ -1,7 +1,7 @@
 import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { getListings } from '../controllers/api';
+import { getListings, createUser } from '../controllers/api';
 
 export default ({
     app = required('app'),
@@ -19,6 +19,17 @@ export default ({
             }
         })
     }));
+
+    router.route('/users')
+        .post(createUser({
+            usersCollection: db.collection('users'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-create'
+                }
+            })
+        }));
 
     // TODO: More API routes here
 

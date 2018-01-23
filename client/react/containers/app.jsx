@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import Navbar from '../components/navbar';
 import Home from './home';
-import SignUp from './signup';
+import SignUp from './Signup';
 import { history } from '../../redux/store';
 
 const style = {

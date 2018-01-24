@@ -1,21 +1,16 @@
 import { wrap as coroutine } from 'co';
 import express from 'express';
-import session from 'express-session';
-import connectMongo from 'connect-mongo';
 import bodyParser from 'body-parser';
 import { config as enviornmentVariableConfig } from 'dotenv';
-import passport from 'passport';
 import cors from 'cors';
+import jwtParser from 'express-jwt'
 
 import { getLogger, getChildLogger } from './components/log-factory';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
-import configureAuth from './components/authentication';
-
 import apiRouteConfig from './routes/api';
 
 const app = express();
-const MongoStore = connectMongo(session);
 
 enviornmentVariableConfig();
 
@@ -59,11 +54,10 @@ const dbLogger = getChildLogger({
 
     // Load in required enviornment variables
     const {
-        SESSION_SECRET,
         DB_URI
     } = process.env;
 
-    if (!SESSION_SECRET || !DB_URI) {
+    if (!DB_URI) {
         Logger.error({env: process.env}, 'Missing required enviornment variables for server startup: SESSION_SECRET, DB_URI');
 
         return;
@@ -71,27 +65,17 @@ const dbLogger = getChildLogger({
 
     // Now that we know that the db is connected, continue setting up the app
     app.use(cors());
-    app.use(session({
-        secret: SESSION_SECRET,
-        resave: false, // don't save the session if unmodified
-        saveUninitialized: false, // don't create session until something stored
-        store: new MongoStore({
-           db,
-           touchAfter: 24 * 3600 // Only update the session every 24 hours unless a modification to the session is made
-        })
-    }));
-    app.use(passport.initialize());
-    app.use(passport.session());
     app.use(express.static('public'));
     app.use(bodyParser.urlencoded({
         extended: true
     }));
     app.use(bodyParser.json());
 
-    configureAuth({
-        passport,
-        db
-    });
+    // Inspects the request header for a JWT and decodes it into req.user (valid JWT not required to get past this middleware)
+    app.use(jwtParser({
+        secret: process.env.JWT_SECRET,
+        credentialsRequired: false
+    }));
 
     apiRouteConfig({
         app,

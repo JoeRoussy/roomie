@@ -8,6 +8,9 @@ import { chooseUserType, submitForm } from '../../../redux/actions/signupActions
 
 import styles from './styles.css.js';
 
+// NOTE: We use the initialValues prop instead of a hidden field for the user type in the form
+// With a redux form, the initalValues prop initalizes the values of the form so hidden form fields are
+// never nessesary
 const getBody = ({
     userType,
     chooseUser,
@@ -19,21 +22,21 @@ const getBody = ({
         return (
             <div>
                 <div style={styles.rightAligned}>
-                    {userType === 'tenant' ? (
-                        <Button onClick={() => chooseUser('landlord')}>Signup as a landlord</Button>
+                    {userType === process.env.USER_TYPE_TENANT ? (
+                        <Button onClick={() => chooseUser(process.env.USER_TYPE_LANDLORD)}>Signup as a landlord</Button>
                     ) : (
-                        <Button onClick={() => chooseUser('tenant')}>Signup as a tenant</Button>
+                        <Button onClick={() => chooseUser(process.env.USER_TYPE_TENANT)}>Signup as a tenant</Button>
                     )}
                 </div>
-                <SignUpForm style={styles.form} onSubmit={onSubmit(formValues)} userType={userType} isProcessing={isFormProcessing}></SignUpForm>
+                <SignUpForm style={styles.form} onSubmit={onSubmit(formValues, userType)} isProcessing={isFormProcessing}></SignUpForm>
             </div>
         )
     }
 
     return (
         <div>
-            <Button onClick={() => chooseUser('tenant')}>Choose Tenant</Button>
-            <Button onClick={() => chooseUser('landlord')}>Choose Landlord</Button>
+            <Button onClick={() => chooseUser(process.env.USER_TYPE_TENANT)}>Choose Tenant</Button>
+            <Button onClick={() => chooseUser(process.env.USER_TYPE_LANDLORD)}>Choose Landlord</Button>
         </div>
     );
 };
@@ -48,9 +51,7 @@ const Signup = ({
 }) => (
     <div>
         <h1>Sign up</h1>
-
         {user ? (<Redirect to='/'/>) : ('')}
-
         {getBody({
             userType,
             chooseUser,
@@ -83,7 +84,7 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch) => ({
     chooseUser: (type) => dispatch(chooseUserType(type)),
-    onSubmit: (formData) => () => dispatch(submitForm(formData))
+    onSubmit: (formData, userType) => () => dispatch(submitForm(formData, userType))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signup);

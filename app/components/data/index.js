@@ -13,7 +13,17 @@ export const findListings = async({
     try {
         return await listingsCollection.find(query).toArray();
     } catch (e) {
-        // TODO: Replace with RethrownError
         throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
     }
 };
+
+export const getUserByEmail = async({
+    usersCollection = required('usersCollection'),
+    email = required('email')
+}) => {
+    try {
+        return await usersCollection.findOne({ email });
+    } catch (e) {
+        throw new RethrownError(e, `Error getting a user with the email ${email}`);
+    }
+}

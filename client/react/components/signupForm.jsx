@@ -11,7 +11,6 @@ const validate = (values) => {
 
 const SignUpForm = ({
     onSubmit,
-    userType = '',
     isProcessing
 }) => (
     <Form onSubmit={onSubmit}>
@@ -52,7 +51,6 @@ const SignUpForm = ({
             placeholder='Confirm Password'
             type='password'
         />
-        <Input type='hidden' name="userType" value={userType} />
         <Button type='submit' color='green' loading={isProcessing} disabled={isProcessing}>Join</Button>
     </Form>
 );

@@ -20,7 +20,7 @@ const signupReducer = (state = config, actions) => {
             }
             break;
         }
-        case 'SIGN_UP_FORM_SUBMITTED_PENDING': {
+        case 'SIGN_UP_FORM_SUBMITTED': {
             state = {
                 ...state,
                 isFormProcessing: true

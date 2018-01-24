@@ -31,8 +31,6 @@ export default ({
     // A separate router for users
     const userRouter = express.Router();
 
-    userRouter.get('/me', getCurrentUser)
-
     userRouter.post('/', createUser({
         usersCollection: db.collection('users'),
         logger: getChildLogger({

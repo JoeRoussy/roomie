@@ -8,16 +8,6 @@ export const required = (param, customMessage) => {
     }
 }
 
-// export class RuntimeError extends Error {
-//     constructor({ msg, err }) {
-//         super(msg);
-//         Error.captureStackTrace(this, RuntimeError); // This takes the ctor for this class out of the stack trace
-//
-//         this.msg = msg;
-//         this.err = err;
-//     }
-// }
-
 // Extends error to pass in a custom name and message while retaining the stack trace of the original error
 // Extend this class when making a custom error
 class ExtendedError extends Error {
@@ -50,6 +40,9 @@ export class RethrownError extends ExtendedError {
 
         this.original = error;
         const messageLines =  (this.message.match(/\n/g)||[]).length + 1;
+
+        // Remove all but the first line of this new stack and replace it with the old stack
+        // so only the new message appears on top of the entire old stack
         this.stack = `${this.stack.split('\n').slice(0, messageLines + 1).join('\n')}\n${error.stack}`;
     }
 }
@@ -155,4 +148,15 @@ export const getEnvVariable = (key) => {
     }
 
     return value;
+}
+
+export const isEmpty = (data) => {
+    if (typeof data === 'object') {
+        // NOTE: This works for standard objects and arrays
+        return Object.keys(data).length === 0;
+    } else if (typeof data === 'string') {
+        return data.length === 0;
+    } else {
+        return !data;
+    }
 }

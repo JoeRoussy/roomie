@@ -1,8 +1,5 @@
 const config = {
-    // user: {
-    //     name: 'Joe',
-    //     email: 'joeroussy@gmail.com'
-    // }
+
 };
 
 function handlePayloadWithUser(state, payload) {
@@ -25,13 +22,11 @@ const userReducer = (state = config, actions) => {
     } = actions;
 
     switch (type) {
-        case 'SIGN_UP_FORM_SUBMITTED_FULFILLED': {
-            state = handlePayloadWithUser(state, payload);
-
-            break;
-        }
-        case 'GET_CURRENT_USER_FULFILLED': {
-            state = handlePayloadWithUser(state, payload);
+        case 'SET_CURRENT_USER': {
+            state = {
+                ...state,
+                user: payload.user
+            };
 
             break;
         }

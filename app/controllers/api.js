@@ -1,6 +1,18 @@
 import { wrap as coroutine } from 'co';
-import { required } from '../components/custom-utils';
-import { findListings } from '../components/data';
+import jwt from 'jsonwebtoken';
+import { required, print, isEmpty } from '../components/custom-utils';
+import { findListings, getUserByEmail } from '../components/data';
+import { insert as insertInDb } from '../components/db/service';
+import { generateHash as generatePasswordHash } from '../components/authentication';
+import { transformUserForOutput } from '../components/transformers';
+
+// Returns an error message with the specifed status
+function sendError(res, status, message) {
+    return res.status(status).json({
+        error: true,
+        message
+    });
+}
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
@@ -18,10 +30,7 @@ export const getListings = ({
     } catch (e) {
         logger.error(e, 'Error finding listings');
 
-        return res.status(500).json({
-            error: true,
-            message: 'Error finding listings'
-        });
+        return sendError(res, 500, message);
     }
 
     return res.json({
@@ -38,7 +47,7 @@ export const createUser = ({
         body: {
             name,
             email,
-            passsword,
+            password,
             userType
         } = {}
     } = req;
@@ -51,69 +60,63 @@ export const createUser = ({
     if (!name || !email || !password || !userType) {
         logger.warn(req.body, 'Malformed body for user creation');
 
-        return res.status(400).json({
-            error: true,
-            message: 'Creating a user requires a name, an email, a password, and a user type'
-        });
+        return sendError(res, 400, 'Creating a user requires a name, an email, a password, and a user type');
     }
 
     if (!(userType === USER_TYPE_TENANT || userType === USER_TYPE_LANDLORD)) {
-        return res.status(400).json({
-            error: true,
-            message: `userType must be either \"${USER_TYPE_TENANT}\" or \"${USER_TYPE_LANDLORD}\" `
-        });
+        return sendError(res, 400, `userType must be either \"${USER_TYPE_TENANT}\" or \"${USER_TYPE_LANDLORD}\"`)
     }
 
     // First see if a user with this email exists
     let user = null;
     try {
-        user = getUserByEmail({
+        user = yield getUserByEmail({
             email,
-            userCollection
+            usersCollection
         });
     } catch (e) {
         logger.error(e, `Error checking if user with email: ${email} exists`);
 
-        return res.status(500).json({
-            error: true,
-            message: 'Could not sign up'
-        });
+        return sendError(res, 500, 'Could not sign up');
     }
 
-    if (user) {
+    console.log('User after dupe email check');
+    console.log(user);
+    console.log(isEmpty(user));
+
+    if (!isEmpty(user)) {
         logger.warn({ email }, 'Attempt to sign up with existing user email');
 
-        return res.status(400).json({
-            error: true,
-            message: `A user with email: ${email} already exists`
-        });
+        return sendError(res, 400, `A user with email: ${email} already exists`);
     }
 
-    // Now that we know this is a new email, try creating a new user
-    
+    // No user with this email exists so lets make one
+    const hashedPassword = yield generatePasswordHash(password);
+    let savedUser;
 
-
-    setTimeout(() => {
-        return res.json({
-            user: {
-                name: 'Joe Roussy',
-                email: 'joeroussy@gmail.com'
-            }
+    try {
+        savedUser = yield insertInDb({
+            collection: usersCollection,
+            document: {
+                name,
+                email,
+                password: hashedPassword,
+                isLandlord: userType === process.env.USER_TYPE_LANDLORD
+            },
+            returnInsertedDocument: true
         });
-    }, 3000);
-});
+    } catch (e) {
+        logger.error({ err: e, name, email }, 'Error saving new user to database');
 
-// Inspects the current session to see if there is a user logged in.
-// If there is a user they are returned, otherwise null is returned
-export const getCurrentUser = (req, res) => {
-    // NOTE: Passport will populate req.user if their session is still active
-    const {
-        user = null
-    } = req;
+        return sendError(res, 500, 'Could not sign up');
+    }
+
+    // Now that the user has been saved, return a jwt encapsulating the new user (transformered for output)
+    const token = jwt.sign(transformUserForOutput(savedUser), process.env.JWT_SECRET);
 
     return res.json({
-        user
+        token
     });
-}
+});
 
 // TODO: More api route handlers here

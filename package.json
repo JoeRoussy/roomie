@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app/index.js",
     "client-dev": "webpack-dev-server --content-base public --no-inline --hot",
-    "server-dev": "nodemon --watch app app/index.js",
+    "server-dev": "nodemon --inspect --watch app app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

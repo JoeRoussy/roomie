@@ -150,8 +150,17 @@ export const getEnvVariable = (key) => {
     return value;
 }
 
+// Genertic function to see if instances of various types are empty
+// undefined and null always return true
+// objects with key lengths of 0 return true (this includes arrays)
+// the empty string returns true
+// as a last resort, a boolean coersion of the object is returned
 export const isEmpty = (data) => {
-    if (typeof data === 'object') {
+    if (typeof data === 'undefined') {
+        return true;
+    } else if (data === null) {
+        return true;
+    } else if (typeof data === 'object') {
         // NOTE: This works for standard objects and arrays
         return Object.keys(data).length === 0;
     } else if (typeof data === 'string') {

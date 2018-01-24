@@ -4,14 +4,60 @@ import { Form, Icon, Button, Input } from 'semantic-ui-react';
 import { LabelInputField, InputField } from 'react-semantic-redux-form';
 
 const validate = (values) => {
-    // TODO ...
+    let errors = {};
 
-    return {};
+    const {
+        name,
+        email,
+        confirmEmail,
+        password,
+        confirmPassword
+    } = values;
+
+    if (!name) {
+        errors = {
+            name: 'Plese enter your name',
+            ...errors
+        };
+    }
+
+    if (!email) {
+        errors = {
+            email: 'Plese enter your email',
+            ...errors
+        };
+    }
+
+    if (!password) {
+        errors = {
+            password: 'Plese choose a password',
+            ...errors
+        };
+    }
+
+    if (email && confirmEmail !== email) {
+        errors = {
+            confirmEmail: 'Emails must match',
+            ...errors
+        };
+    }
+
+    if (password && confirmPassword !== password) {
+        errors = {
+            confirmPassword: 'Emails must match',
+            ...errors
+        };
+    }
+
+
+    return errors;
 }
 
+// NOTE: Valid is a prop passed in by redux-form
 const SignUpForm = ({
     onSubmit,
-    isProcessing
+    isProcessing,
+    valid
 }) => (
     <Form onSubmit={onSubmit}>
         <Field
@@ -51,7 +97,7 @@ const SignUpForm = ({
             placeholder='Confirm Password'
             type='password'
         />
-        <Button type='submit' color='green' loading={isProcessing} disabled={isProcessing}>Join</Button>
+        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Join</Button>
     </Form>
 );
 

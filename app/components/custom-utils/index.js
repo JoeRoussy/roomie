@@ -8,15 +8,52 @@ export const required = (param, customMessage) => {
     }
 }
 
-export class RuntimeError extends Error {
-    constructor({ msg, err }) {
-        super(msg);
-        Error.captureStackTrace(this, RuntimeError); // This takes the ctor for this class out of the stack trace
+// export class RuntimeError extends Error {
+//     constructor({ msg, err }) {
+//         super(msg);
+//         Error.captureStackTrace(this, RuntimeError); // This takes the ctor for this class out of the stack trace
+//
+//         this.msg = msg;
+//         this.err = err;
+//     }
+// }
 
-        this.msg = msg;
-        this.err = err;
+// Extends error to pass in a custom name and message while retaining the stack trace of the original error
+// Extend this class when making a custom error
+class ExtendedError extends Error {
+    constructor(message) {
+        super(message);
+
+        this.name = this.constructor.name;
+        this.message = message;
+
+        Error.captureStackTrace(this, this.constructor);
     }
 }
+
+// We use this class to normalize errors for modules at higher levels of abstractions.
+// If a DB error occurs, we don't want that to just bubble up to a controller. Using this class
+// we can add a message about what is going on at mid levels of abstraction to make error handling
+// easier. This also lets modules at mid levels of abstractino have their own error interface instead of
+// throwing semignly obsure errors. This also lets us take an error, log something, and rethrow it without
+// losing the stack trace.
+// Exmaple Usage:
+// Given an error in the current scope. Rethrow the same error using:
+//     throw RethrownError(error, 'Something messed up happended but you reading this understands because I am not a wired DB error')
+export class RethrownError extends ExtendedError {
+    constructor(error, message) {
+        super(message);
+
+        if (!error) {
+            throw new Error('RethrownError requires a message and error');
+        }
+
+        this.original = error;
+        const messageLines =  (this.message.match(/\n/g)||[]).length + 1;
+        this.stack = `${this.stack.split('\n').slice(0, messageLines + 1).join('\n')}\n${error.stack}`;
+    }
+}
+
 
 export const print = (obj, message) => {
     if (message) {

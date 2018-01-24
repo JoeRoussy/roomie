@@ -2,7 +2,7 @@ import {
     required,
     print,
     convertToObjectId,
-    RuntimeError
+    RethrownError
 } from '../custom-utils';
 
 // Get listings based on an optional query
@@ -13,9 +13,7 @@ export const findListings = async({
     try {
         return await listingsCollection.find(query).toArray();
     } catch (e) {
-        throw new RuntimeError({
-            err: e,
-            msg: `Error getting listings for query: ${query}`
-        });
+        // TODO: Replace with RethrownError
+        throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
     }
 };

@@ -2,19 +2,6 @@ const config = {
 
 };
 
-function handlePayloadWithUser(state, payload) {
-    const {
-        data: {
-            user
-        } = {}
-    } = payload;
-
-    return {
-        ...state,
-        user
-    };
-}
-
 const userReducer = (state = config, actions) => {
     const {
         type,

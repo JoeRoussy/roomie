@@ -8,9 +8,7 @@ import { chooseUserType, submitForm } from '../../../redux/actions/signupActions
 
 import styles from './styles.css.js';
 
-// NOTE: We use the initialValues prop instead of a hidden field for the user type in the form
-// With a redux form, the initalValues prop initalizes the values of the form so hidden form fields are
-// never nessesary
+
 const getBody = ({
     userType,
     chooseUser,

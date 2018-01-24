@@ -6,12 +6,16 @@ import Home from './home';
 import SignUp from './Signup';
 import { history } from '../../redux/store';
 
+const style = {
+    marginTop: '3em'
+};
+
 const App = ({
 
 }) => (
     <div>
         <Navbar />
-        <main>
+        <main style={style}>
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />
         </main>

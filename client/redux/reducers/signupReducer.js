@@ -18,6 +18,7 @@ const signupReducer = (state = config, actions) => {
                 ...state,
                 userType: type
             }
+            
             break;
         }
         case 'SIGN_UP_FORM_SUBMITTED': {

@@ -80,10 +80,6 @@ export const createUser = ({
         return sendError(res, 500, 'Could not sign up');
     }
 
-    console.log('User after dupe email check');
-    console.log(user);
-    console.log(isEmpty(user));
-
     if (!isEmpty(user)) {
         logger.warn({ email }, 'Attempt to sign up with existing user email');
 

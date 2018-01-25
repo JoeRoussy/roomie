@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Form, Icon, Button, Input } from 'semantic-ui-react';
+import { Form, Icon, Button, Input, Message } from 'semantic-ui-react';
 import { LabelInputField, InputField } from 'react-semantic-redux-form';
 
 const validate = (values) => {
@@ -57,9 +57,15 @@ const validate = (values) => {
 const SignUpForm = ({
     onSubmit,
     isProcessing,
-    valid
+    valid,
+    errorMessage
 }) => (
-    <Form onSubmit={onSubmit}>
+    <Form onSubmit={onSubmit} error={!!errorMessage}>
+        <Message
+            error
+            header='Error'
+            content={errorMessage}
+        />
         <Field
             name='name'
             component={LabelInputField}

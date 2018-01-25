@@ -14,7 +14,8 @@ const getBody = ({
     chooseUser,
     onSubmit,
     formValues,
-    isFormProcessing
+    isFormProcessing,
+    errorMessage
 }) => {
     if (userType) {
         return (
@@ -26,7 +27,12 @@ const getBody = ({
                         <Button onClick={() => chooseUser(process.env.USER_TYPE_TENANT)}>Signup as a tenant</Button>
                     )}
                 </div>
-                <SignUpForm style={styles.form} onSubmit={onSubmit(formValues, userType)} isProcessing={isFormProcessing}></SignUpForm>
+                <SignUpForm
+                    style={styles.form}
+                    onSubmit={onSubmit(formValues, userType)}
+                    isProcessing={isFormProcessing}
+                    errorMessage={errorMessage}
+                ></SignUpForm>
             </div>
         )
     }
@@ -45,7 +51,8 @@ const Signup = ({
     onSubmit,
     formValues,
     isFormProcessing,
-    user
+    user,
+    errorMessage
 }) => (
     <div>
         <h1>Sign up</h1>
@@ -55,7 +62,8 @@ const Signup = ({
             chooseUser,
             onSubmit,
             formValues,
-            isFormProcessing
+            isFormProcessing,
+            errorMessage
         })}
     </div>
 );
@@ -63,7 +71,8 @@ const Signup = ({
 const mapStateToProps = ({
     signupReducer: {
         userType,
-        isFormProcessing
+        isFormProcessing,
+        errorMessage
     } = {},
     form: {
         signUp: {
@@ -77,7 +86,8 @@ const mapStateToProps = ({
     userType,
     isFormProcessing,
     formValues: values,
-    user
+    user,
+    errorMessage
 })
 
 const mapDispatchToProps = (dispatch) => ({

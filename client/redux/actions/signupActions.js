@@ -38,13 +38,11 @@ export const submitForm = (formData, userType) => (dispatch) => {
                     type: 'SIGN_UP_FORM_SUBMITTED_FULFILLED',
                     payload: res
                 });
-                console.log('Got to the end of the res function');
             })
             .catch((e) => {
-                console.error(e);
                 dispatch({
                     type: 'SIGN_UP_FORM_SUBMITTED_REJECTED',
-                    payload: e
+                    payload: e.response
                 });
             });
 };

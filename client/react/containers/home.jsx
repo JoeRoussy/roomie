@@ -4,50 +4,67 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import styles from '../../styles/styles.css';
-import BasicSearch from '../components/Search/BasicSearch';
-import { search } from '../../redux/actions/searchActions';
-
-const processArgs = (args) => {
-
-}
-
-const createListing = () => {
-    console.log("Create Listing");
-}
+import HomeSearch from '../components/Search/HomeSearch';
+import ViewListingsSearch from '../components/Search/ViewListingsSearch';
+import { search, getPopularListings } from '../../redux/actions/searchActions';
 
 const Home = ({
     submitSearch,
-    values: {
-        values: {
-            searchBar
-        } = { }
-    } = {}
+    createListing,
+    searchArgs,
+    user,
+    loadPopularListings,
+    searchState
 }) => {
+    let items = ''
+
+    if(searchState.fulfilled && searchState.listings < 1) items = "No results found";
+    else if(!searchState.fulfilled) items = "Waiting";
+    else items = JSON.stringify(searchState.listings);
+
     return(
         <div>
-            {JSON.stringify(searchBar, null, 4)}
-            <BasicSearch 
-                submitSearch={() => submitSearch(searchBar)}
-                createListing={createListing}
+            <HomeSearch 
+                submitSearch={() => submitSearch(searchArgs)}
+                createListing={() => createListing(user)}
             />
+            {/* INSERT 5 POPULAR LISTINGS HERE */}
         </div>
     )
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    submitSearch: (args) => {
-        console.log("####", args)
-        const processedArgs = processArgs(args);
 
-        return dispatch(search(processedArgs));
-    } 
+
+const processLocation = (searchArgs) => {
+    if(searchArgs.values === undefined || searchArgs.values.searchBar === undefined) return null;
+    const args = searchArgs.values.searchBar;
+    const processedArgs = `location=${args.trim()}`;
+    return processedArgs;
+}
+
+const mapDispatchToProps = (dispatch) => ({
+    //Takes search arguments from the searchbar and directs user to ViewListings Container with results
+    submitSearch: (searchArgs) => {
+        const processedArgs = processLocation(searchArgs);
+        if(processedArgs === null || processedArgs === '') return;
+        dispatch(search(processedArgs));
+        return dispatch(push('/browse-listings'));
+    },
+    // Directs the user to the create listings page -> if user is not signed in, prompt to either log in or create account
+    createListing: (user) => {
+        return user===undefined ? dispatch(push('/login')):dispatch(push('/create-listing'));
+    },
+    loadPopularListings: () => dispatch(getPopularListings())
 })
 
 const mapStateToProps = ({
-    form
+    form,
+    userReducer,
+    searchReducer
 }) => ({
-    values: form.basicSearch
+    searchArgs: form.homeSearch,
+    user: userReducer.user,
+    searchState: searchReducer
 });
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

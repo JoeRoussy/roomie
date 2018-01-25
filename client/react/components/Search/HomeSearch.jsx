@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form';
 import { Form, Input, Button, Icon } from 'semantic-ui-react';
 import './styles.css';
 
-const BasicSearch = ({
+const HomeSearch = ({
     submitSearch,
     createListing
 }) => {
@@ -16,7 +16,6 @@ const BasicSearch = ({
                     component={Input}
                     placeholder="Enter a destination..."
                     icon='search'
-                    onBlur={submitSearch}
                 />
             </Form>
             <div> 
@@ -32,5 +31,5 @@ const BasicSearch = ({
 }
 
 export default reduxForm({
-    form: 'basicSearch'
-})(BasicSearch);
+    form: 'homeSearch'
+})(HomeSearch);

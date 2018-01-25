@@ -13,3 +13,8 @@ export const getListings = () => ({
     type: 'GET_LISTINGS',
     payload: axios.get(`${process.env.API_ROOT}/api/listings`)
 });
+
+export const getListingById = (id) => ({
+    type: 'GET_LISTING_BY_ID',
+    payload: axios.get(`${process.env.API_ROOT}/api/listings/${id}`)
+});

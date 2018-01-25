@@ -10,10 +10,11 @@ export const search = (args='')=> {
     return action;
 }
 
-export const getPopularListings = (num=5) => {
+
+export const handleLocationChange = (val='')=> {
     const action = {
-        type: 'GET_POPULAR_LISTINGS',
-        payload: axios.get(`${process.env.API_ROOT}/api/popular-listings?num=${num}`)
+        type: 'LOCATION_CHANGE',
+        payload: val
     }
     return action;
 }

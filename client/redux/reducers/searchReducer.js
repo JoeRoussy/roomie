@@ -1,5 +1,6 @@
 const config ={
     listings: [],
+    location: '',
     fulfilled: false,
     pending: false,
     rejected: false,
@@ -7,6 +8,14 @@ const config ={
 
 const searchReducer = (state = config, actions) => {
     switch(actions.type){
+        case 'LOCATION_CHANGE': {
+            state = {
+                ...state, 
+                location: actions.payload
+            };
+            break;
+        }
+
         case 'GET_SEARCH_RESULTS_FULFILLED': {
             state = {
                 ...state, 

@@ -103,7 +103,7 @@ const SignUpForm = ({
             placeholder='Confirm Password'
             type='password'
         />
-        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Join</Button>
+        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Register</Button>
     </Form>
 );
 

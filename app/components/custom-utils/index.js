@@ -25,11 +25,11 @@ class ExtendedError extends Error {
 // If a DB error occurs, we don't want that to just bubble up to a controller. Using this class
 // we can add a message about what is going on at mid levels of abstraction to make error handling
 // easier. This also lets modules at mid levels of abstractino have their own error interface instead of
-// throwing semignly obsure errors. This also lets us take an error, log something, and rethrow it without
+// throwing seemingly obscure errors. This also lets us take an error, log something, and rethrow it without
 // losing the stack trace.
 // Exmaple Usage:
 // Given an error in the current scope. Rethrow the same error using:
-//     throw RethrownError(error, 'Something messed up happended but you reading this understands because I am not a wired DB error')
+//     throw RethrownError(error, 'Something messed up happened but you reading this understands because I am not a wired DB error')
 export class RethrownError extends ExtendedError {
     constructor(error, message) {
         super(message);

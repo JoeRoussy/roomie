@@ -5,18 +5,7 @@ import { findListings, getUserByEmail } from '../components/data';
 import { insert as insertInDb } from '../components/db/service';
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
-
-// Returns an error message with the specifed status
-const sendError = ({
-    res,
-    status,
-    message,
-    errorKey
-}) => res.status(status).json({
-    error: true,
-    message,
-    errorKey
-});
+import { sendError } from './utils';
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),

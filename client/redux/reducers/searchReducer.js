@@ -11,7 +11,7 @@ const searchReducer = (state = config, actions) => {
         case 'LOCATION_CHANGE': {
             state = {
                 ...state, 
-                location: actions.payload
+                location: actions.payload.val
             };
             break;
         }
@@ -48,7 +48,7 @@ const searchReducer = (state = config, actions) => {
             };
             break;
         }
-
+        //TODO: Fix up copy pasta code for future reducer actions
         case 'GET_POPULAR_LISTINGS_FULFILLED': {
             state = {
                 ...state, 

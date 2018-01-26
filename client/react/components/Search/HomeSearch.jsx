@@ -13,7 +13,7 @@ const HomeSearch = ({
 }) => {
     return (
         <div className='search' >    
-            <PlacesAutoComplete classNames="searchBar" inputProps={{...inputProps, placeHolder: "Enter a destination..."}}/>
+            <PlacesAutoComplete inputProps={{...inputProps, placeholder: "Enter a destination..."}}/>
             <div> 
                 <p> OR </p> 
             </div>

@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-export const search = (args='')=> {
-    let hasParams = '?';
-    if(args === '') hasParams = '';
+export const search = (args='') => {
+    const hasParams = (args ==='') ? '':'?';
     const action = {
         type: 'GET_SEARCH_RESULTS',
         payload: axios.get(`${process.env.API_ROOT}/api/listings${hasParams}${args}`)
@@ -11,10 +10,10 @@ export const search = (args='')=> {
 }
 
 
-export const handleLocationChange = (val='')=> {
+export const handleLocationChange = (val='') => {
     const action = {
         type: 'LOCATION_CHANGE',
-        payload: val
+        payload: {val}
     }
     return action;
 }

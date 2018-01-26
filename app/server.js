@@ -9,6 +9,7 @@ import { getLogger, getChildLogger } from './components/log-factory';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
 import apiRouteConfig from './routes/api';
+import authRouteConfig from './routes/authentication';
 
 const app = express();
 
@@ -78,6 +79,11 @@ const dbLogger = getChildLogger({
     }));
 
     apiRouteConfig({
+        app,
+        db,
+        baseLogger: Logger
+    });
+    authRouteConfig({
         app,
         db,
         baseLogger: Logger

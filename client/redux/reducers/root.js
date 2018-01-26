@@ -7,14 +7,16 @@ import { reducer as formReducer } from 'redux-form';
 import sampleReducer from './sampleReducer';
 import listingsReducer from './listingsReducer';
 import userReducer from './userReducer';
-import signupReducer from './signupReducer';
+import signUpReducer from './signUpReducer';
+import signInReducer from './signInReducer';
 
 const reducers = combineReducers({
 	sampleReducer,
     listingsReducer,
     userReducer,
     form: formReducer,
-    signupReducer
+    signUpReducer,
+    signInReducer
 });
 
 export default reducers;

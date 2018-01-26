@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 
-import SignUpForm from '../../components/signupForm';
+import SignUpForm from '../../components/signUpForm';
 import { chooseUserType, submitForm } from '../../../redux/actions/signupActions';
 
 import styles from './styles.css.js';
@@ -69,7 +69,7 @@ const Signup = ({
 );
 
 const mapStateToProps = ({
-    signupReducer: {
+    signUpReducer: {
         userType,
         isFormProcessing,
         errorMessage

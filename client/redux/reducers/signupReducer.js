@@ -2,7 +2,7 @@ const config = {
 
 };
 
-const signupReducer = (state = config, actions) => {
+const signUpReducer = (state = config, actions) => {
     const {
         type: actionType,
         payload
@@ -65,4 +65,4 @@ const signupReducer = (state = config, actions) => {
     return state;
 }
 
-export default signupReducer;
+export default signUpReducer;

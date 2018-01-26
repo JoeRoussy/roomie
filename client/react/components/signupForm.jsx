@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Form, Icon, Button, Input, Message } from 'semantic-ui-react';
-import { LabelInputField, InputField } from 'react-semantic-redux-form';
+import { Form, Icon, Button, Message } from 'semantic-ui-react';
+import { LabelInputField } from 'react-semantic-redux-form';
 
 const validate = (values) => {
     let errors = {};
@@ -48,7 +48,6 @@ const validate = (values) => {
             ...errors
         };
     }
-
 
     return errors;
 }
@@ -105,7 +104,7 @@ const SignUpForm = ({
         />
         <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Register</Button>
     </Form>
-);
+)
 
 export default reduxForm({
     form: 'signUp',

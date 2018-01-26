@@ -16,7 +16,7 @@ export const chooseUserType = (type) => ({
 // would have done.
 export const submitForm = (formData, userType) => (dispatch) => {
     dispatch({
-        type: 'SIGN_UP_FORM_SUBMITTED'
+        type: 'SIGN_UP_FORM_SUBMIT'
     });
 
     return axios.post(`${process.env.API_ROOT}/api/users`, {

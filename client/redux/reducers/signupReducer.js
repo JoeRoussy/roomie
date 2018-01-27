@@ -21,7 +21,7 @@ const signUpReducer = (state = config, actions) => {
 
             break;
         }
-        case 'SIGN_UP_FORM_SUBMITTED': {
+        case 'SIGN_UP_FORM_SUBMIT': {
             state = {
                 ...state,
                 isFormProcessing: true,
@@ -30,8 +30,7 @@ const signUpReducer = (state = config, actions) => {
 
             break;
         }
-        case 'SIGN_UP_FORM_SUBMITTED_FULFILLED': {
-            // NOTE: User reducer will handle bringing the user value into the state
+        case 'SIGN_UP_FORM_SUBMIT_FULFILLED': {
             state = {
                 ...state,
                 isFormProcessing: false
@@ -39,10 +38,12 @@ const signUpReducer = (state = config, actions) => {
 
             break;
         }
-        case 'SIGN_UP_FORM_SUBMITTED_REJECTED': {
+        case 'SIGN_UP_FORM_SUBMIT_REJECTED': {
             const {
-                errorKey
-            } = payload.data;
+                data: {
+                    errorKey
+                } = {}
+            } = payload;
 
             // Set the error message based on the key returned by the server.
             const errorMessages = {

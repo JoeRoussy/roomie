@@ -1,13 +1,10 @@
 import axios from 'axios';
+import { handleAuthenticationRequest } from '../components';
 
-
-export const submitForm = ({
-    email,
-    password
-}) => ({
-    type: 'SIGN_UP_FORM_SUBMITED',
-    payload: axios.post(`${process.env.API_ROOT}/login`, {
-        email,
-        password
-    })
-});
+export const submitForm = (formData) => (dispatch) => (handleAuthenticationRequest({
+    promise: axios.post(`${process.env.API_ROOT}/login`, {
+        ...formData
+    }),
+    submitActionName: 'SIGN_IN_FORM_SUBMIT',
+    dispatch
+}));

@@ -1,49 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 
-import SignUpForm from '../../components/signUpForm';
+import SignUpBody from '../../components/SignUpBody';
 import { chooseUserType, submitForm } from '../../../redux/actions/signupActions';
 
 import styles from './styles.css.js';
 
-
-const getBody = ({
-    userType,
-    chooseUser,
-    onSubmit,
-    formValues,
-    isFormProcessing,
-    errorMessage
-}) => {
-    if (userType) {
-        return (
-            <div>
-                <div style={styles.rightAligned}>
-                    {userType === process.env.USER_TYPE_TENANT ? (
-                        <Button onClick={() => chooseUser(process.env.USER_TYPE_LANDLORD)}>Signup as a landlord</Button>
-                    ) : (
-                        <Button onClick={() => chooseUser(process.env.USER_TYPE_TENANT)}>Signup as a tenant</Button>
-                    )}
-                </div>
-                <SignUpForm
-                    style={styles.form}
-                    onSubmit={onSubmit(formValues, userType)}
-                    isProcessing={isFormProcessing}
-                    errorMessage={errorMessage}
-                ></SignUpForm>
-            </div>
-        )
-    }
-
-    return (
-        <div>
-            <Button onClick={() => chooseUser(process.env.USER_TYPE_TENANT)}>Choose Tenant</Button>
-            <Button onClick={() => chooseUser(process.env.USER_TYPE_LANDLORD)}>Choose Landlord</Button>
-        </div>
-    );
-};
 
 const Signup = ({
     userType,
@@ -53,20 +16,24 @@ const Signup = ({
     isFormProcessing,
     user,
     errorMessage
-}) => (
-    <div>
-        <h1>Sign up</h1>
-        {user ? (<Redirect to='/'/>) : ('')}
-        {getBody({
-            userType,
-            chooseUser,
-            onSubmit,
-            formValues,
-            isFormProcessing,
-            errorMessage
-        })}
-    </div>
-);
+}) => {
+    const userRedirect = user ? (<Redirect to='/'/>) : ('');
+
+    return (
+        <div>
+            <h1>Sign up</h1>
+            {userRedirect}
+            <SignUpBody
+                userType={userType}
+                chooseUser={chooseUser}
+                onSubmit={onSubmit}
+                formValues={formValues}
+                isFormProcessing={isFormProcessing}
+                errorMessage={errorMessage}
+            />
+        </div>
+    );
+};
 
 const mapStateToProps = ({
     signUpReducer: {

@@ -1,7 +1,7 @@
 import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { getListings, createUser, getCurrentUser } from '../controllers/api';
+import { getListings, createUser } from '../controllers/api';
 
 export default ({
     app = required('app'),

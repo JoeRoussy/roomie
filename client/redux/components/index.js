@@ -36,7 +36,7 @@ export const handleAuthenticationRequest = ({
         .catch(e => {
             dispatch({
                 type: `${submitActionName}_REJECTED`,
-                payload: e.response
+                payload: e
             });
         });
 }

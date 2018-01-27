@@ -40,22 +40,34 @@ const signUpReducer = (state = config, actions) => {
         }
         case 'SIGN_UP_FORM_SUBMIT_REJECTED': {
             const {
-                data: {
-                    errorKey
-                } = {}
+                response: {
+                    data: {
+                        errorKey
+                    } = {}
+                }
             } = payload;
 
-            // Set the error message based on the key returned by the server.
-            const errorMessages = {
-                [process.env.SIGNUP_ERRORS_EXISTING_EMAIL]: 'A user with that email already exists',
-                [process.env.SIGNUP_ERRORS_GENERIC]: 'Your request could not be processed',
-                [process.env.SIGNUP_ERRORS_MISSING_VALUES]: 'Please ensure you have filled all the fields in the form'
+            let errorMessage;
+
+            if (errorKey) {
+                // We got an error key back so use an error message that relates to it
+                const errorMessages = {
+                    [process.env.SIGNUP_ERRORS_EXISTING_EMAIL]: 'A user with that email already exists',
+                    [process.env.SIGNUP_ERRORS_GENERIC]: 'Your request could not be processed',
+                    [process.env.SIGNUP_ERRORS_MISSING_VALUES]: 'Please ensure you have filled all the fields in the form'
+                };
+
+                errorMessage = errorMessages[errorKey];
+
+            } else {
+                // We did not get an error key back so use a generic error
+                errorMessage = 'Your request could not be processed'
             }
 
             state = {
                 ...state,
                 isFormProcessing: false,
-                errorMessage: errorMessages[errorKey] || ''
+                errorMessage
             };
 
             break;

@@ -16,21 +16,21 @@ const validate = (values) => {
 
     if (!name) {
         errors = {
-            name: 'Plese enter your name',
+            name: 'Please enter your name',
             ...errors
         };
     }
 
     if (!email) {
         errors = {
-            email: 'Plese enter your email',
+            email: 'Please enter your email',
             ...errors
         };
     }
 
     if (!password) {
         errors = {
-            password: 'Plese choose a password',
+            password: 'Please choose a password',
             ...errors
         };
     }

@@ -15,12 +15,17 @@ const App = ({
 
 }) => (
     <div>
-        <Navbar />
+        <header>
+            <Navbar />
+        </header>
         <main style={style}>
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />
             <Route exact path="/sign-in" component={SignIn} />
         </main>
+        <footer>
+            Copyright © 2018 Roomie
+        </footer>
     </div>
 )
 

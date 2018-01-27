@@ -57,9 +57,10 @@ const SignUpForm = ({
     onSubmit,
     isProcessing,
     valid,
-    errorMessage
+    errorMessage,
+    className
 }) => (
-    <Form onSubmit={onSubmit} error={!!errorMessage}>
+    <Form className={className} onSubmit={onSubmit} error={!!errorMessage}>
         <Message
             error
             header='Error'

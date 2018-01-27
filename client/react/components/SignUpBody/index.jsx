@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'semantic-ui-react';
 
 import SignUpForm from '../signUpForm';
-import styles from './styles.css.js';
+import './styles.css'
 
 export default ({
     userType,
@@ -21,11 +21,11 @@ export default ({
 
         return (
             <div>
-                <div style={styles.rightAligned}>
+                <div className='rightAligned'>
                     {chooseUserButton}
                 </div>
                 <SignUpForm
-                    style={styles.form}
+                    className='signUpForm'
                     onSubmit={onSubmit(formValues, userType)}
                     isProcessing={isFormProcessing}
                     errorMessage={errorMessage}

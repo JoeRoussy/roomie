@@ -5,9 +5,6 @@ import { Redirect } from 'react-router';
 import SignUpBody from '../../components/SignUpBody';
 import { chooseUserType, submitForm } from '../../../redux/actions/signupActions';
 
-import styles from './styles.css.js';
-
-
 const Signup = ({
     userType,
     chooseUser,

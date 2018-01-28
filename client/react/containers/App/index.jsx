@@ -1,13 +1,16 @@
 import React from 'react';
 import { Route, Link } from 'react-router-dom';
-import { history } from '../../redux/store';
+import { history } from '../../../redux/store';
 
-import BrowseListings from './BrowseListings';
-import Home from './home';
-import Navbar from '../components/navbar';
-import SignUp from './signup';
-import SignIn from './SignIn';
-import ViewListing from './ViewListing';
+import BrowseListings from '../BrowseListings';
+import Home from '../home';
+import Navbar from '../../components/navbar';
+import SignUp from '../signup';
+import SignIn from '../SignIn';
+import ViewListing from '../ViewListing';
+import Profile from '../Profile';
+
+import './styles.css';
 
 
 const style = {
@@ -27,6 +30,7 @@ const App = ({
             <Route exact path="/listings" component={BrowseListings} />
             <Route exact path="/listings/:id" component={ViewListing} />
             <Route exact path="/sign-in" component={SignIn} />
+            <Route exact path="/profile" component={Profile} />
         </main>
         <footer>
             Copyright © 2018 Roomie

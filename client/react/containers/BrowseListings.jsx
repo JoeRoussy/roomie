@@ -4,7 +4,6 @@ import { push } from 'react-router-redux';
 import { Button, Card, Icon, Image } from 'semantic-ui-react';
 
 import { getListings } from '../../redux/actions/listingsActions';
-
 import ListingCard from '../components/ListingCard';
 
 @connect((store) => {
@@ -55,7 +54,7 @@ export default class Listings extends React.Component {
         ) : (
             <p>No listings found</p>
         );
-        
+
         return (
             <div>
                 <Button onClick= { this.refreshListings } >Refresh Listings</Button>

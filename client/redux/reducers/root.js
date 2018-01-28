@@ -8,7 +8,6 @@ import sampleReducer from './sampleReducer';
 import searchReducer from './searchReducer';
 import userReducer from './userReducer';
 import ChatReducer from './chatReducer';
-import { reducer as formReducer } from 'redux-form';
 
 const reducers = combineReducers({
     listingsReducer,

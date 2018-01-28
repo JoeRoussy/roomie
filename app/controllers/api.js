@@ -9,12 +9,14 @@ export const getListings = ({
 }) => coroutine(function* (req, res) {
     // TODO: Get query parameters out of req.query
 
+    const locationStr = req.query.location ? req.query.location : '';
+
     let result;
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: {} // TODO: Add query functionality
+            query: { $where: `this.location.indexOf("${locationStr}") != -1` } // TODO: Make query use the maps
         })
     } catch (e) {
         logger.error(e.err, e.msg);
@@ -24,7 +26,6 @@ export const getListings = ({
             message: 'Could not get listings'
         });
     }
-
     return res.json({
         listings: result
     });

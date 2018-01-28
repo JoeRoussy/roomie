@@ -47,12 +47,21 @@ export default class Listings extends React.Component {
 
     render() {
         const { listings } = this.props;
+
+        const body = listings.length ? (
+            <Card.Group>
+                { this.mapListings(listings) }
+            </Card.Group>
+        ) : (
+            <p>No listings found</p>
+        );
+        
         return (
             <div>
                 <Button onClick= { this.refreshListings } >Refresh Listings</Button>
-                <Card.Group>
-                    { this.mapListings(listings) }
-                </Card.Group>
+                <div>
+                    {body}
+                </div>
             </div>
         )
     }

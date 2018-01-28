@@ -1,14 +1,17 @@
 /* This module just collects all the reducers in our app and combines them */
 
 import { combineReducers } from 'redux';
-import sampleReducer from './sampleReducer';
-import listingsReducer from './listingsReducer';
-import userReducer from './userReducer';
 import { reducer as formReducer } from 'redux-form';
 
+import listingsReducer from './listingsReducer';
+import sampleReducer from './sampleReducer';
+import searchReducer from './searchReducer';
+import userReducer from './userReducer';
+
 const reducers = combineReducers({
-	sampleReducer,
     listingsReducer,
+	sampleReducer,
+    searchReducer,
     userReducer,
     form: formReducer
 });

@@ -1,47 +1,71 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { makeUppercase, makeLowercase } from '../../redux/actions/sampleActions';
+import { push } from 'react-router-redux';
+
+import styles from '../../styles/styles.css';
+import HomeSearch from '../components/Search/HomeSearch';
+import ViewListingsSearch from '../components/Search/ViewListingsSearch';
+import { search, handleLocationChange } from '../../redux/actions/searchActions';
 
 @connect((store)=>({
-    projectName: store.sampleReducer.name,
-    owners: store.sampleReducer.owners
+    searchArgs: store.form.homeSearch,
+    user: store.userReducer.user,
+    searchState: store.searchReducer
 }))
-class Home extends React.Component {
-    constructor(){
-        super();
-        this.clickNormalButton = this.clickNormalButton.bind(this);
-        this.clickSemanticButton = this.clickSemanticButton.bind(this);
-        this.getProjectName = this.getProjectName.bind(this);
-        this.getOwners = this.getOwners.bind(this);
+class Home extends Component {
+    constructor(props){
+        super(props)
+
+        this.navigateToCreateListing = this.navigateToCreateListing.bind(this);
+        this.handleLocationChange = this.handleLocationChange.bind(this);
+        this.processLocation = this.processLocation.bind(this);
+        this.submitSearch = this.submitSearch.bind(this);
+
     }
-    clickNormalButton(){
-        this.props.dispatch(makeLowercase());
+
+    navigateToCreateListing(user) {
+        return user ? this.props.dispatch(push('/login')):this.props.dispatch(push('/create-listing'));
     }
-    clickSemanticButton(){
-        this.props.dispatch(makeUppercase());
+
+    processLocation(searchArgs) {
+        if(searchArgs === '') return null;
+        const processedArgs = `location=${searchArgs.trim()}`; //TODO PROCESS LOCATION
+        return processedArgs;
     }
-    getProjectName(){
-        return this.props.projectName;
+    submitSearch(event,searchArgs) {
+        if(event.keyCode === 13){
+            const processedArgs = this.processLocation(searchArgs);
+            if(processedArgs === null || processedArgs === '') return;
+            this.props.dispatch(search(processedArgs));
+            return this.props.dispatch(push('/browse-listings'));
+        }
     }
-    getOwners(){
-        return this.props.owners;
+
+    handleLocationChange(val){
+        this.props.dispatch(handleLocationChange(val))
     }
-    /* Create rendering routes here? */
+
     render(){
-        const names = this.getOwners().map((owner, i)=>{
-            return <li key={i}> {owner} </li>
-        });
+         const locationProps = {
+            value: this.props.searchState.location,
+            onChange: (event) => this.handleLocationChange(event),
+            onKeyUp: (event) => this.submitSearch(event, this.props.searchState.location)
+        }
 
         return (
             <div>
-                Hello World!
-                <ul> {names} </ul>
-                <button onClick={this.clickNormalButton}>Normal Button</button>
-                <Button onClick={this.clickSemanticButton}>Semantic Button</Button>
+
+                <HomeSearch
+                    navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
+                    inputProps = {locationProps}
+                />
+
+                {/* INSERT 5 POPULAR LISTINGS HERE */}
             </div>
         )
     }
+
 }
 
 export default Home;

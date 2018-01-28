@@ -27,8 +27,6 @@ export default class ViewListing extends React.Component {
             <div>
                 <Item.Group divided>
                     <Item>
-                          <Item.Image src='/assets/images/wireframe/image.png' />
-
                           <Item.Content>
                               <Item.Header as='a'>{ listing.name }</Item.Header>
                               <Item.Meta>

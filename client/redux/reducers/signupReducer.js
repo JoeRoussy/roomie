@@ -1,3 +1,5 @@
+import { LOCATION_CHANGE } from 'react-router-redux';
+
 const config = {
 
 };
@@ -69,6 +71,20 @@ const signUpReducer = (state = config, actions) => {
                 isFormProcessing: false,
                 errorMessage
             };
+
+            break;
+        }
+        case LOCATION_CHANGE: {
+            const {
+                pathname
+            } = payload;
+
+            if (pathname === '/sign-up') {
+                state = {
+                    ...state,
+                    userType: null
+                };
+            }
 
             break;
         }

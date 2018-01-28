@@ -2,7 +2,7 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 import { required, print, isEmpty } from '../components/custom-utils';
 import { findListings, getUserByEmail } from '../components/data';
-import { insert as insertInDb } from '../components/db/service';
+import { insert as insertInDb, getById } from '../components/db/service';
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendError } from './utils';
@@ -12,13 +12,17 @@ export const getListings = ({
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
     // TODO: Get query parameters out of req.query
-    const locationStr = req.query.location
+
+    const {
+        location = ''
+    } = req.query;
+
     let result;
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: { $where: `this.location.indexOf("${locationStr}") != -1` } // TODO: Make query use the maps
+            query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
         })
     } catch (e) {
         logger.error(e, 'Error finding listings');
@@ -34,7 +38,31 @@ export const getListings = ({
     });
 });
 
-// Creates a new user and logs them in
+export const getListingById = ({
+    listingsCollection = required('listingsCollection'),
+    logger = required('logger', 'You must pass a logger for this function to use'),
+}) => coroutine(function* (req, res) {
+
+    let result;
+
+    try {
+        result = yield getById({
+            collection: listingsCollection,
+            id: req.params.id
+        });
+    } catch (e) {
+        logger.error(e.err, e.msg);
+        return res.status(500).json({
+            error: true,
+            message: `Could not get listing with id ${req.params.id}`
+        });
+    }
+
+    return res.json({
+        listing: result
+    });
+});
+
 export const createUser = ({
     usersCollection = required('usersCollection'),
     logger = required('logger', 'You must pass in a logger for this function to use')

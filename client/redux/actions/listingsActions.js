@@ -6,9 +6,15 @@ import axios from 'axios';
     as appropriate.
 
     So GET_LISTINGS_PENDING will be dispathced after this action is dispatched and then GET_LISTINGS_FULFILLED or GET_LISTINGS_REJECTED
-    will be dispatched once the promise is rejecred or fulfilled
+    will be dispatched once the promise is rejected or fulfilled
 */
+
 export const getListings = () => ({
     type: 'GET_LISTINGS',
     payload: axios.get(`${process.env.API_ROOT}/api/listings`)
+});
+
+export const getListingById = (id) => ({
+    type: 'GET_LISTING_BY_ID',
+    payload: axios.get(`${process.env.API_ROOT}/api/listings/${id}`)
 });

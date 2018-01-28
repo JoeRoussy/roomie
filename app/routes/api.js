@@ -1,7 +1,7 @@
 import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { getListings, createUser } from '../controllers/api';
+import { createUser, getListings, getListingById } from '../controllers/api';
 
 export default ({
     app = required('app'),
@@ -25,7 +25,16 @@ export default ({
         })
     }));
 
-    // Connect the user router to the main router under /users
+    router.get('/listings/:id', getListingById({
+        listingsCollection: db.collection('listings'),
+        logger: getChildLogger({
+            baseLogger,
+            additionalFields: {
+                module: 'api-listings-get-single-listing'
+            }
+        })
+    }));
+
     router.use('/listings', listingsRouter);
 
     // A separate router for users

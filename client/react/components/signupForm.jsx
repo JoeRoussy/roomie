@@ -44,7 +44,7 @@ const validate = (values) => {
 
     if (password && confirmPassword !== password) {
         errors = {
-            confirmPassword: 'Emails must match',
+            confirmPassword: 'Passwords must match',
             ...errors
         };
     }

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Route, Link } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+
 import { history } from '../../../redux/store';
 
 import BrowseListings from '../BrowseListings';
@@ -25,6 +27,7 @@ const App = ({
             <Navbar />
         </header>
         <main style={style}>
+            <ToastContainer />
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />
             <Route exact path="/listings" component={BrowseListings} />

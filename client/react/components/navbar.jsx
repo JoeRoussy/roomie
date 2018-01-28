@@ -26,12 +26,12 @@ const getRightSection = ({
     return [
         {
             iconName: 'signup',
-            text: 'Join',
+            text: 'Register',
             path: '/sign-up'
         },
         {
             iconName: 'signup',
-            text: 'Sign In',
+            text: 'Log In',
             path: '/sign-in'
         }
     ].map((element, i) => (

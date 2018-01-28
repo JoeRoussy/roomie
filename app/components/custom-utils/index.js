@@ -8,15 +8,45 @@ export const required = (param, customMessage) => {
     }
 }
 
-export class RuntimeError extends Error {
-    constructor({ msg, err }) {
-        super(msg);
-        Error.captureStackTrace(this, RuntimeError); // This takes the ctor for this class out of the stack trace
+// Extends error to pass in a custom name and message while retaining the stack trace of the original error
+// Extend this class when making a custom error
+class ExtendedError extends Error {
+    constructor(message) {
+        super(message);
 
-        this.msg = msg;
-        this.err = err;
+        this.name = this.constructor.name;
+        this.message = message;
+
+        Error.captureStackTrace(this, this.constructor);
     }
 }
+
+// We use this class to normalize errors for modules at higher levels of abstractions.
+// If a DB error occurs, we don't want that to just bubble up to a controller. Using this class
+// we can add a message about what is going on at mid levels of abstraction to make error handling
+// easier. This also lets modules at mid levels of abstractino have their own error interface instead of
+// throwing seemingly obscure errors. This also lets us take an error, log something, and rethrow it without
+// losing the stack trace.
+// Exmaple Usage:
+// Given an error in the current scope. Rethrow the same error using:
+//     throw RethrownError(error, 'Something messed up happened but you reading this understands because I am not a wired DB error')
+export class RethrownError extends ExtendedError {
+    constructor(error, message) {
+        super(message);
+
+        if (!error) {
+            throw new Error('RethrownError requires a message and error');
+        }
+
+        this.original = error;
+        const messageLines =  (this.message.match(/\n/g)||[]).length + 1;
+
+        // Remove all but the first line of this new stack and replace it with the old stack
+        // so only the new message appears on top of the entire old stack
+        this.stack = `${this.stack.split('\n').slice(0, messageLines + 1).join('\n')}\n${error.stack}`;
+    }
+}
+
 
 export const print = (obj, message) => {
     if (message) {
@@ -118,4 +148,24 @@ export const getEnvVariable = (key) => {
     }
 
     return value;
+}
+
+// Genertic function to see if instances of various types are empty
+// undefined and null always return true
+// objects with key lengths of 0 return true (this includes arrays)
+// the empty string returns true
+// as a last resort, a boolean coersion of the object is returned
+export const isEmpty = (data) => {
+    if (typeof data === 'undefined') {
+        return true;
+    } else if (data === null) {
+        return true;
+    } else if (typeof data === 'object') {
+        // NOTE: This works for standard objects and arrays
+        return Object.keys(data).length === 0;
+    } else if (typeof data === 'string') {
+        return data.length === 0;
+    } else {
+        return !data;
+    }
 }

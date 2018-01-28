@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { createStore, applyMiddleware } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 import thunk from 'redux-thunk';

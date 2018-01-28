@@ -1,16 +1,17 @@
 import React from 'react';
 import { Route, Link } from 'react-router-dom';
+
 import Navbar from '../components/navbar';
 import Home from './home';
-import SignUp from './signup';
+import SignUp from './SignUp';
+import SignIn from './SignIn';
 import { history } from '../../redux/store';
 
 const style = {
     marginTop: '3em'
 };
 
-// We pass location off to the NavBar so it updates when the location changes
-const app = ({
+const App = ({
 
 }) => (
     <div>
@@ -20,11 +21,12 @@ const app = ({
         <main style={style}>
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />
+            <Route exact path="/sign-in" component={SignIn} />
         </main>
         <footer>
             Copyright © 2018 Roomie
         </footer>
     </div>
-);
+)
 
-export default app;
+export default App;

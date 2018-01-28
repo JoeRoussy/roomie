@@ -51,8 +51,9 @@ const SignInForm = ({
         />
         <Field
             name='password'
+            type='password'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='mail' size='large' /> }}
+            label={{ content: <Icon color='blue' name='lock' size='large' /> }}
             labelPosition='left'
             placeholder='Password'
         />

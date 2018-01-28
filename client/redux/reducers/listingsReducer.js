@@ -17,8 +17,6 @@ const listingReducer = (state = config, actions) => {
                 listings
             }
 
-            console.log('Get listings is fulfilled');
-
             break;
         }
 
@@ -45,8 +43,6 @@ const listingReducer = (state = config, actions) => {
                 ...state,
                 listing
             }
-
-            console.log('Get listing by id is fulfilled');
 
             break;
         }

@@ -6,11 +6,9 @@ import { Button, Card, Icon, Image } from 'semantic-ui-react';
 import { getListings } from '../../redux/actions/listingsActions';
 import ListingCard from '../components/ListingCard';
 
-@connect((store) => {
-	return {
-        listings: store.listingsReducer.listings
-	}
-})
+@connect((store) => ({
+    listings: store.listingsReducer.listings
+}))
 
 export default class Listings extends React.Component {
     constructor() {
@@ -25,12 +23,8 @@ export default class Listings extends React.Component {
         this.props.dispatch(getListings());
     }
 
-    mapListings = (listings) => {
-        // Take all the listings and map them each to a listing card
-        return listings.map((listing, i) => {
-            return <ListingCard key = { i } listing = { listing } id = { i } viewListing = { () => this.viewListing(listing) } />;
-        });
-    }
+    mapListings = (listings) => listings.map((listing, i) =>
+        <ListingCard key = { i } listing = { listing } id = { i } viewListing = { () => this.viewListing(listing) } />)
 
     refreshListings() {
         this.props.dispatch(getListings());

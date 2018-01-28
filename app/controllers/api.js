@@ -13,14 +13,16 @@ export const getListings = ({
 }) => coroutine(function* (req, res) {
     // TODO: Get query parameters out of req.query
 
-    const locationStr = req.query.location ? req.query.location : '';
+    const {
+        location = ''
+    } = req.query;
 
     let result;
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: { $where: `this.location.indexOf("${locationStr}") != -1` } // TODO: Make query use the maps
+            query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
         })
     } catch (e) {
         logger.error(e, 'Error finding listings');
@@ -47,7 +49,7 @@ export const getListingById = ({
         result = yield getById({
             collection: listingsCollection,
             id: req.params.id
-        })
+        });
     } catch (e) {
         logger.error(e.err, e.msg);
         return res.status(500).json({

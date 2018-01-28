@@ -4,11 +4,9 @@ import { Item, Icon, Image, Label } from 'semantic-ui-react';
 
 import { getListingById } from '../../redux/actions/listingsActions';
 
-@connect((store) => {
-	return {
-        listing: store.listingsReducer.listing
-	}
-})
+@connect((store) => ({
+    listing: store.listingsReducer.listing
+}))
 
 export default class ViewListing extends React.Component {
     constructor(props) {

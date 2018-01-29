@@ -18,7 +18,7 @@ const Signup = ({
 
     return (
         <div>
-            <h1>Sign up</h1>
+            <h1>Sign Up</h1>
             {userRedirect}
             <SignUpBody
                 userType={userType}

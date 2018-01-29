@@ -1,11 +1,14 @@
 import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
+import mime from 'mime-types';
+
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail } from '../components/data';
 import { insert as insertInDb, getById, findAndUpdate } from '../components/db/service';
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendError } from './utils';
+import isRealImage from '../components/validate-image';
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
@@ -73,6 +76,11 @@ export const createUser = ({
             email,
             password,
             userType
+        } = {},
+        file: {
+            filename,
+            mimetype,
+            path
         } = {}
     } = req;
 
@@ -82,8 +90,24 @@ export const createUser = ({
         SIGNUP_ERRORS_EXISTING_EMAIL,
         SIGNUP_ERRORS_GENERIC,
         SIGNUP_ERRORS_MISSING_VALUES,
-        SIGNUP_ERRORS_INVALID_VALUES
+        SIGNUP_ERRORS_INVALID_VALUES,
+        UPLOADS_RELATIVE_PATH
     } = process.env;
+
+    if (!UPLOADS_RELATIVE_PATH) {
+        throw new Error('Missing env variable: UPLOADS_RELATIVE_PATH');
+    }
+
+    let imageFields = {};
+
+    if (filename && mimetype && path) {
+        // We have an image upload that we need to include in the saved user
+        // NOTE: Validation middleware has already run by the time we get here so we can assume the image is valid
+
+        imageFields = {
+            profilePictureLink: `${UPLOADS_RELATIVE_PATH}${filename}`
+        };
+    }
 
     if (!name || !email || !password || !userType) {
         logger.warn(req.body, 'Malformed body for user creation');
@@ -145,7 +169,8 @@ export const createUser = ({
                 name,
                 email,
                 password: hashedPassword,
-                isLandlord: userType === process.env.USER_TYPE_LANDLORD
+                isLandlord: userType === process.env.USER_TYPE_LANDLORD,
+                ...imageFields
             },
             returnInsertedDocument: true
         });

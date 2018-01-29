@@ -4,6 +4,11 @@ import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
 import { createUser, editUser } from '../controllers/api';
 import { canModifyUser, isAuthenticated } from '../controllers/utils';
+import {
+    singleFile as parseSingleFileUpload,
+    error as handleImageUploadError,
+    validate as validateImage
+} from '../components/image-upload-middleware';
 
 export default ({
     db = required('db'),
@@ -11,15 +16,27 @@ export default ({
 }) => {
     const userRouter = express.Router();
 
-    userRouter.post('/', createUser({
-        usersCollection: db.collection('users'),
-        logger: getChildLogger({
-            baseLogger,
-            additionalFields: {
-                module: 'api-users-create'
-            }
+    userRouter.post('/', [
+        parseSingleFileUpload('profilePic'),
+        validateImage,
+        createUser({
+            usersCollection: db.collection('users'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-create'
+                }
+            })
+        }),
+        handleImageUploadError({
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-create-image-upload-errors'
+                }
+            })
         })
-    }));
+    ]);
 
     userRouter.put('/:id', [
         isAuthenticated,

@@ -33,8 +33,6 @@ const dbLogger = getChildLogger({
     }
 });
 
-// TODO(Joe): Enviornment variables, app and api routes
-
 // Set app in an IIFE so we can bail using return if things so not initialize properly
 (async () => {
     let db = null;
@@ -67,10 +65,12 @@ const dbLogger = getChildLogger({
     // Now that we know that the db is connected, continue setting up the app
     app.use(cors());
     app.use(express.static('public'));
+    app.use('/assets', express.static('assets'));
     app.use(bodyParser.urlencoded({
         extended: true
     }));
     app.use(bodyParser.json());
+
 
     // Inspects the request header for a JWT and decodes it into req.user (valid JWT not required to get past this middleware)
     app.use(jwtParser({

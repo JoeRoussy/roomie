@@ -35,6 +35,7 @@ export const canModifyUser = (req, res, next) => {
         } = {}
     } = req;
 
+    // NOTE: Both of these ids are actually strings so no use of the equals function for ObjectIDs is needed
     if (id !== currentUserId) {
         return sendError({
             res,

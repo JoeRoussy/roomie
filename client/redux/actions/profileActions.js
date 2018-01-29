@@ -25,4 +25,12 @@ export const submitForm = (formData) => ({
             // We must return the res object so it can be used by other fulfilled handlers (in reducers for example)
             return res;
         })
-})
+});
+
+export const editProfile = () => ({
+    type: 'EDIT_PROFILE_SELECTED'
+});
+
+export const cancelEditProfile = () => ({
+    type: 'EDIT_PROFILE_CANCELLED'
+});

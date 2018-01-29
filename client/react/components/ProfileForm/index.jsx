@@ -34,30 +34,34 @@ const ProfileForm = ({
     valid,
     onSubmit,
     errorMessage,
-    isProcessing
+    isProcessing,
+    onEditCancelClicked
 }) => (
-    <Form onSubmit={onSubmit} error={!!errorMessage}>
-        <Message
-            error
-            header='Error'
-            content={errorMessage}
-        />
-        <Field
-            name='name'
-            component={LabelInputField}
-            label={{ content: <Icon color='blue' name='user' size='large' /> }}
-            labelPosition='left'
-            placeholder='Name'
-        />
-        <Field
-            name='email'
-            component={LabelInputField}
-            label={{ content: <Icon color='blue' name='mail' size='large' /> }}
-            labelPosition='left'
-            placeholder='Email'
-        />
-        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update Profile</Button>
-    </Form>
+    <div id='profileEditFormWrapper'>
+        <Button onClick={onEditCancelClicked}>Back to Profile</Button>
+        <Form id='profileEditForm' onSubmit={onSubmit} error={!!errorMessage}>
+            <Message
+                error
+                header='Error'
+                content={errorMessage}
+            />
+            <Field
+                name='name'
+                component={LabelInputField}
+                label={{ content: <Icon color='blue' name='user' size='large' /> }}
+                labelPosition='left'
+                placeholder='Name'
+            />
+            <Field
+                name='email'
+                component={LabelInputField}
+                label={{ content: <Icon color='blue' name='mail' size='large' /> }}
+                labelPosition='left'
+                placeholder='Email'
+            />
+            <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update Profile</Button>
+        </Form>
+    </div>
 );
 
 export default reduxForm({

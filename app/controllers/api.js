@@ -221,7 +221,7 @@ export const editUser = ({
         }
     }
 
-    // Make sure the updates does not contain any null values
+    // Make sure the update does not contain any null values
     let update = {};
     update = extendIfPopulated(update, 'name', name);
     update = extendIfPopulated(update, 'email', email);
@@ -245,11 +245,10 @@ export const editUser = ({
         });
     }
 
-    // Now that the value of the user has been changes, the front end needs a new token that reflects these changes
+    // Now that the value of the user has been changed, the front end needs a new token that reflects these changes
     const transformedNewUser = transformUserForOutput(newUser);
     const token = jwt.sign(transformedNewUser, process.env.JWT_SECRET);
 
-    // TODO: The user will also need a new token based on the changes made to the user
     return res.json({
         user: transformedNewUser,
         token

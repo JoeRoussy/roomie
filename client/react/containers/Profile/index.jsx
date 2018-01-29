@@ -4,28 +4,40 @@ import { Redirect } from 'react-router';
 import { Container } from 'semantic-ui-react';
 
 import ProfileForm from '../../components/ProfileForm';
-import { submitForm } from '../../../redux/actions/profileActions';
+import ProfileDisplay from '../../components/ProfileDisplay';
+import { submitForm, editProfile, cancelEditProfile } from '../../../redux/actions/profileActions';
 
+import './styles.css';
 
 const Profile = ({
     formData,
     onSubmit,
     user,
     isFormProcessing,
-    errorMessage
+    errorMessage,
+    isEditing,
+    onEditClicked,
+    onEditCancelClicked
 }) => {
     const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
+
+    const bodySection = isEditing ? (
+        <ProfileForm
+            onSubmit={onSubmit(formData)}
+            onEditCancelClicked={onEditCancelClicked}
+            initialValues={{ ...user }}
+            isProcessing={isFormProcessing}
+            errorMessage={errorMessage}
+        />
+    ) : (
+        <ProfileDisplay user={user} onEditClicked={onEditClicked} />
+    )
 
     return (
         <Container>
             <h1>Profile</h1>
             {redirectSection}
-            <ProfileForm
-                onSubmit={onSubmit(formData)}
-                initialValues={{ ...user }}
-                isProcessing={isFormProcessing}
-                errorMessage={errorMessage}
-            />
+            {bodySection}
         </Container>
     );
 };
@@ -41,17 +53,21 @@ const mapStateToProps = ({
     } = {},
     profileReducer: {
         isFormProcessing,
-        errorMessage
+        errorMessage,
+        isEditing
     } = {}
 }) => ({
     user,
     formData: values,
     isFormProcessing,
-    errorMessage
+    errorMessage,
+    isEditing
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onSubmit: (formData) => () => dispatch(submitForm(formData))
+    onSubmit: (formData) => () => dispatch(submitForm(formData)),
+    onEditClicked: () => dispatch(editProfile()),
+    onEditCancelClicked: () => dispatch(cancelEditProfile())
 });
 
 

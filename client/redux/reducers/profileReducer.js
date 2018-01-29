@@ -1,5 +1,5 @@
 const config = {
-
+    isEditing: false
 };
 
 const profileReducer = (state = config, actions) => {
@@ -9,6 +9,22 @@ const profileReducer = (state = config, actions) => {
     } = actions;
 
     switch (type) {
+        case 'EDIT_PROFILE_SELECTED': {
+            state = {
+                ...state,
+                isEditing: true
+            }
+
+            break;
+        }
+        case 'EDIT_PROFILE_CANCELLED': {
+            state = {
+                ...state,
+                isEditing: false
+            }
+
+            break;
+        }
         case 'PROFILE_FORM_SUBMIT_PENDING': {
             state = {
                 ...state,
@@ -21,7 +37,8 @@ const profileReducer = (state = config, actions) => {
         case 'PROFILE_FORM_SUBMIT_FULFILLED': {
             state = {
                 ...state,
-                isFormProcessing: false
+                isFormProcessing: false,
+                isEditing: false
             };
 
             break;
@@ -51,6 +68,7 @@ const profileReducer = (state = config, actions) => {
             state = {
                 ...state,
                 isFormProcessing: false,
+                isEditing: false,
                 errorMessage
             };
 

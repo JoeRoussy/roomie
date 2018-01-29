@@ -10,6 +10,7 @@ import searchReducer from './searchReducer';
 import userReducer from './userReducer';
 import signUpReducer from './signUpReducer';
 import signInReducer from './signInReducer';
+import profileReducer from './profileReducer';
 
 const reducers = combineReducers({
     listingsReducer,
@@ -18,7 +19,8 @@ const reducers = combineReducers({
     userReducer,
     form: formReducer,
     signUpReducer,
-    signInReducer
+    signInReducer,
+    profileReducer
 });
 
 export default reducers;

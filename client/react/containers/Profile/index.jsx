@@ -4,12 +4,15 @@ import { Redirect } from 'react-router';
 import { Container } from 'semantic-ui-react';
 
 import ProfileForm from '../../components/ProfileForm';
+import { submitForm } from '../../../redux/actions/profileActions';
 
 
 const Profile = ({
     formData,
     onSubmit,
-    user
+    user,
+    isFormProcessing,
+    errorMessage
 }) => {
     const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
@@ -20,6 +23,8 @@ const Profile = ({
             <ProfileForm
                 onSubmit={onSubmit(formData)}
                 initialValues={{ ...user }}
+                isProcessing={isFormProcessing}
+                errorMessage={errorMessage}
             />
         </Container>
     );
@@ -33,14 +38,20 @@ const mapStateToProps = ({
         profile: {
             values
         } = {}
+    } = {},
+    profileReducer: {
+        isFormProcessing,
+        errorMessage
     } = {}
 }) => ({
     user,
-    formData: values
+    formData: values,
+    isFormProcessing,
+    errorMessage
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onSubmit: (formData) => () => console.log(formData)
+    onSubmit: (formData) => () => dispatch(submitForm(formData))
 });
 
 

@@ -183,13 +183,53 @@ export const editUser = ({
         email
     } = req.body;
 
+    const {
+        PROFILE_EDIT_ERRORS_GENERIC,
+        PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL
+    } = process.env;
+
+    // Make sure the user is not trying to change their email to one that already exists
+    if (email) {
+        let existingUser;
+
+        try {
+            existingUser = yield getUserByEmail({
+                email,
+                usersCollection
+            });
+        } catch (e) {
+            logger.error(e, 'Error getting user by email for duplicate email check');
+
+            return sendError({
+                res,
+                status: 500,
+                message: 'Could not update user',
+                errorKey: PROFILE_EDIT_ERRORS_GENERIC
+            });
+        }
+
+        // Make sure there is not an existing user, and if there is, make sure it is not the current user
+        if (existingUser && !existingUser._id.equals(req.user._id)) {
+            logger.info({ currentUser: req.user, existingUser: existingUser }, 'Attempt to edit email to another email that already exists');
+
+            return sendError({
+                res,
+                status: 400,
+                message: 'A user already exists with that email',
+                errorKey: PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL
+            });
+        }
+    }
+
     // Make sure the updates does not contain any null values
     let update = {};
     update = extendIfPopulated(update, 'name', name);
     update = extendIfPopulated(update, 'email', email);
 
+    let newUser;
+
     try {
-        yield findAndUpdate({
+        newUser = yield findAndUpdate({
             collection: usersCollection,
             query: { _id: id },
             update
@@ -201,11 +241,19 @@ export const editUser = ({
             res,
             status: 500,
             message: 'Could not update user',
-            errorKey: 'TODO.....'
+            errorKey: PROFILE_EDIT_ERRORS_GENERIC
         });
     }
 
-    return res.json({});
+    // Now that the value of the user has been changes, the front end needs a new token that reflects these changes
+    const transformedNewUser = transformUserForOutput(newUser);
+    const token = jwt.sign(transformedNewUser, process.env.JWT_SECRET);
+
+    // TODO: The user will also need a new token based on the changes made to the user
+    return res.json({
+        user: transformedNewUser,
+        token
+    });
 });
 
 // TODO: More api route handlers here

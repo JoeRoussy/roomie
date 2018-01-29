@@ -101,6 +101,7 @@ export const findAndUpdate = async ({
     }
 
     if (query._id) {
+        query._id = convertToObjectId(query._id);
         updateResult = await collection.findOneAndUpdate(query, updateObj);
     } else {
         updateResult = await collection.updateMany(query, updateObj);

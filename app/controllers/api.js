@@ -1,8 +1,8 @@
 import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
-import { required, print, isEmpty } from '../components/custom-utils';
+import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail } from '../components/data';
-import { insert as insertInDb, getById } from '../components/db/service';
+import { insert as insertInDb, getById, findAndUpdate } from '../components/db/service';
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendError } from './utils';
@@ -166,6 +166,46 @@ export const createUser = ({
     return res.json({
         token
     });
+});
+
+// Allows us to edit attributes of a user other than profile picture, createdAt, and password
+export const editUser = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You need to pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        id
+    } = req.params;
+
+    // We can only update the name and email using this route
+    const {
+        name,
+        email
+    } = req.body;
+
+    // Make sure the updates does not contain any null values
+    let update = {};
+    update = extendIfPopulated(update, 'name', name);
+    update = extendIfPopulated(update, 'email', email);
+
+    try {
+        yield findAndUpdate({
+            collection: usersCollection,
+            query: { _id: id },
+            update
+        });
+    } catch (e) {
+        logger.error(e, `Error updating user with id: ${id}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not update user',
+            errorKey: 'TODO.....'
+        });
+    }
+
+    return res.json({});
 });
 
 // TODO: More api route handlers here

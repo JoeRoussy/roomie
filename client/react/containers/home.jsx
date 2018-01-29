@@ -21,7 +21,7 @@ class Home extends Component {
         this.handleLocationChange = this.handleLocationChange.bind(this);
         this.processLocation = this.processLocation.bind(this);
         this.submitSearch = this.submitSearch.bind(this);
-        
+
     }
 
     navigateToCreateListing(user) {
@@ -38,7 +38,7 @@ class Home extends Component {
             const processedArgs = this.processLocation(searchArgs);
             if(processedArgs === null || processedArgs === '') return;
             this.props.dispatch(search(processedArgs));
-            return this.props.dispatch(push('/browse-listings'));  
+            return this.props.dispatch(push('/browse-listings'));
         }
     }
 
@@ -55,8 +55,8 @@ class Home extends Component {
 
         return (
             <div>
-                
-                <HomeSearch 
+
+                <HomeSearch
                     navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
                     inputProps = {locationProps}
                 />

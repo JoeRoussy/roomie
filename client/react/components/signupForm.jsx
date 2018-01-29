@@ -1,13 +1,71 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Form, Icon, Button } from 'semantic-ui-react';
+import { Form, Icon, Button, Message } from 'semantic-ui-react';
 import { LabelInputField } from 'react-semantic-redux-form';
 
+const validate = (values) => {
+    let errors = {};
+
+    const {
+        name,
+        email,
+        confirmEmail,
+        password,
+        confirmPassword
+    } = values;
+
+    if (!name) {
+        errors = {
+            name: 'Please enter your name',
+            ...errors
+        };
+    }
+
+    if (!email) {
+        errors = {
+            email: 'Please enter your email',
+            ...errors
+        };
+    }
+
+    if (!password) {
+        errors = {
+            password: 'Please choose a password',
+            ...errors
+        };
+    }
+
+    if (email && confirmEmail !== email) {
+        errors = {
+            confirmEmail: 'Emails must match',
+            ...errors
+        };
+    }
+
+    if (password && confirmPassword !== password) {
+        errors = {
+            confirmPassword: 'Passwords must match',
+            ...errors
+        };
+    }
+
+    return errors;
+}
+
+// NOTE: Valid is a prop passed in by redux-form
 const SignUpForm = ({
     onSubmit,
-    validate = () => ({}) // Return no errors by default
+    isProcessing,
+    valid,
+    errorMessage,
+    className
 }) => (
-    <Form onSubmit={onSubmit}>
+    <Form className={className} onSubmit={onSubmit} error={!!errorMessage}>
+        <Message
+            error
+            header='Error'
+            content={errorMessage}
+        />
         <Field
             name='name'
             component={LabelInputField}
@@ -18,20 +76,38 @@ const SignUpForm = ({
         <Field
             name='email'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='user' size='large' /> }}
+            label={{ content: <Icon color='blue' name='mail' size='large' /> }}
             labelPosition='left'
             placeholder='Email'
         />
         <Field
+            name='confirmEmail'
+            component={LabelInputField}
+            label={{ content: <Icon color='blue' name='mail' size='large' /> }}
+            labelPosition='left'
+            placeholder='Confirm Email'
+        />
+        <Field
             name='password'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='user' size='large' /> }}
+            label={{ content: <Icon color='blue' name='lock' size='large' /> }}
             labelPosition='left'
             placeholder='Password'
+            type='password'
         />
+        <Field
+            name='confirmPassword'
+            component={LabelInputField}
+            label={{ content: <Icon color='blue' name='lock' size='large' /> }}
+            labelPosition='left'
+            placeholder='Confirm Password'
+            type='password'
+        />
+        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Register</Button>
     </Form>
-);
+)
 
 export default reduxForm({
-    form: 'signUp'
+    form: 'signUp',
+    validate
 })(SignUpForm);

@@ -1,6 +1,7 @@
 /* This module just collects all the reducers in our app and combines them */
 
 import { combineReducers } from 'redux';
+
 import { reducer as formReducer } from 'redux-form';
 
 import listingsReducer from './listingsReducer';
@@ -8,6 +9,8 @@ import sampleReducer from './sampleReducer';
 import searchReducer from './searchReducer';
 import userReducer from './userReducer';
 import ChatReducer from './chatReducer';
+import signUpReducer from './signUpReducer';
+import signInReducer from './signInReducer';
 
 const reducers = combineReducers({
     listingsReducer,
@@ -15,7 +18,9 @@ const reducers = combineReducers({
     searchReducer,
     userReducer,
     ChatReducer,
-    form: formReducer
+    form: formReducer,
+    signUpReducer,
+    signInReducer
 });
 
 export default reducers;

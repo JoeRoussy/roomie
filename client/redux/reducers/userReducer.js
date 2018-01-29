@@ -1,12 +1,23 @@
 const config = {
-    // user: {
-    //     name: 'Joe',
-    //     email: 'joeroussy@gmail.com'
-    // }
+
 };
 
 const userReducer = (state = config, actions) => {
+    const {
+        type,
+        payload
+    } = actions;
 
+    switch (type) {
+        case 'SET_CURRENT_USER': {
+            state = {
+                ...state,
+                user: payload.user
+            };
+
+            break;
+        }
+    }
 
     return state;
 }

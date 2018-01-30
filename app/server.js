@@ -71,7 +71,7 @@ const dbLogger = getChildLogger({
     // Now that we know that the db is connected, continue setting up the app
     app.use(cors());
     app.use(express.static('public'));
-    app.use('/assets', express.static('assets'));
+    app.use('/assets', express.static('app/assets'));
     app.use(bodyParser.urlencoded({
         extended: true
     }));

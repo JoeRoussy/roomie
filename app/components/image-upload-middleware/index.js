@@ -102,7 +102,7 @@ export const error = ({
 
     if (!key || !message) {
         // Err is a string in this case
-        logger.warn(err)
+        logger.warn(err,  'Image uplaod middleware error');
 
         return res.status(500).json({
             error: true,

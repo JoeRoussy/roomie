@@ -6,6 +6,7 @@ import cors from 'cors';
 import jwtParser from 'express-jwt'
 
 import { getLogger, getChildLogger } from './components/log-factory';
+import requiredFolderConfig from './components/required-folder-config';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
 import apiRouteConfig from './routes/api';
@@ -13,7 +14,12 @@ import authRouteConfig from './routes/authentication';
 
 const app = express();
 
+console.log(process.env.REQUIRED_FOLDERS);
+
 enviornmentVariableConfig();
+requiredFolderConfig([
+    `${process.cwd()}${process.env.UPLOADS_RELATIVE_FILE_PATH}`
+]);
 
 const {
     LOG_ROTATING_FILE,

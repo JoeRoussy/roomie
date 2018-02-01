@@ -75,7 +75,6 @@ const dbLogger = getChildLogger({
     }));
     app.use(bodyParser.json());
 
-
     // Inspects the request header for a JWT and decodes it into req.user (valid JWT not required to get past this middleware)
     app.use(jwtParser({
         secret: process.env.JWT_SECRET,

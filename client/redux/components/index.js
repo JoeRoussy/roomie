@@ -9,7 +9,10 @@ import { setJwt } from '../../components';
 import { setCurrentUser } from '../actions/userActions';
 
 // Since our workflow is the same for handling login and signup responses, we pulled this functionality out and abstracted out
-// the actual requests
+// the actual requests.
+// Here we need to dispatch our own actions based on promise outcome becuase we need to mutate local storage
+// if we get a token back. For consistencty, the fulfilled and rejected actions are still dispatched as the promise middleware
+// would have done.
 export const handleAuthenticationRequest = ({
     promise,
     submitActionName,

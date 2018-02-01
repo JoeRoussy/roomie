@@ -92,7 +92,7 @@ const mapDispatchToProps = (dispatch) => ({
     onPictureEditClicked: () => dispatch(editProfilePicture()),
     onCancelPictureEditClicked: () => {
         // When we cancel editting the profile picutre, we want to dispatch an associated aciton and also tell
-        // redux for to set the value of the profile picture field to null so it is not changed in case the user submits
+        // redux form to set the value of the profile picture field to null so it is not changed in case the user submits
         // the form.
         dispatch(cancelEditProfilePicture());
         dispatch(change('profile', 'profilePic', null));

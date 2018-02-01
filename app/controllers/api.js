@@ -1,6 +1,5 @@
 import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
-import mime from 'mime-types';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail } from '../components/data';
@@ -8,7 +7,6 @@ import { insert as insertInDb, getById, findAndUpdate } from '../components/db/s
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendError } from './utils';
-import isRealImage from '../components/validate-image';
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
@@ -93,10 +91,6 @@ export const createUser = ({
         SIGNUP_ERRORS_INVALID_VALUES,
         UPLOADS_RELATIVE_PATH
     } = process.env;
-
-    if (!UPLOADS_RELATIVE_PATH) {
-        throw new Error('Missing env variable: UPLOADS_RELATIVE_PATH');
-    }
 
     let imageFields = {};
 

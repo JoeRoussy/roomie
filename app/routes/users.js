@@ -51,6 +51,14 @@ export default ({
                     module: 'api-users-edit'
                 }
             })
+        }),
+        handleImageUploadError({
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-edit-image-upload-errors'
+                }
+            })
         })
     ]);
 

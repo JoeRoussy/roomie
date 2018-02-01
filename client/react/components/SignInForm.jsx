@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form';
 import { Form, Icon, Button, Input, Message } from 'semantic-ui-react';
 import { LabelInputField } from 'react-semantic-redux-form';
 
-import { email as isEmail, password as isPassword } from '../../../common/validation';
+import { isEmail, isPassword } from '../../../common/validation';
 
 
 const validate = (values) => {

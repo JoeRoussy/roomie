@@ -9,7 +9,7 @@ export const isText = (value) => {
     return !!value;
 }
 
-export const email = (value) => {
+export const isEmail = (value) => {
     if (!isText(value)) {
         return false;
     }
@@ -19,7 +19,7 @@ export const email = (value) => {
     return regex.test(value);
 }
 
-export const password = (value, checkLength) => {
+export const isPassword = (value, checkLength) => {
     if (!isText(value)) {
         return false;
     }

@@ -3,6 +3,8 @@ import { Field, reduxForm } from 'redux-form';
 import { Form, Icon, Button, Message } from 'semantic-ui-react';
 import { LabelInputField, UploadField } from 'react-semantic-redux-form';
 
+import FileInput from './FileInput';
+
 const validate = (values) => {
     let errors = {};
 
@@ -105,8 +107,10 @@ const SignUpForm = ({
         />
         <Field
             name='profilePic'
-            component={UploadField}
+            component={FileInput}
             label='Upload a profile picture'
+            accept='image/x-png,image/jpeg'
+            iconName='image'
         />
         <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Register</Button>
     </Form>

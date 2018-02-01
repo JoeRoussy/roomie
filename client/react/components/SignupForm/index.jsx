@@ -3,7 +3,9 @@ import { Field, reduxForm } from 'redux-form';
 import { Form, Icon, Button, Message } from 'semantic-ui-react';
 import { LabelInputField, UploadField } from 'react-semantic-redux-form';
 
-import FileInput from './FileInput';
+import FileInput from '../FileInput';
+
+import './styles.css';
 
 const validate = (values) => {
     let errors = {};

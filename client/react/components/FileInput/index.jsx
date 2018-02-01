@@ -40,7 +40,7 @@ const FileInput = ({
     const adaptFileEventToValue = delegate => e => delegate(e.target.files)
 
     return (
-        <div className='fileInputWrapper'>
+        <div className='field fileInputWrapper'>
             <label>{props.label}</label>
             <div className="fileInputVisibleElementWrapper" onClick={onVisibleElementClicked}>
                 <input className='fileInputVisibleElement' type='text' readOnly value={fileInputValue ? fileInputValue[0].name : 'Choose a file'} />

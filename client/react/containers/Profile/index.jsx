@@ -31,6 +31,11 @@ const Profile = ({
 }) => {
     const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
+    // Defualt assignment is so app does not error out when user disappears from state (before the redirect happens)
+    const {
+        profilePictureLink = ''
+    } = user || {};
+
     const bodySection = isEditing ? (
         <ProfileForm
             onSubmit={onSubmit(formData)}
@@ -38,7 +43,7 @@ const Profile = ({
             initialValues={{ ...user }}
             isProcessing={isFormProcessing}
             errorMessage={errorMessage}
-            profilePictureLink={user.profilePictureLink}
+            profilePictureLink={profilePictureLink}
             onPictureEditClicked={onPictureEditClicked}
             onCancelPictureEditClicked={onCancelPictureEditClicked}
             isEditingPicture={isEditingPicture}

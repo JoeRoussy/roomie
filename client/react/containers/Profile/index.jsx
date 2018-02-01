@@ -2,10 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Container } from 'semantic-ui-react';
+import { change } from 'redux-form';
 
 import ProfileForm from '../../components/ProfileForm';
 import ProfileDisplay from '../../components/ProfileDisplay';
-import { submitForm, editProfile, cancelEditProfile } from '../../../redux/actions/profileActions';
+import {
+    submitForm,
+    editProfile,
+    cancelEditProfile,
+    editProfilePicture,
+    cancelEditProfilePicture
+} from '../../../redux/actions/profileActions';
 
 import './styles.css';
 
@@ -17,7 +24,10 @@ const Profile = ({
     errorMessage,
     isEditing,
     onEditClicked,
-    onEditCancelClicked
+    onEditCancelClicked,
+    onPictureEditClicked,
+    onCancelPictureEditClicked,
+    isEditingPicture
 }) => {
     const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
@@ -28,6 +38,10 @@ const Profile = ({
             initialValues={{ ...user }}
             isProcessing={isFormProcessing}
             errorMessage={errorMessage}
+            profilePictureLink={user.profilePictureLink}
+            onPictureEditClicked={onPictureEditClicked}
+            onCancelPictureEditClicked={onCancelPictureEditClicked}
+            isEditingPicture={isEditingPicture}
         />
     ) : (
         <ProfileDisplay user={user} onEditClicked={onEditClicked} />
@@ -54,20 +68,30 @@ const mapStateToProps = ({
     profileReducer: {
         isFormProcessing,
         errorMessage,
-        isEditing
+        isEditing,
+        isEditingPicture
     } = {}
 }) => ({
     user,
     formData: values,
     isFormProcessing,
     errorMessage,
-    isEditing
+    isEditing,
+    isEditingPicture
 });
 
 const mapDispatchToProps = (dispatch) => ({
     onSubmit: (formData) => () => dispatch(submitForm(formData)),
     onEditClicked: () => dispatch(editProfile()),
-    onEditCancelClicked: () => dispatch(cancelEditProfile())
+    onEditCancelClicked: () => dispatch(cancelEditProfile()),
+    onPictureEditClicked: () => dispatch(editProfilePicture()),
+    onCancelPictureEditClicked: () => {
+        // When we cancel editting the profile picutre, we want to dispatch an associated aciton and also tell
+        // redux for to set the value of the profile picture field to null so it is not changed in case the user submits
+        // the form.
+        dispatch(cancelEditProfilePicture());
+        dispatch(change('profile', 'profilePic', null));
+    }
 });
 
 

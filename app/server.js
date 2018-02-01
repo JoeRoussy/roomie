@@ -14,8 +14,6 @@ import authRouteConfig from './routes/authentication';
 
 const app = express();
 
-console.log(process.env.REQUIRED_FOLDERS);
-
 enviornmentVariableConfig();
 requiredFolderConfig([
     `${process.cwd()}${process.env.UPLOADS_RELATIVE_FILE_PATH}`

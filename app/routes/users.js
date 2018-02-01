@@ -41,6 +41,8 @@ export default ({
     userRouter.put('/:id', [
         isAuthenticated,
         canModifyUser,
+        parseSingleFileUpload('profilePic'),
+        validateImage,
         editUser({
             usersCollection: db.collection('users'),
             logger: getChildLogger({

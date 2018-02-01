@@ -2,16 +2,19 @@
     This is a collection of useful functions for usage relating to redux
 */
 
+import jwtDecode from 'jwt-decode';
+import { toast } from 'react-toastify';
+
 import { setJwt } from '../../components';
 import { setCurrentUser } from '../actions/userActions';
-import jwtDecode from 'jwt-decode';
 
 // Since our workflow is the same for handling login and signup responses, we pulled this functionality out and abstracted out
 // the actual requests
 export const handleAuthenticationRequest = ({
     promise,
     submitActionName,
-    dispatch
+    dispatch,
+    successToast
 }) => {
     dispatch({
         type: submitActionName
@@ -24,6 +27,12 @@ export const handleAuthenticationRequest = ({
                     token
                 } = {}
             } = res;
+
+            if (successToast) {
+                toast.success(successToast, {
+                    autoClose: false
+                });
+            }
 
             setJwt(token);
 
@@ -39,4 +48,20 @@ export const handleAuthenticationRequest = ({
                 payload: e
             });
         });
+}
+
+// Takes formData as json and keys containing image data and builds form submission data for it
+export const buildFormSubmissionData = (formData, imageFileNames) => {
+    const submissionData = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+        if (imageFileNames.includes(key) && formData[key]) {
+            // Only append this if the form data is truthy. This lets us set file inputs to null if we want
+            submissionData.append('profilePic', formData[key][0]);
+        } else {
+            submissionData.append(key, formData[key]);
+        }
+    });
+
+    return submissionData;
 }

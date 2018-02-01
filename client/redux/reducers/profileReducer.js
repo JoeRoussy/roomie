@@ -25,6 +25,22 @@ const profileReducer = (state = config, actions) => {
 
             break;
         }
+        case 'EDIT_PROFILE_PICTURE_SELECTED': {
+            state = {
+                ...state,
+                isEditingPicture: true
+            }
+
+            break;
+        }
+        case 'EDIT_PROFILE_PICTURE_CANCELLED': {
+            state = {
+                ...state,
+                isEditingPicture: false
+            }
+
+            break;
+        }
         case 'PROFILE_FORM_SUBMIT_PENDING': {
             state = {
                 ...state,

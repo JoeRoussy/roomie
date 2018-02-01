@@ -204,13 +204,21 @@ export const editUser = ({
 
     // We can only update the name and email using this route
     const {
-        name,
-        email
-    } = req.body;
+        body: {
+            name,
+            email
+        } = {},
+        file: {
+            filename,
+            mimetype,
+            path
+        } = {}
+    } = req;
 
     const {
         PROFILE_EDIT_ERRORS_GENERIC,
-        PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL
+        PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL,
+        UPLOADS_RELATIVE_PATH
     } = process.env;
 
     // Make sure the user is not trying to change their email to one that already exists
@@ -246,10 +254,18 @@ export const editUser = ({
         }
     }
 
+    let profilePictureLink;
+
+    if (filename && mimetype && path) {
+        // User has updated their profile image
+        profilePictureLink = `${UPLOADS_RELATIVE_PATH}${filename}`;
+    }
+
     // Make sure the update does not contain any null values
     let update = {};
     update = extendIfPopulated(update, 'name', name);
     update = extendIfPopulated(update, 'email', email);
+    update = extendIfPopulated(update, 'profilePictureLink', profilePictureLink);
 
     let newUser;
 

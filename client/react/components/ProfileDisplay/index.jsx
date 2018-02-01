@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, Image, Button } from 'semantic-ui-react';
+import moment from 'moment';
 
 const ProfileDisplay = ({
     user,
@@ -12,17 +13,17 @@ const ProfileDisplay = ({
 
     return (
         <div id='profileDisplayWrapper'>
-            <Grid id='prodileDisplayGrid' columns={2}>
+            <Grid id='prodileDisplayGrid' columns={2} centered>
                 <Grid.Column>
-                    <Image src={`${process.env.ASSETS_ROOT}${user.profilePictureLink}`} />
+                    <Image className='profilePicture' src={`${process.env.ASSETS_ROOT}${user.profilePictureLink}`} />
                 </Grid.Column>
                 <Grid.Column>
                     <h2>{user.name}</h2>
                     <p id='profileEmail'>{user.email}</p>
-                    <p id='profileJoined'>{user.createdAt}</p>
+                    <p id='profileJoined'>Joined: {moment(user.createdAt).format('MMMM Do YYYY')}</p>
+                    <Button id="editProfileButton" onClick={onEditClicked}>Edit Profile</Button>
                 </Grid.Column>
             </Grid>
-            <Button onClick={onEditClicked}>Edit Profile</Button>
         </div>
     );
 }

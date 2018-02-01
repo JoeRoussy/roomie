@@ -107,7 +107,6 @@ const SignUpForm = ({
             name='profilePic'
             component={UploadField}
             label='Upload a profile picture'
-            placeholder='???What do I look like???'
         />
         <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Register</Button>
     </Form>

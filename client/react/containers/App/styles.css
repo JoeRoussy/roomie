@@ -7,3 +7,7 @@ main {
 h1 {
     text-align: center;
 }
+
+.ui.label>.icon {
+    margin: auto;
+}

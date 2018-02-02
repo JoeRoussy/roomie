@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Container,Icon, Menu} from 'semantic-ui-react';
 
-import './styles.css';
-
 const listChannels = ({
     channels,
     changeChannel,

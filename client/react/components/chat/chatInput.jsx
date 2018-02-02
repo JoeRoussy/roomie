@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import { Input,Container} from 'semantic-ui-react'
 
-import './styles.css';
-
 const chatInput = ({
     onChange,
     onKeyUp,

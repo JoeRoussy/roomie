@@ -55,26 +55,41 @@ const ChatReducer = (state = config, actions) => {
             break;
         }
         case 'SET_ACTIVE_CHANNEL':{
-            state = {...state,activeChannel: actions.payload.channel.name}
+            state = {
+                ...state,
+                activeChannel: actions.payload.channel.name
+            }
             break;
         }
         case 'LOAD_ACTIVE_CHANNEL':{
             //load test chat data
             switch (state.activeChannel){
                 case 'Channel 1':{
-                    state = {...state, chatLog: Channel1Chat};
+                    state = {
+                        ...state,
+                        chatLog: Channel1Chat
+                    };
                     break;
                 }
                 case 'Second Channel':{
-                    state = {...state, chatLog: SecondChannelChat};
+                    state = {
+                        ...state,
+                        chatLog: SecondChannelChat
+                    };
                     break;
                 }
                 case 'Another Channel':{
-                    state = {...state, chatLog: AnotherChannelChat};
+                    state = {
+                        ...state,
+                        chatLog: AnotherChannelChat
+                    };
                     break;
                 }
                 default:{
-                    state = {...state, chatlog:[]};
+                    state = {
+                        ...state,
+                        chatlog:[]
+                    };
                     break;
                 }
             }

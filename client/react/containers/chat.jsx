@@ -10,6 +10,8 @@ import ExtraInfoBar from '../components/chat/ExtraInfoBar'
 
 import { getChannels,loadActiveChannel,setActiveChannel,modifyPendingMessage } from '../../redux/actions/chatActions';
 
+import '../components/chat/styles.css';
+
 @connect((store)=>({
     channels: store.ChatReducer.channels,
     activeChannel: store.ChatReducer.activeChannel,
@@ -69,10 +71,10 @@ class Chat extends React.Component{
         return(
             <div>
                 <Grid>
-                    <Grid.Column width={3}>
+                    <Grid.Column width={2}>
                         <ChannelBar channels={this.getChannels()} changeChannel={this.changeChannel} activeChannel={this.getActiveChannel()}/>
                     </Grid.Column>
-                    <Grid.Column width={10}>
+                    <Grid.Column width={11}>
                         <ChatView chatLog={this.getChatLog()}/>
                         <Divider horizontal></Divider>
                         <ChatInput onChange={this.handleMessageChange} onKeyUp={this.checkForEnter} text={this.getCurrentPendingMessage()}/>

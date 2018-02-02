@@ -3,12 +3,9 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
-
-import './styles.css';
-
 const ListComments = ({
     chatLog
-}) => {
+    }) => {
         return chatLog.map((message,i) => (
         <Comment key= {i}>
             <Comment.Content>

@@ -13,6 +13,7 @@ import { search, handleLocationChange } from '../../redux/actions/searchActions'
     user: store.userReducer.user,
     searchState: store.searchReducer
 }))
+
 class Home extends Component {
     constructor(props){
         super(props)

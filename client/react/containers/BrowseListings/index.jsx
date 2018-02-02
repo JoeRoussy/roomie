@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Button, Card, Icon, Image } from 'semantic-ui-react';
 
-import { getListings } from '../../redux/actions/listingsActions';
-import ListingCard from '../components/ListingCard';
+import { getListings } from '../../../redux/actions/listingsActions';
+import ListingCard from '../../components/ListingCard';
 
 @connect((store) => ({
     listings: store.listingsReducer.listings

@@ -1,7 +1,7 @@
 import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { createUser, getListings, getListingById } from '../controllers/api';
+import { createUser, createListing,getListings, getListingById } from '../controllers/api';
 
 export default ({
     app = required('app'),
@@ -31,6 +31,16 @@ export default ({
             baseLogger,
             additionalFields: {
                 module: 'api-listings-get-single-listing'
+            }
+        })
+    }));
+
+    router.post('/listings', createListing({
+        listingsCollection: db.collection('listings'),
+        logger: getChildLogger({
+            baseLogger,
+            additionalFields: {
+                module: 'api-listings-create-listing'
             }
         })
     }));

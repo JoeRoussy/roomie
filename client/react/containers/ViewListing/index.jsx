@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { Item, Icon, Image, Label } from 'semantic-ui-react';
+import { Button, Item, Icon, Image, Label } from 'semantic-ui-react';
 
-import { getListingById } from '../../redux/actions/listingsActions';
+import { getListingById } from '../../../redux/actions/listingsActions';
 
 @connect((store) => ({
-    listing: store.listingsReducer.listing
+    listing: store.listingsReducer.listing,
+    user: store.userReducer.user
 }))
 
 export default class ViewListing extends React.Component {
@@ -13,14 +14,26 @@ export default class ViewListing extends React.Component {
         super(props);
 
         this.listingId = this.props.match.params.id;
+        this.editListing = this.editListing.bind(this);
     }
 
     componentWillMount() {
         this.props.dispatch(getListingById(this.listingId));
     }
 
+    editListing() {
+        // TODO: Implement edit listing. This method will route to the manage listings page.
+    }
+
     render() {
-        const { listing } = this.props;
+        const { listing, user } = this.props;
+        let editButton = '';
+
+        if (user)
+        {
+            editButton = user.isLandlord ? (<Button onClick = { this.editListing }> Edit listing</Button>) : ('');
+        }
+
         return (
             <div>
                 <Item.Group divided>
@@ -33,6 +46,7 @@ export default class ViewListing extends React.Component {
                               <Item.Description>{ listing.description }</Item.Description>
                               <Item.Extra>
                                   <Label icon='globe' content='View Map' />
+                                  {editButton}
                               </Item.Extra>
                           </Item.Content>
                     </Item>

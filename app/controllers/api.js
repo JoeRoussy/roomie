@@ -7,6 +7,8 @@ import { generateHash as generatePasswordHash } from '../components/authenticati
 import { transformUserForOutput } from '../components/transformers';
 import { sendError } from './utils';
 
+
+/* LISTINGS */
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
@@ -60,6 +62,68 @@ export const getListingById = ({
 
     return res.json({
         listing: result
+    });
+});
+
+// TODO: We need to send the user here as well, so we can associate the user with this listing.
+export const createListing = ({
+    listingsCollection = required('listingsCollection'),
+    logger = required('logger', 'You must pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        body: {
+            name,
+            address,
+            description,
+            location
+        } = {}
+    } = req;
+
+    const {
+        LISTING_ERRORS_MISSING_VALUES=LISTING_ERRORS_MISSING_VALUES,
+        LISTING_ERRORS_GENERIC=LISTING_ERRORS_GENERIC,
+        LISTING_ERRORS_INVALID_VALUES=LISTING_ERRORS_INVALID_VALUES,
+        LISTING_ERRORS_INVALID_ADDRESS=LISTING_ERRORS_INVALID_ADDRESS
+    } = process.env;
+
+    // TODO: Finalize these fields and add additional fields.
+    if (!name || !address || !description || !location) {
+        logger.warn(req.body, 'Malformed body for listing creation');
+
+        return sendError({
+            res,
+            status: 400,
+            message: 'Creating a listing requires a name, an address, a description, and a location',
+            errorKey: LISTING_ERRORS_MISSING_VALUES
+        });
+    }
+
+    let savedListing;
+
+    try {
+        savedListing = yield insertInDb({
+            collection: listingsCollection,
+            document: {
+                name,
+                address,
+                description,
+                location
+            },
+            returnInsertedDocument: true
+        });
+    } catch (e) {
+        logger.error({ err: e, name }, 'Error saving new listing to database');
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not create listing',
+            errorKey: LISTING_ERRORS_GENERIC
+        });
+    }
+
+    return res.json({
+        listing: savedListing
     });
 });
 

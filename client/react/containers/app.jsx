@@ -8,7 +8,7 @@ import Navbar from '../components/navbar';
 import SignUp from './signup';
 import SignIn from './SignIn';
 import ViewListing from './ViewListing';
-
+import ManageListing from './ManageListing';
 
 const style = {
     marginTop: '3em'
@@ -27,6 +27,7 @@ const App = ({
             <Route exact path="/listings" component={BrowseListings} />
             <Route exact path="/listings/:id" component={ViewListing} />
             <Route exact path="/sign-in" component={SignIn} />
+            <Route exact path="/edit" component={ManageListing} />
         </main>
         <footer>
             Copyright © 2018 Roomie

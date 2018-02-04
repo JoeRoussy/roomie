@@ -8,7 +8,7 @@ import Navbar from '../components/navbar';
 import SignUp from './signup';
 import SignIn from './SignIn';
 import ViewListing from './ViewListing';
-
+import Chat from './chat';
 
 const style = {
     marginTop: '3em'
@@ -24,6 +24,7 @@ const App = ({
         <main style={style}>
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />
+            <Route exact path="/chat" component={Chat} />
             <Route exact path="/listings" component={BrowseListings} />
             <Route exact path="/listings/:id" component={ViewListing} />
             <Route exact path="/sign-in" component={SignIn} />

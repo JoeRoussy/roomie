@@ -5,19 +5,17 @@ import { push } from 'react-router-redux';
 
 const ListComments = ({
     chatLog
-    }) => {
-        return chatLog.map((message,i) => (
-        <Comment key= {i}>
-            <Comment.Content>
-                <Comment.Author as='a'>{message.userName}</Comment.Author>
-                <Comment.Metadata>
-                    <div>{message.timestamp}</div>
-                </Comment.Metadata>
-                <Comment.Text>{message.body}</Comment.Text>
-            </Comment.Content>
-        </Comment>
-    ));
-}
+}) => chatLog.map((message,i) => (
+    <Comment key= {i}>
+        <Comment.Content>
+            <Comment.Author as='a'>{message.userName}</Comment.Author>
+            <Comment.Metadata>
+                <div>{message.timestamp}</div>
+            </Comment.Metadata>
+            <Comment.Text>{message.body}</Comment.Text>
+        </Comment.Content>
+    </Comment>
+));
 
 const ChatView = ({
     chatLog

@@ -13,3 +13,7 @@
     margin-top: 50px;
     padding: 10px;
 }
+
+#PlacesAutocomplete__root{
+    z-index: 1;   /* This is the ID that appears when PlacesAutoComplete renders - we couldnt figure out how to pass styles */
+}

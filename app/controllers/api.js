@@ -12,17 +12,17 @@ export const getListings = ({
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
     // TODO: Get query parameters out of req.query
-
     const {
         location = ''
     } = req.query;
 
     let result;
+    console.log(`API: ${JSON.stringify(req.query, null, 2)}`)
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
+            query: { } // TODO: Make query use the maps
         })
     } catch (e) {
         logger.error(e, 'Error finding listings');

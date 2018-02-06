@@ -18,6 +18,7 @@ The following is the schema of every collection in the database
     "name" : "Joe Roussy 27",
     "email" : "joeroussy+27@gmail.com",
     "password" : "$2a$12$IcrNgsEvxlIwAATHyt6x7uDmWFIpLS5FJMonEZJdi2rbuUoPXX7y6",
+    "profilePictureLink" : "/assets/42df91899b4f4ae0d143ac93125a86081517444232096.jpeg",
     "isLandlord" : false,
     "createdAt" : ISODate("2018-02-01T19:46:43.079Z")
 }

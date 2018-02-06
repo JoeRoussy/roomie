@@ -53,11 +53,11 @@ const ProfileForm = ({
                 accept='image/x-png,image/jpeg'
                 iconName='image'
             />
-        <Button id='profileKeepOldPictureButton' onClick={onCancelPictureEditClicked}>Keep Old Profile Picture</Button>
+        <Button type='button' id='profileKeepOldPictureButton' onClick={onCancelPictureEditClicked}>Keep Old Profile Picture</Button>
         </Grid.Column>
     ) : (
         <Grid.Column>
-            <Button onClick={onPictureEditClicked}>Upload New Profile Picture</Button>
+            <Button type='button' onClick={onPictureEditClicked}>Upload New Profile Picture</Button>
         </Grid.Column>
 
     );

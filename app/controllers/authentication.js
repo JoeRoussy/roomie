@@ -73,7 +73,7 @@ export const login = ({
     try {
         isPasswordValid = yield comparePasswords(password, user.password);
     } catch (e) {
-        logger.error({ err: e, password, hashedPassword: user.password }, 'Error during password comparison');
+        logger.error(e, 'Error during password comparison');
 
         return sendError({
             res,
@@ -84,7 +84,7 @@ export const login = ({
     }
 
     if (!isPasswordValid) {
-        logger.info({ email, password }, 'Attempt to log in with invalid password');
+        logger.info({ email }, 'Attempt to log in with invalid password');
 
         // For security purposes, do not distinguish between invalid emails and passwords
         return sendError({

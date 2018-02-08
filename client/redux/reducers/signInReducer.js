@@ -23,7 +23,7 @@ const signInReducer = (state = config, actions) => {
                 data: {
                     token
                 } = {}
-            } = res;
+            } = payload;
 
             state = {
                 ...state,

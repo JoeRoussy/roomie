@@ -8,6 +8,7 @@ import listingsReducer from './listingsReducer';
 import sampleReducer from './sampleReducer';
 import searchReducer from './searchReducer';
 import userReducer from './userReducer';
+import ChatReducer from './chatReducer';
 import signUpReducer from './signUpReducer';
 import signInReducer from './signInReducer';
 import profileReducer from './profileReducer';
@@ -17,6 +18,7 @@ const reducers = combineReducers({
 	sampleReducer,
     searchReducer,
     userReducer,
+    ChatReducer,
     form: formReducer,
     signUpReducer,
     signInReducer,

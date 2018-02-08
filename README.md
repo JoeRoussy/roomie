@@ -9,6 +9,35 @@ Make sure you have node 8.9.3 installed before installing any packages as the pa
 
 ### Mongo
 Mongo must be installed and running on your machine before trying to run the app. The version of mongo this app uses is 3.6.x
+#### Schema
+The following is the schema of every collection in the database
+##### User
+```
+{
+    "_id" : ObjectId("5a736ea34aa7683a26563f50"),
+    "name" : "Joe Roussy 27",
+    "email" : "joeroussy+27@gmail.com",
+    "password" : "$2a$12$IcrNgsEvxlIwAATHyt6x7uDmWFIpLS5FJMonEZJdi2rbuUoPXX7y6",
+    "profilePictureLink" : "/assets/42df91899b4f4ae0d143ac93125a86081517444232096.jpeg",
+    "isLandlord" : false,
+    "createdAt" : ISODate("2018-02-01T19:46:43.079Z")
+}
+```
+
+##### Listing
+```
+{
+    “_id":"5a664d7d1c805e089c349ec6",
+    "name":"Jugal's Place",
+    "address":"1 Rainbow Road",
+    "description":"It’s aite.",
+    "Views":11,
+    "location":"Placeville",
+    "ownerId":"5a79de27431d9e0a2c8fbd4b",
+    "createdAt":ISODate("2018-02-06 12:26:57.209")
+}
+```
+
 
 ### Logging
 This app logs files to `/var/log/roomie`. This folder must exist and its permissions must be set so the app can create files inside of it

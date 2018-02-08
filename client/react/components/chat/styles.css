@@ -1,0 +1,10 @@
+.chatInput {
+    width: 100%;
+}
+
+#chatSideBar {
+    min-height: 90vh;
+}
+#chatView{
+    min-height: 83vh;
+}

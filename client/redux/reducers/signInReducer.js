@@ -1,5 +1,5 @@
 const config = {
-
+    errorMessage: null
 };
 
 const signInReducer = (state = config, actions) => {

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
 import jwtDecode from 'jwt-decode';
 import store, { history } from './redux/store';
-import App from './react/containers/app';
+import App from './react/containers/App';
 import { setAuthorizationToken } from './components';
 import { setCurrentUser } from './redux/actions/userActions';
 

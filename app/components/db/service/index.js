@@ -71,7 +71,9 @@ export const insert = async ({
     }
 };
 
-// Will return boolean value indicating operation success if skipValidation is set to true
+// If query includes an id and skipValidation is false, the updated document will be returned
+// If query does not include an id and slipValidation is set to false, a boolean value indicating operation success will be returned
+// undefined is returned if skip validation is set to true
 export const findAndUpdate = async ({
     collection = required('collection'),
     query = required('query'),
@@ -101,7 +103,8 @@ export const findAndUpdate = async ({
     }
 
     if (query._id) {
-        updateResult = await collection.findOneAndUpdate(query, updateObj);
+        query._id = convertToObjectId(query._id);
+        updateResult = await collection.findOneAndUpdate(query, updateObj, { returnOriginal: false });
     } else {
         updateResult = await collection.updateMany(query, updateObj);
     }
@@ -134,7 +137,7 @@ function singleUpdateValidation(dbResult) {
         throw new Error('Update not successful');
     }
 
-    return ok;
+    return value;
 }
 
 function multipleUpdateValidation(dbResult) {

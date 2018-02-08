@@ -11,6 +11,7 @@ import userReducer from './userReducer';
 import ChatReducer from './chatReducer';
 import signUpReducer from './signUpReducer';
 import signInReducer from './signInReducer';
+import profileReducer from './profileReducer';
 
 const reducers = combineReducers({
     listingsReducer,
@@ -20,7 +21,8 @@ const reducers = combineReducers({
     ChatReducer,
     form: formReducer,
     signUpReducer,
-    signInReducer
+    signInReducer,
+    profileReducer
 });
 
 export default reducers;

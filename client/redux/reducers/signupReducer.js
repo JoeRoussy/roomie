@@ -75,6 +75,7 @@ const signUpReducer = (state = config, actions) => {
             break;
         }
         case LOCATION_CHANGE: {
+            // Clear the user type when we enter the sign in route
             const {
                 pathname
             } = payload;

@@ -17,6 +17,21 @@ const userReducer = (state = config, actions) => {
 
             break;
         }
+
+        case 'PROFILE_FORM_SUBMIT_FULFILLED': {
+            const {
+                data: {
+                    user
+                } = {}
+            } = payload;
+
+            state = {
+                ...state,
+                user
+            };
+
+            break;
+        }
     }
 
     return state;

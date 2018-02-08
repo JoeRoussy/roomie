@@ -169,3 +169,15 @@ export const isEmpty = (data) => {
         return !data;
     }
 }
+
+// if passed a truth value, will return an extended version of obj with value set under the provided key
+export const extendIfPopulated = (obj, key, value) => {
+    if (value) {
+        return {
+            ...obj,
+            [key]: value
+        }
+    }
+
+    return obj;
+}

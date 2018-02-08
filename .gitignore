@@ -58,3 +58,7 @@ typings/
 # dotenv environment variables file
 .env
 
+#Custom settings....
+
+#Ignore uploaded assets
+assets/

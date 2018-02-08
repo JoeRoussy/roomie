@@ -6,6 +6,7 @@ import cors from 'cors';
 import jwtParser from 'express-jwt'
 
 import { getLogger, getChildLogger } from './components/log-factory';
+import requiredFolderConfig from './components/required-folder-config';
 import dbConfig from './components/db/config';
 import { print } from './components/custom-utils';
 import apiRouteConfig from './routes/api';
@@ -14,6 +15,9 @@ import authRouteConfig from './routes/authentication';
 const app = express();
 
 enviornmentVariableConfig();
+requiredFolderConfig([
+    `${process.cwd()}${process.env.UPLOADS_RELATIVE_FILE_PATH}`
+]);
 
 const {
     LOG_ROTATING_FILE,
@@ -32,8 +36,6 @@ const dbLogger = getChildLogger({
         module: 'db-config'
     }
 });
-
-// TODO(Joe): Enviornment variables, app and api routes
 
 // Set app in an IIFE so we can bail using return if things so not initialize properly
 (async () => {
@@ -67,6 +69,7 @@ const dbLogger = getChildLogger({
     // Now that we know that the db is connected, continue setting up the app
     app.use(cors());
     app.use(express.static('public'));
+    app.use('/assets', express.static('app/assets'));
     app.use(bodyParser.urlencoded({
         extended: true
     }));

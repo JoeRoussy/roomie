@@ -7,6 +7,8 @@ import FileInput from '../FileInput';
 
 import './styles.css';
 
+import { isEmail, isPassword, isText } from '../../../common/validation';
+
 const validate = (values) => {
     let errors = {};
 
@@ -18,35 +20,38 @@ const validate = (values) => {
         confirmPassword
     } = values;
 
-    if (!name) {
+    if (!isText(name)) {
         errors = {
             name: 'Please enter your name',
             ...errors
         };
     }
 
-    if (!email) {
+    const isEmailValid = isEmail(email);
+    const isPasswordValid = isPassword(password, true); // We want to check the length of the password here
+
+    if (!isEmailValid) {
         errors = {
-            email: 'Please enter your email',
+            email: 'Please enter a valid email',
             ...errors
         };
     }
 
-    if (!password) {
+    if (!isPasswordValid) {
         errors = {
-            password: 'Please choose a password',
+            password: 'Please choose a password that is at least 6 character in length',
             ...errors
         };
     }
 
-    if (email && confirmEmail !== email) {
+    if (isEmailValid && confirmEmail !== email) {
         errors = {
             confirmEmail: 'Emails must match',
             ...errors
         };
     }
 
-    if (password && confirmPassword !== password) {
+    if (isPasswordValid && confirmPassword !== password) {
         errors = {
             confirmPassword: 'Passwords must match',
             ...errors

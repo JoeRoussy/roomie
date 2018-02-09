@@ -3,6 +3,9 @@ import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
 import { createUser, createListing,getListings, getListingById } from '../controllers/api';
 
+import listingsRouter from './listings';
+import usersRouter from './users';
+
 export default ({
     app = required('app'),
     db = required('db'),
@@ -10,29 +13,9 @@ export default ({
 }) => {
     const router = express.Router();
 
-    // NOTE: Routers are for each resource are separate in case they need to be refactored out of this file
-
-    // A separate listings router
-    const listingsRouter = express.Router();
-
-    listingsRouter.get('/', getListings({
-        listingsCollection: db.collection('listings'),
-        logger: getChildLogger({
-            baseLogger,
-            additionalFields: {
-                module: 'api-listings-search'
-            }
-        })
-    }));
-
-    router.get('/listings/:id', getListingById({
-        listingsCollection: db.collection('listings'),
-        logger: getChildLogger({
-            baseLogger,
-            additionalFields: {
-                module: 'api-listings-get-single-listing'
-            }
-        })
+    router.use('/listings', listingsRouter({
+        db,
+        baseLogger
     }));
 
     router.post('/listings', createListing({
@@ -59,9 +42,11 @@ export default ({
             }
         })
     }));
-
-    // Connect the user router to the main router under /users
-    router.use('/users', userRouter);
+    
+    router.use('/users', usersRouter({
+        db,
+        baseLogger
+    }));
 
     // TODO: More API routes here
 

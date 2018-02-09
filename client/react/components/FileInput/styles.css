@@ -1,0 +1,27 @@
+.fileInputWrapper:hover {
+    cursor: pointer;
+}
+
+.fileInputWrapper label {
+    font-weight: bold;
+}
+
+.fileInputWrapper:hover input[type="text"] {
+    cursor: pointer;
+}
+
+.fileInputWrapper input[type="file"] {
+    display: none;
+}
+
+.fileInputWrapper .fileInputVisibleElementWrapper .fileInputVisibleElement {
+    width: 90% !important;
+}
+
+.fileInputWrapper .fileInputVisibleElementWrapper .fileInputVisibleElementLabel {
+    margin: 0;
+    width: 10% !important;
+    padding: 12px;
+    font-size: 1.1em;
+    text-align: center;
+}

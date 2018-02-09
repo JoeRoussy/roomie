@@ -3,6 +3,8 @@ import { Field, reduxForm } from 'redux-form';
 import { Form, Icon, Button, Input, Message } from 'semantic-ui-react';
 import { LabelInputField } from 'react-semantic-redux-form';
 
+import { isEmail, isPassword } from '../../../common/validation';
+
 
 const validate = (values) => {
     let errors = {};
@@ -12,16 +14,16 @@ const validate = (values) => {
         password
     } = values;
 
-    if (!email) {
+    if (!isEmail(email)) {
         errors = {
-            email: 'Please enter your email',
+            email: 'Please enter a valid email',
             ...errors
         };
     }
 
-    if (!password) {
+    if (!isPassword(password)) {
         errors = {
-            password: 'Please enter your password',
+            password: 'Please enter a password',
             ...errors
         };
     }

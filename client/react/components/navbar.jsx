@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Container, Menu, Icon } from 'semantic-ui-react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import { setJwt } from '../../components';
 import { setCurrentUser } from '../../redux/actions/userActions';
@@ -42,7 +42,6 @@ const NavBar = ({
 
     return (
         <Menu fixed='top' inverted>
-            <ToastContainer />
             <Container>
                 //left side
                 <Menu.Item header onClick={() => navigateTo('/')}>Roomie</Menu.Item>

@@ -7,7 +7,7 @@ import FileInput from '../FileInput';
 
 import './styles.css';
 
-import { isEmail, isPassword, isText } from '../../../common/validation';
+import { isEmail, isPassword, isText } from '../../../../common/validation';
 
 const validate = (values) => {
     let errors = {};

@@ -90,7 +90,51 @@ const profileReducer = (state = config, actions) => {
 
             break;
         }
+        case 'DELETE_PROFILE_SELECTED': {
+            state = {
+                ...state,
+                isDeleting: true
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_CANCELED': {
+            state = {
+                ...state,
+                isDeleting: false
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_CONFIRMED_PENDING': {
+            state = {
+                ...state,
+                isDeletePending: true
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_CONFIRMED_FULFILLED': {
+            state = {
+                ...state,
+                isDeletePending: false,
+                isDeleting: false
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_CONFIRMED_REJECTED': {
+            state = {
+                ...state,
+                isDeletePending: false,
+                isDeleting: false
+            };
+
+            break;
+        }
     }
+
+    console.log(state);
 
     return state;
 }

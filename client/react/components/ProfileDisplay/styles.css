@@ -1,0 +1,12 @@
+#deleteProfileButton {
+    display: block;
+    margin-top: 32px;
+}
+
+#deleteProfileConfirmation .header {
+    color: #db2828;
+}
+
+#deleteProfileConfirmation button {
+    margin: 10px;
+}

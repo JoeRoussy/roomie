@@ -61,3 +61,28 @@ export const editProfilePicture = () => ({
 export const cancelEditProfilePicture = () => ({
     type: 'EDIT_PROFILE_PICTURE_CANCELLED'
 });
+
+export const deleteProfile = () => ({
+    type: 'DELETE_PROFILE_SELECTED'
+});
+
+export const cancelDeleteProfile = () => ({
+    type: 'DELETE_PROFILE_CANCELED'
+});
+
+export const confirmDeleteProfile = () => ({
+    type: 'DELETE_PROFILE_CONFIRMED',
+    payload: axios.delete(`${process.env.API_ROOT}/api/users/me`)
+        .then((res) => {
+            toast.success('Your profile has been deleted');
+
+            // Return res so it can be used by other handlers
+            return res;
+        })
+        .catch((e) => {
+            toast.error('Could not delete profile. Please try again later.');
+
+            // Thorw error so it can be caught by other handlers
+            throw e;
+        })
+});

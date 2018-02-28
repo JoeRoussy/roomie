@@ -290,4 +290,12 @@ export const editUser = ({
     });
 });
 
-// TODO: More api route handlers here
+export const deleteCurrentUser = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You need to pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    // Just to test loading
+    setTimeout(function () {
+        return res.json({});
+    }, 2000)
+});

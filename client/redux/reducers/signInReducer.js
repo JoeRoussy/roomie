@@ -1,5 +1,5 @@
 const config = {
-
+    errorMessage: null
 };
 
 const signInReducer = (state = config, actions) => {
@@ -23,7 +23,7 @@ const signInReducer = (state = config, actions) => {
                 data: {
                     token
                 } = {}
-            } = res;
+            } = payload;
 
             state = {
                 ...state,

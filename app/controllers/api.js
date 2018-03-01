@@ -1,8 +1,9 @@
 import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
-import { required, print, isEmpty } from '../components/custom-utils';
+
+import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail } from '../components/data';
-import { insert as insertInDb, getById } from '../components/db/service';
+import { insert as insertInDb, getById, findAndUpdate } from '../components/db/service';
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendError } from './utils';
@@ -83,6 +84,11 @@ export const createUser = ({
             email,
             password,
             userType
+        } = {},
+        file: {
+            filename,
+            mimetype,
+            path
         } = {}
     } = req;
 
@@ -92,8 +98,20 @@ export const createUser = ({
         SIGNUP_ERRORS_EXISTING_EMAIL,
         SIGNUP_ERRORS_GENERIC,
         SIGNUP_ERRORS_MISSING_VALUES,
-        SIGNUP_ERRORS_INVALID_VALUES
+        SIGNUP_ERRORS_INVALID_VALUES,
+        UPLOADS_RELATIVE_PATH
     } = process.env;
+
+    let imageFields = {};
+
+    if (filename && mimetype && path) {
+        // We have an image upload that we need to include in the saved user
+        // NOTE: Validation middleware has already run by the time we get here so we can assume the image is valid
+
+        imageFields = {
+            profilePictureLink: `${UPLOADS_RELATIVE_PATH}${filename}`
+        };
+    }
 
     if (!name || !email || !password || !userType) {
         logger.warn(req.body, 'Malformed body for user creation');
@@ -155,7 +173,8 @@ export const createUser = ({
                 name,
                 email,
                 password: hashedPassword,
-                isLandlord: userType === process.env.USER_TYPE_LANDLORD
+                isLandlord: userType === process.env.USER_TYPE_LANDLORD,
+                ...imageFields
             },
             returnInsertedDocument: true
         });
@@ -174,6 +193,109 @@ export const createUser = ({
     const token = jwt.sign(transformUserForOutput(savedUser), process.env.JWT_SECRET);
 
     return res.json({
+        token
+    });
+});
+
+// Allows us to edit attributes of a user other than profile picture, createdAt, and password
+export const editUser = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You need to pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        id
+    } = req.params;
+
+    // We can only update the name and email using this route
+    const {
+        body: {
+            name,
+            email
+        } = {},
+        file: {
+            filename,
+            mimetype,
+            path
+        } = {}
+    } = req;
+
+    const {
+        PROFILE_EDIT_ERRORS_GENERIC,
+        PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL,
+        UPLOADS_RELATIVE_PATH
+    } = process.env;
+
+    // Make sure the user is not trying to change their email to one that already exists
+    if (email) {
+        let existingUser;
+
+        try {
+            existingUser = yield getUserByEmail({
+                email,
+                usersCollection
+            });
+        } catch (e) {
+            logger.error(e, 'Error getting user by email for duplicate email check');
+
+            return sendError({
+                res,
+                status: 500,
+                message: 'Could not update user',
+                errorKey: PROFILE_EDIT_ERRORS_GENERIC
+            });
+        }
+
+        // Make sure there is not an existing user, and if there is, make sure it is not the current user
+        if (existingUser && !existingUser._id.equals(req.user._id)) {
+            logger.info({ currentUser: req.user, existingUser: existingUser }, 'Attempt to edit email to another email that already exists');
+
+            return sendError({
+                res,
+                status: 400,
+                message: 'A user already exists with that email',
+                errorKey: PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL
+            });
+        }
+    }
+
+    let profilePictureLink;
+
+    if (filename && mimetype && path) {
+        // User has updated their profile image
+        profilePictureLink = `${UPLOADS_RELATIVE_PATH}${filename}`;
+    }
+
+    // Make sure the update does not contain any null values
+    let update = {};
+    update = extendIfPopulated(update, 'name', name);
+    update = extendIfPopulated(update, 'email', email);
+    update = extendIfPopulated(update, 'profilePictureLink', profilePictureLink);
+
+    let newUser;
+
+    try {
+        newUser = yield findAndUpdate({
+            collection: usersCollection,
+            query: { _id: id },
+            update
+        });
+    } catch (e) {
+        logger.error(e, `Error updating user with id: ${id}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not update user',
+            errorKey: PROFILE_EDIT_ERRORS_GENERIC
+        });
+    }
+
+    // Now that the value of the user has been changed, the front end needs a new token that reflects these changes
+    const transformedNewUser = transformUserForOutput(newUser);
+    const token = jwt.sign(transformedNewUser, process.env.JWT_SECRET);
+
+    return res.json({
+        user: transformedNewUser,
         token
     });
 });

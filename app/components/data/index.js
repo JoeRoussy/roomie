@@ -27,3 +27,14 @@ export const getUserByEmail = async({
         throw new RethrownError(e, `Error getting a user with the email ${email}`);
     }
 }
+
+export const findChannels = async({
+    channelsCollection = required('channelsCollection'),
+    query
+}) => {
+    try {
+        return await listingsCollection.find(query).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
+    }
+};

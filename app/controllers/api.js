@@ -1,9 +1,15 @@
 import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
+<<<<<<< Updated upstream
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail } from '../components/data';
 import { insert as insertInDb, getById, findAndUpdate } from '../components/db/service';
+=======
+import { required, print, isEmpty } from '../components/custom-utils';
+import { findListings, getUserByEmail,findChannels } from '../components/data';
+import { insert as insertInDb, getById } from '../components/db/service';
+>>>>>>> Stashed changes
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendError } from './utils';
@@ -187,6 +193,7 @@ export const createUser = ({
     });
 });
 
+<<<<<<< Updated upstream
 // Allows us to edit attributes of a user other than profile picture, createdAt, and password
 export const editUser = ({
     usersCollection = required('usersCollection'),
@@ -271,10 +278,32 @@ export const editUser = ({
         });
     } catch (e) {
         logger.error(e, `Error updating user with id: ${id}`);
+=======
+export const getChannels = ({
+    channelCollection = required('channelCollection'),
+    logger = required('logger', 'You must pass a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    // TODO: Get query parameters out of req.query
+
+    const {
+        location = ''
+    } = req.query;
+
+    let result;
+
+    try {
+        result = yield findChannels({
+            channelCollection,
+            query: { $where: `` } // TODO: Make query use the maps
+        })
+    } catch (e) {
+        logger.error(e, 'Error finding channels');
+>>>>>>> Stashed changes
 
         return sendError({
             res,
             status: 500,
+<<<<<<< Updated upstream
             message: 'Could not update user',
             errorKey: PROFILE_EDIT_ERRORS_GENERIC
         });
@@ -290,4 +319,15 @@ export const editUser = ({
     });
 });
 
+=======
+            message: 'Error finding channels'
+        });
+    }
+    return res.json({
+        channels: result
+    });
+});
+
+
+>>>>>>> Stashed changes
 // TODO: More api route handlers here

@@ -11,11 +11,21 @@ export const getListings = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
-    // TODO: Get query parameters out of req.query
     const {
-        location = ''
+        bathrooms,
+        bedrooms,
+        furnished,
+        keywords,
+        maxPrice,
+        minPrice,
+        location
     } = req.query;
 
+    //Perform validation
+    
+    //Generate query
+
+    //Search Db with query
     let result;
     console.log(`API: ${JSON.stringify(req.query, null, 2)}`)
 

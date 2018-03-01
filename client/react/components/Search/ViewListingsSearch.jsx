@@ -1,36 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import { Form, Input, Button, Icon, Divider, Label, Tab, Radio} from 'semantic-ui-react';
+import { Form, Button, Icon, Divider, Label, Tab, Message} from 'semantic-ui-react';
+import { Input, LabelInputField } from 'react-semantic-redux-form';
 
 import WrappedPlacesAutoComplete from './WrappedPlacesAutoComplete';
 import WrappedCheckBox from './WrappedCheckBox';
 import './styles.css';
 
+const isPrice = (value) =>{
+    return !/^[0-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(value)
+}
 
 const validate = (values) => {
     let errors = {};
-
     const {
         minPrice,
         maxPrice
     } = values;
 
-    if (typeof minPrice !== 'number') {
+    if (minPrice && isPrice(minPrice)) {
         errors = {
-            minPrice: 'Please enter your a number',
+            minPrice: 'Please enter a valid price',
             ...errors
         };
     }
 
-    if (typeof maxPrice !== 'number') {
+    if (maxPrice && isPrice(maxPrice)) {
         errors = {
-            maxPrice: 'Please enter your a number',
+            maxPrice: 'Please enter a valid price',
             ...errors
         };
     }
 
-    if (minPrice > maxPrice) {
+    if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
         errors = {
             minPrice: 'Please make sure Min Price is less than Max Price',
             ...errors
@@ -42,6 +45,11 @@ const validate = (values) => {
 
 const renderForm = (locationProps, submitSearch, errorMessage) => (
     <Form onSubmit={submitSearch} error={!!errorMessage}>
+        <Message
+            error
+            header='Error'
+            content={errorMessage}
+        />
         <div>
             <div>
                 <Label size='large' content='Location' icon='marker' />
@@ -73,13 +81,13 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
             <div>
                 <Field
                     name='minPrice'
-                    component={Input}
+                    component={LabelInputField}
                     placeholder="Minimum price..."
                 />
                 - 
                  <Field
                     name='maxPrice'
-                    component={Input}
+                    component={LabelInputField}
                     placeholder="Maximum price..."
                 />
             </div>

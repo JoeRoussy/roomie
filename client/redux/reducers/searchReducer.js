@@ -7,7 +7,6 @@ const config ={
 }
 
 const searchReducer = (state = config, actions) => {
-    console.log(actions.type)
     switch(actions.type){
         case 'LOCATION_CHANGE': {
             state = {
@@ -41,12 +40,36 @@ const searchReducer = (state = config, actions) => {
         }
 
         case 'GET_SEARCH_RESULTS_REJECTED': {
+            const {
+                response:{
+                    data:{
+                        errorKey
+                    }
+                } = {}
+            } = payload;
+
+            let errorMessage;
+
+            if(errorKey){
+                const errorMessages = {
+                    [process.env.SEARCH_ERRORS_MIN_PRICE_NAN]:'Minimum Price is not a number',
+                    [process.env.SEARCH_ERRORS_MAX_PRICE_NAN]:'Maximum Price is not a number',
+                    [process.env.SEARCH_ERRORS_MIN_PRICE_LESS_THAN_MAX_PRICE]:'Minimum Price is greater than Maximum Price'
+                };
+
+                errorMessage = errorMessages[errorKey];
+            }
+            else{
+                errorMessage = 'Your search request could not be processed';
+            }
+
             state = {
                 ...state, 
                 listings: [],
                 fulfilled: false,
                 pending: false,
-                rejected: true
+                rejected: true,
+                errorMessage
             };
             break;
         }

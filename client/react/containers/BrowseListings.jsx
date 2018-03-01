@@ -100,7 +100,7 @@ export default class Listings extends React.Component {
             <div>
                 <Grid>
                     <Grid.Column width={4}>
-                        <ViewListingsSearch locationProps={locationProps} submitSearch={this.submitSearch} />
+                        <ViewListingsSearch locationProps={locationProps} submitSearch={this.submitSearch} errorMessage={this.props.errorMessage} />
                     </Grid.Column>
                     <Grid.Column width={12}>
                         {body}

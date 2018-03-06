@@ -134,8 +134,6 @@ const profileReducer = (state = config, actions) => {
         }
     }
 
-    console.log(state);
-
     return state;
 }
 

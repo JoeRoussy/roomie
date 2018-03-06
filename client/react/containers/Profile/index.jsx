@@ -119,7 +119,7 @@ const mapDispatchToProps = (dispatch) => ({
     },
     onDeleteClicked: () => dispatch(deleteProfile()),
     onCancelDeleteClicked: () => dispatch(cancelDeleteProfile()),
-    onDeleteConfirmedClicked: () => dispatch(confirmDeleteProfile())
+    onDeleteConfirmedClicked: () => dispatch(confirmDeleteProfile)
 });
 
 

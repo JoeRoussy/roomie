@@ -17,7 +17,8 @@ export const handleAuthenticationRequest = ({
     promise,
     submitActionName,
     dispatch,
-    successToast
+    successToast,
+    errorToast
 }) => {
     dispatch({
         type: submitActionName
@@ -37,15 +38,23 @@ export const handleAuthenticationRequest = ({
                 });
             }
 
+            const currentUser = token ? jwtDecode(token) : null;
+
             setJwt(token);
 
-            dispatch(setCurrentUser(jwtDecode(token)));
+            dispatch(setCurrentUser(currentUser));
             dispatch({
                 type: `${submitActionName}_FULFILLED`,
                 payload: res
             });
         })
         .catch(e => {
+            if (errorToast) {
+                toast.error(errorToast, {
+                    autoClose: false
+                });
+            }
+
             dispatch({
                 type: `${submitActionName}_REJECTED`,
                 payload: e

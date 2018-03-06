@@ -19,7 +19,7 @@ export const handleUserUpdateRequest = ({
     dispatch,
     successToast,
     errorToast,
-    autoClose = false
+    autoClose = true
 }) => {
     dispatch({
         type: submitActionName

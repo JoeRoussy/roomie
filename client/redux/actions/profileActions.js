@@ -15,8 +15,7 @@ export const submitForm = (formData) => (dispatch) => {
         promise: axios.put(`${process.env.API_ROOT}/api/users/${formData._id}`, submissionData),
         submitActionName: 'PROFILE_FORM_SUBMIT',
         successToast: 'Your profile has been updated',
-        errorToast: 'Your profile could not be updated. Please try again later.',
-        autoClose: true
+        errorToast: 'Your profile could not be updated. Please try again later.'
     });
 };
 
@@ -49,5 +48,6 @@ export const confirmDeleteProfile = (dispatch) => (handleUserUpdateRequest({
     promise: axios.delete(`${process.env.API_ROOT}/api/users/me`),
     submitActionName: 'DELETE_PROFILE_CONFIRMED',
     successToast: 'Your profile has been deleted',
-    errorToast: 'Could not delete profile. Please try again later.'
+    errorToast: 'Could not delete profile. Please try again later.',
+    autoClose: false
 }));

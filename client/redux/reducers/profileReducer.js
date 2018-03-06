@@ -41,7 +41,7 @@ const profileReducer = (state = config, actions) => {
 
             break;
         }
-        case 'PROFILE_FORM_SUBMIT_PENDING': {
+        case 'PROFILE_FORM_SUBMIT': {
             state = {
                 ...state,
                 isFormProcessing: true,

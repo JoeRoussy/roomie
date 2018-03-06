@@ -1,5 +1,6 @@
 const config = {
-    channels: ['Channel 1',"Second Channel","Another Channel"],
+    //channels: ['Channel 1',"Second Channel","Another Channel"],
+    channels: [],
     activeChannel: 'Channel 1',
     chatLog: [],
     pendingMessages: {}
@@ -50,10 +51,29 @@ const AnotherChannelChat = [
 
 const ChatReducer = (state = config, actions) => {
     switch(actions.type) {
-        case 'GET_CHANNELS': {
-            state = {...state}
+        // case 'GET_CHANNELS': {
+        //     state = {...state}
+        //     break;
+        // }
+
+        case 'GET_CHANNELS_FULFILLED': {
+            state = {
+                ...state,
+                channels:actions.payload.data.channels
+            }
             break;
         }
+
+        case 'GET_CHANNELS_PENDING': {
+            console.log('Get listings is pending');
+            break;
+        }
+
+        case 'GET_CHANNELS_REJECTED' : {
+            console.log('Get listings was rejected');
+            break;
+        }
+
         case 'SET_ACTIVE_CHANNEL':{
             state = {
                 ...state,
@@ -71,7 +91,7 @@ const ChatReducer = (state = config, actions) => {
                     };
                     break;
                 }
-                case 'Second Channel':{
+                case 'Channel 2':{
                     state = {
                         ...state,
                         chatLog: SecondChannelChat

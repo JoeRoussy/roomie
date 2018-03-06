@@ -1,6 +1,8 @@
+import axios from 'axios';
+
 export const getChannels = () => ({
     type: 'GET_CHANNELS',
-    payload: 'test'
+    payload: axios.get(`${process.env.API_ROOT}/api/channels`)
 });
 
 export const setActiveChannel= (name) =>({

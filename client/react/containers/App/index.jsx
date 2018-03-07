@@ -6,7 +6,7 @@ import { history } from '../../../redux/store';
 
 import BrowseListings from '../BrowseListings';
 import Home from '../Home';
-import Navbar from '../../components/navbar';
+import Navbar from '../../components/Navbar';
 import SignUp from '../Signup';
 import SignIn from '../SignIn';
 import ViewListing from '../ViewListing';

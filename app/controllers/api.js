@@ -3,9 +3,10 @@ import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail } from '../components/data';
-import { insert as insertInDb, getById, findAndUpdate } from '../components/db/service';
+import { insert as insertInDb, getById, findAndUpdate, deleteById } from '../components/db/service';
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
+import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
 
 export const getListings = ({
@@ -170,6 +171,29 @@ export const createUser = ({
         });
     } catch (e) {
         logger.error({ err: e, name, email }, 'Error saving new user to database');
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not sign up',
+            errorKey: SIGNUP_ERRORS_GENERIC
+        });
+    }
+
+    // Send a welcome email to the user
+    try {
+        yield sendSignUpMessage({ user: savedUser });
+    } catch (e) {
+        // Log an error about not being able to send the email and try and delete the user we just made
+        logger.error(e, 'Could not send welcome email to user');
+
+        deleteById({
+            collection: usersCollection,
+            id: savedUser._id
+        })
+            .catch((e) => {
+                logger.error({ user, err: e }, 'Could not delete user after failed email send during user creation');
+            });
 
         return sendError({
             res,

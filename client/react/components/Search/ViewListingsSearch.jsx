@@ -3,14 +3,10 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Form, Button, Icon, Divider, Label, Tab, Message} from 'semantic-ui-react';
 import { Input, LabelInputField } from 'react-semantic-redux-form';
-
+import { isPrice } from '../../../../common/validation'
 import WrappedPlacesAutoComplete from './WrappedPlacesAutoComplete';
 import WrappedCheckBox from './WrappedCheckBox';
 import './styles.css';
-
-const isPrice = (value) =>{
-    return !/^[0-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(value)
-}
 
 const validate = (values) => {
     let errors = {};
@@ -19,14 +15,14 @@ const validate = (values) => {
         maxPrice
     } = values;
 
-    if (minPrice && isPrice(minPrice)) {
+    if (minPrice && !isPrice(minPrice)) {
         errors = {
             minPrice: 'Please enter a valid price',
             ...errors
         };
     }
 
-    if (maxPrice && isPrice(maxPrice)) {
+    if (maxPrice && !isPrice(maxPrice)) {
         errors = {
             maxPrice: 'Please enter a valid price',
             ...errors

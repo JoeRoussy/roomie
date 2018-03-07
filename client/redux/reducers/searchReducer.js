@@ -46,7 +46,7 @@ const searchReducer = (state = config, actions) => {
                         errorKey
                     }
                 } = {}
-            } = payload;
+            } = actions.payload;
 
             let errorMessage;
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { Button, Card, Icon, Image, Grid } from 'semantic-ui-react';
+import { Button, Card, Icon, Image, Grid , Loader, Dimmer, Segment} from 'semantic-ui-react';
 
 
 import { getListings } from '../../redux/actions/listingsActions';
@@ -12,6 +12,7 @@ import ViewListingsSearch from '../components/Search/ViewListingsSearch';
 
 @connect((store) => ({
     listings: store.searchReducer.listings,
+    waitingForSearch: store.searchReducer.pending,
     locationVal: store.searchReducer.location,
     formInfo: store.form.viewListingsSearch,
     errorMessage: store.searchReducer.errorMessage
@@ -86,15 +87,27 @@ export default class Listings extends React.Component {
             onKeyUp: (event) => {if(event.keyCode==13) this.submitSearch()}
         }
 
-        const { listings } = this.props;
+        const { listings, waitingForSearch} = this.props;
 
-        const body = listings.length ? (
-            <Card.Group>
-                { this.mapListings(listings) }
-            </Card.Group>
-        ) : (
-            <p>No listings found</p>
-        );
+        let body;
+        if(waitingForSearch){
+            //TODO: fix css such that the dimmer doesnt flow into menu bar
+            body = (<div fluid>
+                        <Dimmer active>
+                            <Loader inline inverted>Fetching Results</Loader>
+                        </Dimmer>
+                    </div>)
+        }
+        else{
+            body = listings.length ? (
+                <Card.Group>
+                    { this.mapListings(listings) }
+                </Card.Group>
+            ) : (
+                <p>No listings found</p>
+            );
+        }
+
 
         return (
             <div>

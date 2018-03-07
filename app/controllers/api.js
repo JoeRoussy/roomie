@@ -7,6 +7,7 @@ import { insert as insertInDb, getById, findAndUpdate } from '../components/db/s
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendError } from './utils';
+import { isPrice } from '../../common/validation';
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
@@ -19,21 +20,44 @@ export const getListings = ({
         keywords,
         maxPrice,
         minPrice,
-        location
+        location = ''
     } = req.query;
 
-    //Perform validation
-    
-    //Generate query
+    // Perform validation
+    if (minPrice && !isPrice(minPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_NAN,
+            message: `Please enter a valid price for minimum price.`
+        });
+    }
+
+    if (maxPrice && !isPrice(maxPrice)) {
+       return sendError({
+            res,
+            status: 400,rue,
+            errorKey: SEARCH_ERRORS_MAX_PRICE_NAN,
+            message: `Please enter a valid price for maximum price.`
+        });
+    }
+
+    if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_LESS_THAN_MAX_PRICE,
+            message: `Minimum price is greater than maximum price.`
+        });
+    }
 
     //Search Db with query
     let result;
-    console.log(`API: ${JSON.stringify(req.query, null, 2)}`)
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: { } // TODO: Make query use the maps
+            query: req.query // TODO: Make query use the maps
         })
     } catch (e) {
         logger.error(e, 'Error finding listings');

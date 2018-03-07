@@ -5,13 +5,13 @@ import { ToastContainer } from 'react-toastify';
 import { history } from '../../../redux/store';
 
 import BrowseListings from '../BrowseListings';
-import Home from '../home';
+import Home from '../Home';
 import Navbar from '../../components/navbar';
-import SignUp from '../signup';
+import SignUp from '../Signup';
 import SignIn from '../SignIn';
 import ViewListing from '../ViewListing';
 import Profile from '../Profile';
-import Chat from '../chat';
+import Chat from '../Chat';
 
 import './styles.css';
 

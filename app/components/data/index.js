@@ -64,5 +64,20 @@ export const getEmailConfirmationLink = async({
     }
 
     // Return a link the user can use to confirm their profile
-    return `${ROOT_URL}/verify/email/${urlIdentifyer}`;
+    return `${ROOT_URL}/api/verify/email/${urlIdentifyer}`;
+};
+
+export const findVerificationDocument = async({
+    verificationsCollection = required('verificationsCollection'),
+    urlIdentifyer = required('urlIdentifyer'),
+    type = required('type')
+}) => {
+    try {
+        return await verificationsCollection.findOne({
+            urlIdentifyer,
+            type
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error finding verification document of type: ${type} with urlIdentifyer: ${urlIdentifyer}`)
+    }
 };

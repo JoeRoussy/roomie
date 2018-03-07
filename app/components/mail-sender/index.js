@@ -96,7 +96,8 @@ const _sendMessage = async({
 };
 
 export const sendSignUpMessage = async({
-    user = required('user')
+    user = required('user'),
+    emailConfirmationLink = required('emailConfirmationLink')
 }) => {
     const {
         name,
@@ -108,7 +109,8 @@ export const sendSignUpMessage = async({
         context: {
             name,
             email,
-            isLandlord
+            isLandlord,
+            emailConfirmationLink
         },
         template: 'signUp'
     };

@@ -2,12 +2,17 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
-import { findListings, getUserByEmail } from '../components/data';
-import { insert as insertInDb, getById, findAndUpdate, deleteById } from '../components/db/service';
+import { findListings, getUserByEmail, getEmailConfirmationLink } from '../components/data';
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
+import {
+    insert as insertInDb,
+    getById,
+    findAndUpdate,
+    deleteById
+} from '../components/db/service';
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
@@ -67,6 +72,7 @@ export const getListingById = ({
 
 export const createUser = ({
     usersCollection = required('usersCollection'),
+    verificationsCollection = required('verificationsCollection'),
     logger = required('logger', 'You must pass in a logger for this function to use')
 }) => coroutine(function* (req, res) {
     const {
@@ -165,6 +171,7 @@ export const createUser = ({
                 email,
                 password: hashedPassword,
                 isLandlord: userType === process.env.USER_TYPE_LANDLORD,
+                isEmailConfirmed: false,
                 ...imageFields
             },
             returnInsertedDocument: true
@@ -180,9 +187,39 @@ export const createUser = ({
         });
     }
 
+    // Make a confirmation document tied to the current user to confirm the email.
+    let emailConfirmationLink;
+    try {
+        emailConfirmationLink = yield getEmailConfirmationLink({
+            verificationsCollection,
+            user: savedUser
+        });
+    } catch (e) {
+        logger.error(e, 'Error making confirmation document for new user');
+
+        // Delete the user we made
+        deleteById({
+            collection: usersCollection,
+            id: savedUser._id
+        })
+            .catch((e) => {
+                logger.error({ user, err: e }, 'Could not delete user after failed confirmation document creation');
+            });
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not sign up',
+            errorKey: SIGNUP_ERRORS_GENERIC
+        });
+    }
+
     // Send a welcome email to the user
     try {
-        yield sendSignUpMessage({ user: savedUser });
+        yield sendSignUpMessage({
+            user: savedUser,
+            emailConfirmationLink
+        });
     } catch (e) {
         // Log an error about not being able to send the email and try and delete the user we just made
         logger.error(e, 'Could not send welcome email to user');

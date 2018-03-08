@@ -12,7 +12,7 @@ const HomeSearch = ({
     renderLocationBar
 }) => {
     return (
-        <div className='search' >    
+        <div className='search' >
             <PlacesAutoComplete inputProps={{...inputProps, placeholder: "Enter a destination..."}}/>
             <div> 
                 <p> OR </p> 

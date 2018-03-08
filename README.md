@@ -38,11 +38,11 @@ The following is the schema of every collection in the database
 }
 ```
 #### Text Searches
-In order to perform a text search a collection needs to have a text index on the field being searched and it must also declare a language. 
+In order to perform a text search a collection needs to have a text index on the field being searched and it must also declare a language. Note that if you are using a text search on an aggregation pipeline, it must be the first field in the `$match` field. 
 
 Declaring a language means each document has a `language` field set to a language, for example: `english`.
 
-To make a text index on a field, use the following command:
+To make a text index on a field, use the following command (in the mongo shell for example):
 ```
 db.<collection>.createIndex( { <filed>: "text" } )
 

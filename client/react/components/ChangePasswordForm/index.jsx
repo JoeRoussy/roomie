@@ -58,7 +58,6 @@ const ChangePasswordForm = ({
     isProcessing
 }) => (
     <div>
-        <span>{!!isProcessing}</span>
         <Button onClick={() => navigateTo('/profile')}>Back to Profile</Button>
         <Form id='changePasswordForm' onSubmit={onSubmit} error={!!errorMessage}>
             <Message

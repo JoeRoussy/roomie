@@ -292,7 +292,7 @@ export const editUser = ({
         id
     } = req.params;
 
-    // We can only update the name and profiel picture using this route
+    // We can only update the name and profile picture using this route
     const {
         body: {
             name,

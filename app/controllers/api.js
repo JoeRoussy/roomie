@@ -2,13 +2,12 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
-import { findListings, getUserByEmail, getEmailConfirmationLink } from '../components/data';
-import { findListings, getUserByEmail, removeUserById } from '../components/data';
+import { findListings, getUserByEmail, getEmailConfirmationLink, removeUserById } from '../components/data';
 import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
-import { isText, isPrice } from '../../common/validation'
+import { isPrice, isText } from '../../common/validation';
 import {
     insert as insertInDb,
     getById,
@@ -207,8 +206,8 @@ export const createUser = ({
                 password: hashedPassword,
                 isLandlord: userType === process.env.USER_TYPE_LANDLORD,
                 isEmailConfirmed: false,
-                profilePictureLink,
-                isInactive: false
+                isInactive: false,
+                profilePictureLink
             },
             returnInsertedDocument: true
         });

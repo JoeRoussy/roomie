@@ -1,14 +1,46 @@
 import React from 'react';
-import { Grid, Image, Button } from 'semantic-ui-react';
+import { Grid, Image, Button, Card } from 'semantic-ui-react';
 import moment from 'moment';
+
+import './styles.css';
 
 const ProfileDisplay = ({
     user,
-    onEditClicked
+    isDeleting,
+    isDeletePending,
+    onEditClicked,
+    onDeleteClicked,
+    onCancelDeleteClicked,
+    onDeleteConfirmedClicked
 }) => {
     // NOTE: Since this is an inner component we need to be worried about the user being ripped out the of the state
     if (!user) {
         return '';
+    }
+
+    let editSection;
+
+    if (isDeleting) {
+        editSection = (
+            <Card id="deleteProfileConfirmation">
+                <Card.Content>
+                    <Card.Header>Warning</Card.Header>
+                    <Card.Description>
+                        <p>This action will permanently delete your account.</p>
+                        <p>Are you sure?</p>
+                        <Button id="confirmDeleteProfileButton" color="red" loading={isDeletePending} onClick={onDeleteConfirmedClicked}>Permanently Delete My Account</Button>
+                        <Button id="cancelDeleteProfileButton" color="green" onClick={onCancelDeleteClicked}>Keep My Account</Button>
+                    </Card.Description>
+                </Card.Content>
+            </Card>
+        );
+    } else {
+        editSection = (
+            <div>
+                <Button id="editProfileButton" onClick={onEditClicked}>Edit Profile</Button>
+                <Button id="deleteProfileButton" color="red" onClick={onDeleteClicked}>Delete Profile</Button>
+            </div>
+        );
     }
 
     return (
@@ -21,7 +53,7 @@ const ProfileDisplay = ({
                     <h2>{user.name}</h2>
                     <p id='profileEmail'>{user.email}</p>
                     <p id='profileJoined'>Joined: {moment(user.createdAt).format('MMMM Do YYYY')}</p>
-                    <Button id="editProfileButton" onClick={onEditClicked}>Edit Profile</Button>
+                    {editSection}
                 </Grid.Column>
             </Grid>
         </div>

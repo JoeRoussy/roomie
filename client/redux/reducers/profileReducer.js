@@ -41,7 +41,7 @@ const profileReducer = (state = config, actions) => {
 
             break;
         }
-        case 'PROFILE_FORM_SUBMIT_PENDING': {
+        case 'PROFILE_FORM_SUBMIT': {
             state = {
                 ...state,
                 isFormProcessing: true,
@@ -86,6 +86,48 @@ const profileReducer = (state = config, actions) => {
                 isFormProcessing: false,
                 isEditing: false,
                 errorMessage
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_SELECTED': {
+            state = {
+                ...state,
+                isDeleting: true
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_CANCELED': {
+            state = {
+                ...state,
+                isDeleting: false
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_CONFIRMED_PENDING': {
+            state = {
+                ...state,
+                isDeletePending: true
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_CONFIRMED_FULFILLED': {
+            state = {
+                ...state,
+                isDeletePending: false,
+                isDeleting: false
+            };
+
+            break;
+        }
+        case 'DELETE_PROFILE_CONFIRMED_REJECTED': {
+            state = {
+                ...state,
+                isDeletePending: false,
+                isDeleting: false
             };
 
             break;

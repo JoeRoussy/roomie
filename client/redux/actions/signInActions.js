@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { handleAuthenticationRequest } from '../components';
+import { handleUserUpdateRequest } from '../components';
 
-export const submitForm = (formData) => (dispatch) => (handleAuthenticationRequest({
+export const submitForm = (formData) => (dispatch) => (handleUserUpdateRequest({
     promise: axios.post(`${process.env.API_ROOT}/login`, {
         ...formData
     }),

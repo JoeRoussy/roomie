@@ -2,12 +2,14 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
-import { findListings, getUserByEmail } from '../components/data';
+import { findListings, getUserByEmail, removeUserById } from '../components/data';
 import { insert as insertInDb, getById, findAndUpdate, deleteById } from '../components/db/service';
 import { generateHash as generatePasswordHash } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
+
+import { isText } from '../../common/validation'
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
@@ -25,7 +27,7 @@ export const getListings = ({
         result = yield findListings({
             listingsCollection,
             query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
-        })
+        });
     } catch (e) {
         logger.error(e, 'Error finding listings');
 
@@ -90,18 +92,18 @@ export const createUser = ({
         SIGNUP_ERRORS_GENERIC,
         SIGNUP_ERRORS_MISSING_VALUES,
         SIGNUP_ERRORS_INVALID_VALUES,
-        UPLOADS_RELATIVE_PATH
+        UPLOADS_RELATIVE_PATH,
+        DEFAULT_PROFILE_PICTURE_RELATIVE_PATH,
+        JWT_SECRET
     } = process.env;
 
-    let imageFields = {};
+    // Start with the default profile picture
+    let profilePictureLink = DEFAULT_PROFILE_PICTURE_RELATIVE_PATH;
 
     if (filename && mimetype && path) {
         // We have an image upload that we need to include in the saved user
         // NOTE: Validation middleware has already run by the time we get here so we can assume the image is valid
-
-        imageFields = {
-            profilePictureLink: `${UPLOADS_RELATIVE_PATH}${filename}`
-        };
+        profilePictureLink = `${UPLOADS_RELATIVE_PATH}${filename}`
     }
 
     if (!name || !email || !password || !userType) {
@@ -165,7 +167,8 @@ export const createUser = ({
                 email,
                 password: hashedPassword,
                 isLandlord: userType === process.env.USER_TYPE_LANDLORD,
-                ...imageFields
+                profilePictureLink,
+                isInactive: false
             },
             returnInsertedDocument: true
         });
@@ -204,7 +207,7 @@ export const createUser = ({
     }
 
     // Now that the user has been saved, return a jwt encapsulating the new user (transformered for output)
-    const token = jwt.sign(transformUserForOutput(savedUser), process.env.JWT_SECRET);
+    const token = jwt.sign(transformUserForOutput(savedUser), JWT_SECRET);
 
     return res.json({
         token
@@ -314,4 +317,30 @@ export const editUser = ({
     });
 });
 
-// TODO: More api route handlers here
+export const deleteCurrentUser = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You need to pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        _id: id
+    } = req.user;
+
+    try {
+        yield removeUserById({
+            id,
+            usersCollection
+        });
+    } catch (e) {
+        logger.error(e, `Error removing user with id: ${id}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not delete user'
+        });
+    }
+
+    return res.json({
+        user: transformUserForOutput(req.user)
+    });
+});

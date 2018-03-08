@@ -20,10 +20,21 @@ The following is the schema of every collection in the database
     "password" : "$2a$12$IcrNgsEvxlIwAATHyt6x7uDmWFIpLS5FJMonEZJdi2rbuUoPXX7y6",
     "profilePictureLink" : "/assets/42df91899b4f4ae0d143ac93125a86081517444232096.jpeg",
     "isLandlord" : false,
+    "isEmailConfirmed": true,
     "createdAt" : ISODate("2018-02-01T19:46:43.079Z")
 }
 ```
-
+##### Verification
+```
+{
+    "_id": ObjectId("5aa06d13b79334668e299785"),
+    "urlIdentifyer" : "1bb86f0ca20b6e2727e10de850339ed68945b382c30323c321c807bec1218e8a1520463123571",
+    "userId" : ObjectId("5aa06d13b79334668e299784"),
+    "isCompeted" : true,
+    "type" : "email",
+    "createdAt" : ISODate("2018-03-07T22:52:03.571Z")
+}
+```
 ##### Listing
 ```
 {

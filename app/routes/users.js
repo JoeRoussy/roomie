@@ -21,6 +21,7 @@ export default ({
         validateImage,
         createUser({
             usersCollection: db.collection('users'),
+            verificationsCollection: db.collection('verifications'),
             logger: getChildLogger({
                 baseLogger,
                 additionalFields: {

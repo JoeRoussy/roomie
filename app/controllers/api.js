@@ -8,6 +8,7 @@ import { generateHash as generatePasswordHash } from '../components/authenticati
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
+import { isPrice } from '../../common/validation';
 
 import { isText } from '../../common/validation'
 
@@ -15,18 +16,51 @@ export const getListings = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
-    // TODO: Get query parameters out of req.query
-
     const {
+        bathrooms,
+        bedrooms,
+        furnished,
+        keywords,
+        maxPrice,
+        minPrice,
         location = ''
     } = req.query;
 
+    // Perform validation
+    if (minPrice && !isPrice(minPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_NAN,
+            message: `Please enter a valid price for minimum price.`
+        });
+    }
+
+    if (maxPrice && !isPrice(maxPrice)) {
+       return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MAX_PRICE_NAN,
+            message: `Please enter a valid price for maximum price.`
+        });
+    }
+
+    if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_LESS_THAN_MAX_PRICE,
+            message: `Minimum price is greater than maximum price.`
+        });
+    }
+
+    //Search Db with query
     let result;
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
+            query: req.query // TODO: Make query use the maps
         });
     } catch (e) {
         logger.error(e, 'Error finding listings');

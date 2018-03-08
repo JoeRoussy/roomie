@@ -120,10 +120,17 @@ export const findAndUpdate = async ({
 
 // Return a document by id
 // Can pass the id as a string or as an ObjectID instance
-export const getById = async({
+export const getById = ({
     collection = required('collection'),
     id = required('id')
-}) => await collection.findOne({ _id: convertToObjectId(id) });
+}) => collection.findOne({ _id: convertToObjectId(id) });
+
+// Delete a document by id
+// Can pass the id as a string or as an ObjectID instance
+export const deleteById = ({
+    collection = required('collection'),
+    id = required('id')
+}) => collection.deleteOne({ _id: convertToObjectId(id) });
 
 // Since the callbacks for findOneAndUpdate and updateMany have a different structure, encapsulate the complexity
 // of verification in these two functions

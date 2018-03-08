@@ -2,7 +2,7 @@ import express from 'express';
 
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { createUser, editUser } from '../controllers/api';
+import { createUser, editUser, deleteCurrentUser } from '../controllers/api';
 import { canModifyUser, isAuthenticated } from '../controllers/utils';
 import {
     singleFile as parseSingleFileUpload,
@@ -61,6 +61,19 @@ export default ({
             })
         })
     ]);
+
+    userRouter.delete('/me', [
+        isAuthenticated,
+        deleteCurrentUser({
+            usersCollection: db.collection('users'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-delete-current'
+                }
+            })
+        })
+    ])
 
     return userRouter;
 }

@@ -5,6 +5,8 @@ import { Redirect } from 'react-router';
 import { submitForm } from '../../../redux/actions/signInActions';
 import SignInForm from '../../components/SignInForm';
 
+import './styles.css';
+
 const SignIn = ({
     user,
     onSubmit,

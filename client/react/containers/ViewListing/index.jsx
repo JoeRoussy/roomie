@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { Item, Icon, Image, Label } from 'semantic-ui-react';
 
-import { getListingById } from '../../redux/actions/listingsActions';
+import { getListingById } from '../../../redux/actions/listingsActions';
+
+import './styles.css';
 
 @connect((store) => ({
     listing: store.listingsReducer.listing

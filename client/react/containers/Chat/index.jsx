@@ -3,14 +3,14 @@ import {Divider,Grid} from 'semantic-ui-react'
 import {push} from 'react-router-redux';
 import React, {Component}  from 'react';
 
-import ChannelBar from '../components/chat/ChannelBar'
-import ChatInput from '../components/chat/ChatInput'
-import ChatView from '../components/chat/ChatView'
-import ExtraInfoBar from '../components/chat/ExtraInfoBar'
+import ChannelBar from '../../components/chat/ChannelBar'
+import ChatInput from '../../components/chat/ChatInput'
+import ChatView from '../../components/chat/ChatView'
+import ExtraInfoBar from '../../components/chat/ExtraInfoBar'
 
-import { getChannels,loadActiveChannel,setActiveChannel,modifyPendingMessage } from '../../redux/actions/chatActions';
+import { getChannels,loadActiveChannel,setActiveChannel,modifyPendingMessage } from '../../../redux/actions/chatActions';
 
-import '../components/chat/styles.css';
+import './styles.css';
 
 @connect((store)=>({
     channels: store.ChatReducer.channels,

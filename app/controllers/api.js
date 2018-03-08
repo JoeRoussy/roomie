@@ -2,7 +2,7 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
-import { findListings, getUserByEmail, getEmailConfirmationLink } from '../components/data';
+import { findListings, getUserByEmail, getEmailConfirmationLink, removeUserById } from '../components/data';
 import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
@@ -13,6 +13,8 @@ import {
     findAndUpdate,
     deleteById
 } from '../components/db/service';
+
+import { isText } from '../../common/validation'
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
@@ -30,7 +32,7 @@ export const getListings = ({
         result = yield findListings({
             listingsCollection,
             query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
-        })
+        });
     } catch (e) {
         logger.error(e, 'Error finding listings');
 
@@ -172,6 +174,7 @@ export const createUser = ({
                 password: hashedPassword,
                 isLandlord: userType === process.env.USER_TYPE_LANDLORD,
                 isEmailConfirmed: false,
+                isInactive: false,
                 ...imageFields
             },
             returnInsertedDocument: true
@@ -381,4 +384,30 @@ export const editUser = ({
     });
 });
 
-// TODO: More api route handlers here
+export const deleteCurrentUser = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You need to pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        _id: id
+    } = req.user;
+
+    try {
+        yield removeUserById({
+            id,
+            usersCollection
+        });
+    } catch (e) {
+        logger.error(e, `Error removing user with id: ${id}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not delete user'
+        });
+    }
+
+    return res.json({
+        user: transformUserForOutput(req.user)
+    });
+});

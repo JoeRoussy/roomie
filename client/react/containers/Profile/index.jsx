@@ -11,7 +11,10 @@ import {
     editProfile,
     cancelEditProfile,
     editProfilePicture,
-    cancelEditProfilePicture
+    cancelEditProfilePicture,
+    deleteProfile,
+    cancelDeleteProfile,
+    confirmDeleteProfile
 } from '../../../redux/actions/profileActions';
 import { navigateTo as getNavigateTo } from '../../../components';
 
@@ -29,7 +32,12 @@ const Profile = ({
     onPictureEditClicked,
     onCancelPictureEditClicked,
     isEditingPicture,
-    navigateTo
+    navigateTo,
+    isDeleting,
+    onDeleteClicked,
+    onCancelDeleteClicked,
+    onDeleteConfirmedClicked,
+    isDeletePending
 }) => {
     const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
@@ -52,7 +60,15 @@ const Profile = ({
             navigateTo={navigateTo}
         />
     ) : (
-        <ProfileDisplay user={user} onEditClicked={onEditClicked} />
+        <ProfileDisplay
+            user={user}
+            isDeleting={isDeleting}
+            onDeleteClicked={onDeleteClicked}
+            onCancelDeleteClicked={onCancelDeleteClicked}
+            onDeleteConfirmedClicked={onDeleteConfirmedClicked}
+            onEditClicked={onEditClicked}
+            isDeletePending={isDeletePending}
+        />
     )
 
     return (
@@ -77,7 +93,9 @@ const mapStateToProps = ({
         isFormProcessing,
         errorMessage,
         isEditing,
-        isEditingPicture
+        isEditingPicture,
+        isDeleting,
+        isDeletePending
     } = {}
 }) => ({
     user,
@@ -85,7 +103,9 @@ const mapStateToProps = ({
     isFormProcessing,
     errorMessage,
     isEditing,
-    isEditingPicture
+    isEditingPicture,
+    isDeleting,
+    isDeletePending
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -100,7 +120,10 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(cancelEditProfilePicture());
         dispatch(change('profile', 'profilePic', null));
     },
-    navigateTo: getNavigateTo(dispatch)
+    navigateTo: getNavigateTo(dispatch),
+    onDeleteClicked: () => dispatch(deleteProfile()),
+    onCancelDeleteClicked: () => dispatch(cancelDeleteProfile()),
+    onDeleteConfirmedClicked: () => dispatch(confirmDeleteProfile)
 });
 
 

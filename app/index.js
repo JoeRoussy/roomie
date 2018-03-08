@@ -2,7 +2,7 @@ require('babel-polyfill')
 require('babel-register')({
     presets: ['react'],
     ignore: function (filename) {
-        if (filename.indexOf('/app/') === -1) {
+        if (filename.indexOf('/app/') === -1 && filename.indexOf('/common/') === -1) {
             return true;
         }
 

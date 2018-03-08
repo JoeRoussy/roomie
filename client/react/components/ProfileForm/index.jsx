@@ -84,6 +84,7 @@ const ProfileForm = ({
                     label={{ content: <Icon color='blue' name='mail' size='large' /> }}
                     labelPosition='left'
                     placeholder='Email'
+                    readOnly
                 />
 
                 <Grid columns={2}>

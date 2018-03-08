@@ -257,11 +257,10 @@ export const editUser = ({
         id
     } = req.params;
 
-    // We can only update the name and email using this route
+    // We can only update the name and profiel picture using this route
     const {
         body: {
-            name,
-            email
+            name
         } = {},
         file: {
             filename,
@@ -276,39 +275,6 @@ export const editUser = ({
         UPLOADS_RELATIVE_PATH
     } = process.env;
 
-    // Make sure the user is not trying to change their email to one that already exists
-    if (email) {
-        let existingUser;
-
-        try {
-            existingUser = yield getUserByEmail({
-                email,
-                usersCollection
-            });
-        } catch (e) {
-            logger.error(e, 'Error getting user by email for duplicate email check');
-
-            return sendError({
-                res,
-                status: 500,
-                message: 'Could not update user',
-                errorKey: PROFILE_EDIT_ERRORS_GENERIC
-            });
-        }
-
-        // Make sure there is not an existing user, and if there is, make sure it is not the current user
-        if (existingUser && !existingUser._id.equals(req.user._id)) {
-            logger.info({ currentUser: req.user, existingUser: existingUser }, 'Attempt to edit email to another email that already exists');
-
-            return sendError({
-                res,
-                status: 400,
-                message: 'A user already exists with that email',
-                errorKey: PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL
-            });
-        }
-    }
-
     let profilePictureLink;
 
     if (filename && mimetype && path) {
@@ -319,7 +285,6 @@ export const editUser = ({
     // Make sure the update does not contain any null values
     let update = {};
     update = extendIfPopulated(update, 'name', name);
-    update = extendIfPopulated(update, 'email', email);
     update = extendIfPopulated(update, 'profilePictureLink', profilePictureLink);
 
     let newUser;

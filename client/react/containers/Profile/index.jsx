@@ -13,6 +13,7 @@ import {
     editProfilePicture,
     cancelEditProfilePicture
 } from '../../../redux/actions/profileActions';
+import { navigateTo as getNavigateTo } from '../../utils';
 
 import './styles.css';
 
@@ -27,7 +28,8 @@ const Profile = ({
     onEditCancelClicked,
     onPictureEditClicked,
     onCancelPictureEditClicked,
-    isEditingPicture
+    isEditingPicture,
+    navigateTo
 }) => {
     const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
@@ -47,6 +49,7 @@ const Profile = ({
             onPictureEditClicked={onPictureEditClicked}
             onCancelPictureEditClicked={onCancelPictureEditClicked}
             isEditingPicture={isEditingPicture}
+            navigateTo={navigateTo}
         />
     ) : (
         <ProfileDisplay user={user} onEditClicked={onEditClicked} />
@@ -96,7 +99,8 @@ const mapDispatchToProps = (dispatch) => ({
         // the form.
         dispatch(cancelEditProfilePicture());
         dispatch(change('profile', 'profilePic', null));
-    }
+    },
+    navigateTo: getNavigateTo(dispatch)
 });
 
 

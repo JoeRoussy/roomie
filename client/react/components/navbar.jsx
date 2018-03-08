@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 import { setJwt } from '../../components';
 import { setCurrentUser } from '../../redux/actions/userActions';
+import { navigateTo as getNavigateTo } from '../utils';
 
 /*
     This is an example of a pure stateless component. It is just a function that returns some
@@ -61,7 +62,7 @@ const NavBar = ({
 // A stateless component has no referece to the store's dispatch function. This function
 // gives us a chance to add props in the context of the store dispatch function.
 const mapDispatchToProps = (dispatch) => ({
-    navigateTo: (path) => dispatch(push(path)),
+    navigateTo: getNavigateTo(dispatch),
     logout: () => {
         setJwt(null);
         dispatch(setCurrentUser(null));

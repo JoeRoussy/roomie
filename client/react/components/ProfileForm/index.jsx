@@ -42,7 +42,8 @@ const ProfileForm = ({
     profilePictureLink,
     isEditingPicture,
     onPictureEditClicked,
-    onCancelPictureEditClicked
+    onCancelPictureEditClicked,
+    navigateTo
 }) => {
     const profilePictureRightSection = isEditingPicture ? (
         <Grid.Column>
@@ -78,23 +79,15 @@ const ProfileForm = ({
                     labelPosition='left'
                     placeholder='Name'
                 />
-                <Field
-                    name='email'
-                    component={LabelInputField}
-                    label={{ content: <Icon color='blue' name='mail' size='large' /> }}
-                    labelPosition='left'
-                    placeholder='Email'
-                    readOnly
-                />
+            <Button type='button' onClick={() => navigateTo('/change-password')}>Change Password</Button>
+            <Grid columns={2}>
+                <Grid.Column>
+                    <Image className='profilePicture' src={`${process.env.ASSETS_ROOT}${profilePictureLink}`} />
+                </Grid.Column>
+                {profilePictureRightSection}
+            </Grid>
 
-                <Grid columns={2}>
-                    <Grid.Column>
-                        <Image className='profilePicture' src={`${process.env.ASSETS_ROOT}${profilePictureLink}`} />
-                    </Grid.Column>
-                    {profilePictureRightSection}
-                </Grid>
-
-                <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update Profile</Button>
+            <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update Profile</Button>
             </Form>
         </div>
     )

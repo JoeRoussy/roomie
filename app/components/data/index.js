@@ -40,14 +40,16 @@ export const findListings = async({
 
     let orArgs = [];
     if(bathrooms){
-        const bathroomArray = bathrooms.split(',').map(item => { return {bathroom:parseInt(item)} });
+        const bathroomArray = bathrooms.split(',').map(item => ({bathroom:parseInt(item)}));
         orArgs = orArgs.concat(bathroomArray);
     }
     if(bedrooms){
-        const bedroomArray = bedrooms.split(',').map(item => { return {bedroom:parseInt(item)} });
+        const bedroomArray = bedrooms.split(',').map(item => ({bedroom:parseInt(item)}));
         orArgs = orArgs.concat(bedroomArray);
     }
-    if(orArgs.length) filter.$or = orArgs;
+    if(orArgs.length){
+        filter.$or = orArgs;
+    }
 
     if(keywords){
         const keywordArray = keywords.split(' ');

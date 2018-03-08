@@ -97,8 +97,7 @@ export default class Listings extends React.Component {
                             <Loader inline inverted>Fetching Results</Loader>
                         </Dimmer>
                     </div>)
-        }
-        else{
+        } else{
             body = listings.length ? (
                 <Card.Group>
                     { this.mapListings(listings) }

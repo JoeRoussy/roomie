@@ -36,7 +36,7 @@ export const getListings = ({
     if (maxPrice && !isPrice(maxPrice)) {
        return sendError({
             res,
-            status: 400,rue,
+            status: 400,
             errorKey: SEARCH_ERRORS_MAX_PRICE_NAN,
             message: `Please enter a valid price for maximum price.`
         });

@@ -1,31 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Checkbox } from 'semantic-ui-react';
 import _without from 'lodash/without'
 
-class WrappedCheckBox extends Component {
-    constructor(){
-        super();
-        this.onChange = this.onChange.bind(this);
+const onChange = (input, label) => (event, data) => {
+    var oldValues = input.value || [];
+    var newValues = _without(oldValues, label);
+    if (data.checked) {
+        newValues = oldValues.concat(label);
     }
-    onChange(event, data) {
-        const { input, label } = this.props;
-        var oldValues = input.value || [];
-        var newValues = _without(oldValues, label);
-        if (data.checked) {
-            newValues = oldValues.concat(label);
-        }
-        input.onChange(newValues);
-    }
-    render(){
-        const {input, label} = this.props;
-        return(
-            <Checkbox  
-                label = {this.props.label}
-                checked={input.value.indexOf(label) != -1}
-                onChange={this.onChange}
-            />
-        )
-    }
+    input.onChange(newValues);
 }
+
+const WrappedCheckBox = ({
+    label,
+    input
+}) => (
+    <Checkbox  
+        label = {label}
+        checked={input.value.indexOf(label) != -1}
+        onChange={onChange(input, label)}
+    />
+)
 
 export default WrappedCheckBox;

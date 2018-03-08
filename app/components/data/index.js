@@ -40,7 +40,8 @@ export const getEmailConfirmationLink = async({
     } = user;
 
     const {
-        ROOT_URL = required('ROOT_URL')
+        ROOT_URL = required('ROOT_URL'),
+        VERIFICATION_TYPES_EMAIL = required('VERIFICATION_TYPES_EMAIL')
     } = process.env;
 
     const now = +new Date();
@@ -56,7 +57,8 @@ export const getEmailConfirmationLink = async({
             document: {
                 urlIdentifyer,
                 userId,
-                isCompeted: false
+                isCompeted: false,
+                type: VERIFICATION_TYPES_EMAIL
             }
         })
     } catch (e) {

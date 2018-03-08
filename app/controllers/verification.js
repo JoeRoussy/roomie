@@ -98,5 +98,5 @@ export const verifyEmail = ({
     }
 
     // Everything has worked well so redirect to the homepage
-    return res.redirect(`http://${FRONT_END_ROOT}/`);
+    return res.redirect(`${FRONT_END_ROOT}/`);
 });

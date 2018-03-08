@@ -32,6 +32,14 @@ const userReducer = (state = config, actions) => {
 
             break;
         }
+        case 'DELETE_PROFILE_CONFIRMED_FULFILLED': {
+            state = {
+                ...state,
+                user: null
+            };
+
+            break;
+        }
     }
 
     return state;

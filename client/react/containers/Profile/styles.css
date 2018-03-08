@@ -6,6 +6,10 @@
     margin-top: 16px;
 }
 
+#profileEditForm button[type="submit"] {
+    margin-top: 32px;
+}
+
 .profilePicture {
     margin: 0 0 0 auto;
     max-height: 300px;

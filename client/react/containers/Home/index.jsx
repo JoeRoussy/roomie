@@ -3,9 +3,11 @@ import { Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
-import styles from '../../styles/styles.css';
-import HomeSearch from '../components/Search/HomeSearch';
-import { search, handleLocationChange } from '../../redux/actions/searchActions';
+import HomeSearch from '../../components/Search/HomeSearch';
+import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
+import { search, handleLocationChange } from '../../../redux/actions/searchActions';
+
+import './styles.css';
 
 @connect((store)=>({
     user: store.userReducer.user,

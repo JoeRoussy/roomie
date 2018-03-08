@@ -4,8 +4,10 @@ import { push } from 'react-router-redux';
 import { Container, Menu, Icon } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 
-import { setJwt } from '../../components';
-import { setCurrentUser } from '../../redux/actions/userActions';
+import { setJwt } from '../../../components';
+import { setCurrentUser } from '../../../redux/actions/userActions';
+
+import './styles.css';
 
 /*
     This is an example of a pure stateless component. It is just a function that returns some

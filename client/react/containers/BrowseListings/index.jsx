@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Button, Card, Icon, Image, Grid , Loader, Dimmer, Segment} from 'semantic-ui-react';
 
-
-import { getListings } from '../../redux/actions/listingsActions';
-import { search, handleLocationChange } from '../../redux/actions/searchActions';
-import ListingCard from '../components/ListingCard';
-import ViewListingsSearch from '../components/Search/ViewListingsSearch';
-
+import { getListings } from '../../../redux/actions/listingsActions';
+import ListingCard from '../../components/ListingCard';
+import { search, handleLocationChange } from '../../../redux/actions/searchActions';
+import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
+import './styles.css';
 
 @connect((store) => ({
     listings: store.searchReducer.listings,

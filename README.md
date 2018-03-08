@@ -37,6 +37,20 @@ The following is the schema of every collection in the database
     "createdAt":ISODate("2018-02-06 12:26:57.209")
 }
 ```
+#### Text Searches
+In order to perform a text search a collection needs to have a text index on the field being searched and it must also declare a language. 
+
+Declaring a language means each document has a `language` field set to a language, for example: `english`.
+
+To make a text index on a field, use the following command:
+```
+db.<collection>.createIndex( { <filed>: "text" } )
+
+// For example:
+db.reviews.createIndex( { comments: "text" } )
+```
+The following collections have a text index:
+* Listings on location
 
 
 ### Logging

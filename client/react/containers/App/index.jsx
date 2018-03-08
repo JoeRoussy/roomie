@@ -11,6 +11,7 @@ import SignUp from '../Signup';
 import SignIn from '../SignIn';
 import ViewListing from '../ViewListing';
 import Profile from '../Profile';
+import ChangePassword from '../ChangePassword';
 import Chat from '../Chat';
 
 import './styles.css';
@@ -36,6 +37,7 @@ const App = ({
             <Route exact path="/listings/:id" component={ViewListing} />
             <Route exact path="/sign-in" component={SignIn} />
             <Route exact path="/profile" component={Profile} />
+            <Route exact path="/change-password" component={ChangePassword} />
         </main>
         <footer>
             Copyright © 2018 Roomie

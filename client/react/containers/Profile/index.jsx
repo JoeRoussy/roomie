@@ -16,6 +16,7 @@ import {
     cancelDeleteProfile,
     confirmDeleteProfile
 } from '../../../redux/actions/profileActions';
+import { navigateTo as getNavigateTo } from '../../../components';
 
 import './styles.css';
 
@@ -31,6 +32,7 @@ const Profile = ({
     onPictureEditClicked,
     onCancelPictureEditClicked,
     isEditingPicture,
+    navigateTo,
     isDeleting,
     onDeleteClicked,
     onCancelDeleteClicked,
@@ -55,6 +57,7 @@ const Profile = ({
             onPictureEditClicked={onPictureEditClicked}
             onCancelPictureEditClicked={onCancelPictureEditClicked}
             isEditingPicture={isEditingPicture}
+            navigateTo={navigateTo}
         />
     ) : (
         <ProfileDisplay
@@ -117,6 +120,7 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(cancelEditProfilePicture());
         dispatch(change('profile', 'profilePic', null));
     },
+    navigateTo: getNavigateTo(dispatch),
     onDeleteClicked: () => dispatch(deleteProfile()),
     onCancelDeleteClicked: () => dispatch(cancelDeleteProfile()),
     onDeleteConfirmedClicked: () => dispatch(confirmDeleteProfile)

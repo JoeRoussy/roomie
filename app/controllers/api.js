@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail, getEmailConfirmationLink, removeUserById } from '../components/data';
-import { generateHash as generatePasswordHash } from '../components/authentication';
+import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
@@ -292,11 +292,12 @@ export const editUser = ({
         id
     } = req.params;
 
-    // We can only update the name and email using this route
+    // We can only update the name and profile picture using this route
     const {
         body: {
             name,
-            email
+            password,
+            oldPassword
         } = {},
         file: {
             filename,
@@ -308,20 +309,49 @@ export const editUser = ({
     const {
         PROFILE_EDIT_ERRORS_GENERIC,
         PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL,
-        UPLOADS_RELATIVE_PATH
+        UPLOADS_RELATIVE_PATH,
+        PROFILE_EDIT_ERRORS_INCORRECT_PASSWORD
     } = process.env;
 
-    // Make sure the user is not trying to change their email to one that already exists
-    if (email) {
-        let existingUser;
+    let hashedNewPassword;
+
+    if (password) {
+        // We need to make sure the old password was passed and it is correct
+        if (!oldPassword) {
+            logger.warn({ name, id }, 'Attempt to update password without providing old password');
+
+            return sendError({
+                res,
+                status: 400,
+                message: 'You must provide the current password of a user to change the password'
+            });
+        }
+
+        // Get the user that goes with this id and compare the passwords
+        let user;
 
         try {
-            existingUser = yield getUserByEmail({
-                email,
-                usersCollection
+            user = yield getById({
+                collection: usersCollection,
+                id
             });
         } catch (e) {
-            logger.error(e, 'Error getting user by email for duplicate email check');
+            logger.error(e, `Error fetching user with id: ${id} for checking old password before password update`);
+
+            return sendError({
+                res,
+                status: 400,
+                message: 'Could not update user',
+                errorKey: PROFILE_EDIT_ERRORS_GENERIC
+            });
+        }
+
+        let isPasswordValid;
+
+        try {
+            isPasswordValid = yield comparePasswords(oldPassword, user.password);
+        } catch (e) {
+            logger.error(e, 'Error during password comparison for password update');
 
             return sendError({
                 res,
@@ -331,17 +361,17 @@ export const editUser = ({
             });
         }
 
-        // Make sure there is not an existing user, and if there is, make sure it is not the current user
-        if (existingUser && !existingUser._id.equals(req.user._id)) {
-            logger.info({ currentUser: req.user, existingUser: existingUser }, 'Attempt to edit email to another email that already exists');
-
+        if (!isPasswordValid) {
             return sendError({
                 res,
                 status: 400,
-                message: 'A user already exists with that email',
-                errorKey: PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL
+                message: 'Incorrect password',
+                errorKey: PROFILE_EDIT_ERRORS_INCORRECT_PASSWORD
             });
         }
+
+        // Now that we know everything is valid, hash the new password
+        hashedNewPassword = yield generatePasswordHash(password);
     }
 
     let profilePictureLink;
@@ -354,8 +384,8 @@ export const editUser = ({
     // Make sure the update does not contain any null values
     let update = {};
     update = extendIfPopulated(update, 'name', name);
-    update = extendIfPopulated(update, 'email', email);
     update = extendIfPopulated(update, 'profilePictureLink', profilePictureLink);
+    update = extendIfPopulated(update, 'password', hashedNewPassword);
 
     let newUser;
 

@@ -3,10 +3,12 @@ import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail, getEmailConfirmationLink } from '../components/data';
+import { findListings, getUserByEmail, removeUserById } from '../components/data';
 import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
+import { isText, isPrice } from '../../common/validation'
 import {
     insert as insertInDb,
     getById,
@@ -18,19 +20,52 @@ export const getListings = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
-    // TODO: Get query parameters out of req.query
-
     const {
+        bathrooms,
+        bedrooms,
+        furnished,
+        keywords,
+        maxPrice,
+        minPrice,
         location = ''
     } = req.query;
 
+    // Perform validation
+    if (minPrice && !isPrice(minPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_NAN,
+            message: `Please enter a valid price for minimum price.`
+        });
+    }
+
+    if (maxPrice && !isPrice(maxPrice)) {
+       return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MAX_PRICE_NAN,
+            message: `Please enter a valid price for maximum price.`
+        });
+    }
+
+    if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_LESS_THAN_MAX_PRICE,
+            message: `Minimum price is greater than maximum price.`
+        });
+    }
+
+    //Search Db with query
     let result;
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
-        })
+            query: req.query // TODO: Make query use the maps
+        });
     } catch (e) {
         logger.error(e, 'Error finding listings');
 
@@ -96,18 +131,18 @@ export const createUser = ({
         SIGNUP_ERRORS_GENERIC,
         SIGNUP_ERRORS_MISSING_VALUES,
         SIGNUP_ERRORS_INVALID_VALUES,
-        UPLOADS_RELATIVE_PATH
+        UPLOADS_RELATIVE_PATH,
+        DEFAULT_PROFILE_PICTURE_RELATIVE_PATH,
+        JWT_SECRET
     } = process.env;
 
-    let imageFields = {};
+    // Start with the default profile picture
+    let profilePictureLink = DEFAULT_PROFILE_PICTURE_RELATIVE_PATH;
 
     if (filename && mimetype && path) {
         // We have an image upload that we need to include in the saved user
         // NOTE: Validation middleware has already run by the time we get here so we can assume the image is valid
-
-        imageFields = {
-            profilePictureLink: `${UPLOADS_RELATIVE_PATH}${filename}`
-        };
+        profilePictureLink = `${UPLOADS_RELATIVE_PATH}${filename}`
     }
 
     if (!name || !email || !password || !userType) {
@@ -172,7 +207,8 @@ export const createUser = ({
                 password: hashedPassword,
                 isLandlord: userType === process.env.USER_TYPE_LANDLORD,
                 isEmailConfirmed: false,
-                ...imageFields
+                profilePictureLink,
+                isInactive: false
             },
             returnInsertedDocument: true
         });
@@ -241,7 +277,7 @@ export const createUser = ({
     }
 
     // Now that the user has been saved, return a jwt encapsulating the new user (transformered for output)
-    const token = jwt.sign(transformUserForOutput(savedUser), process.env.JWT_SECRET);
+    const token = jwt.sign(transformUserForOutput(savedUser), JWT_SECRET);
 
     return res.json({
         token
@@ -381,4 +417,30 @@ export const editUser = ({
     });
 });
 
-// TODO: More api route handlers here
+export const deleteCurrentUser = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You need to pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        _id: id
+    } = req.user;
+
+    try {
+        yield removeUserById({
+            id,
+            usersCollection
+        });
+    } catch (e) {
+        logger.error(e, `Error removing user with id: ${id}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not delete user'
+        });
+    }
+
+    return res.json({
+        user: transformUserForOutput(req.user)
+    });
+});

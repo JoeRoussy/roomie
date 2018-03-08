@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
 import { findListings, getUserByEmail, getEmailConfirmationLink } from '../components/data';
-import { generateHash as generatePasswordHash } from '../components/authentication';
+import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
@@ -260,7 +260,9 @@ export const editUser = ({
     // We can only update the name and profiel picture using this route
     const {
         body: {
-            name
+            name,
+            password,
+            oldPassword
         } = {},
         file: {
             filename,
@@ -272,8 +274,70 @@ export const editUser = ({
     const {
         PROFILE_EDIT_ERRORS_GENERIC,
         PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL,
-        UPLOADS_RELATIVE_PATH
+        UPLOADS_RELATIVE_PATH,
+        PROFILE_EDIT_ERRORS_INCORRECT_PASSWORD
     } = process.env;
+
+    let hashedNewPassword;
+
+    if (password) {
+        // We need to make sure the old password was passed and it is correct
+        if (!oldPassword) {
+            logger.warn({ name, id }, 'Attempt to update password without providing old password');
+
+            return sendError({
+                res,
+                status: 400,
+                message: 'You must provide the current password of a user to change the password'
+            });
+        }
+
+        // Get the user that goes with this id and compare the passwords
+        let user;
+
+        try {
+            user = yield getById({
+                collection: usersCollection,
+                id
+            });
+        } catch (e) {
+            logger.error(e, `Error fetching user with id: ${id} for checking old password before password update`);
+
+            return sendError({
+                res,
+                status: 400,
+                message: 'Could not update user',
+                errorKey: PROFILE_EDIT_ERRORS_GENERIC
+            });
+        }
+
+        let isPasswordValid;
+
+        try {
+            isPasswordValid = yield comparePasswords(oldPassword, user.password);
+        } catch (e) {
+            logger.error(e, 'Error during password comparison for password update');
+
+            return sendError({
+                res,
+                status: 500,
+                message: 'Could not update user',
+                errorKey: PROFILE_EDIT_ERRORS_GENERIC
+            });
+        }
+
+        if (!isPasswordValid) {
+            return sendError({
+                res,
+                status: 400,
+                message: 'Incorrect password',
+                errorKey: PROFILE_EDIT_ERRORS_INCORRECT_PASSWORD
+            });
+        }
+
+        // Now that we know everything is valid, hash the new password
+        hashedNewPassword = yield generatePasswordHash(password);
+    }
 
     let profilePictureLink;
 
@@ -286,6 +350,7 @@ export const editUser = ({
     let update = {};
     update = extendIfPopulated(update, 'name', name);
     update = extendIfPopulated(update, 'profilePictureLink', profilePictureLink);
+    update = extendIfPopulated(update, 'password', hashedNewPassword);
 
     let newUser;
 

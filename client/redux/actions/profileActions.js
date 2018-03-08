@@ -14,6 +14,7 @@ export const submitForm = (formData) => (dispatch) => {
         type: 'PROFILE_FORM_SUBMIT_PENDING'
     });
 
+    // NOTE: The id of the user is snuck in as an inital value of the form
     axios.put(`${process.env.API_ROOT}/api/users/${formData._id}`, submissionData)
         .then((res) => {
             const {

@@ -3,34 +3,58 @@ import { connect } from 'react-redux';
 import { Container } from 'semantic-ui-react';
 
 import ChangePasswordForm from '../../components/ChangePasswordForm';
-import { navigateTo as getNavigateTo } from '../../utils';
+import { navigateTo as getNavigateTo } from '../../../components';
 import { submitForm } from '../../../redux/actions/changePasswordActions';
 
 import './styles.css';
 
 const ChangePassword = ({
     onSubmit,
+    formData,
     errorMessage,
-    navigateTo
+    navigateTo,
+    user,
+    isProcessing
 }) => {
+    const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
+
     return (
         <Container>
+            {redirectSection}
             <h1>Change Password</h1>
-            <ChangePasswordForm onSubmit={onSubmit} errorMessage={errorMessage} navigateTo={navigateTo} />
+            <ChangePasswordForm
+                onSubmit={onSubmit(formData)}
+                isProcessing={isProcessing}
+                errorMessage={errorMessage}
+                navigateTo={navigateTo}
+                initialValues={{ _id: user._id }}
+            />
         </Container>
     );
 }
 
 const mapStateToProps = ({
     changePasswordReducer: {
-        errorMessage
+        errorMessage,
+        isProcessing
+    } = {},
+    userReducer: {
+        user
+    } = {},
+    form: {
+        changePassword: {
+            values
+        } = {}
     } = {}
 }) => ({
-    errorMessage
+    errorMessage,
+    user,
+    formData: values,
+    isProcessing
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onSubmit: (formData) => dispatch(submitForm(formData)),
+    onSubmit: (formData) => () => dispatch(submitForm(formData)),
     navigateTo: getNavigateTo(dispatch)
 });
 

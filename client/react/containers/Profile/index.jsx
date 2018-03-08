@@ -13,7 +13,7 @@ import {
     editProfilePicture,
     cancelEditProfilePicture
 } from '../../../redux/actions/profileActions';
-import { navigateTo as getNavigateTo } from '../../utils';
+import { navigateTo as getNavigateTo } from '../../../components';
 
 import './styles.css';
 

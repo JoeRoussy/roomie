@@ -58,6 +58,7 @@ const ChangePasswordForm = ({
     isProcessing
 }) => (
     <div>
+        <span>{!!isProcessing}</span>
         <Button onClick={() => navigateTo('/profile')}>Back to Profile</Button>
         <Form id='changePasswordForm' onSubmit={onSubmit} error={!!errorMessage}>
             <Message
@@ -69,16 +70,19 @@ const ChangePasswordForm = ({
                 name='oldPassword'
                 component={InputField}
                 placeholder='Enter Your Old Password'
+                type='password'
             />
             <Field
                 name='newPassword'
                 component={InputField}
                 placeholder='Enter Your New Password'
+                type='password'
             />
             <Field
                 name='confirmNewPassword'
                 component={InputField}
                 placeholder='Confirm Your New Password'
+                type='password'
             />
             <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Change Password</Button>
         </Form>

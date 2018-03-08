@@ -44,7 +44,7 @@ Declaring a language means each document has a `language` field set to a languag
 
 To make a text index on a field, use the following command (in the mongo shell for example):
 ```
-db.<collection>.createIndex( { <filed>: "text" } )
+db.<collection>.createIndex( { <field>: "text" } )
 
 // For example:
 db.reviews.createIndex( { comments: "text" } )

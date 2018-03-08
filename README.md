@@ -42,8 +42,14 @@ The following is the schema of every collection in the database
     "name":"Jugal's Place",
     "address":"1 Rainbow Road",
     "description":"It’s aite.",
+    "keywords": ["plants", "windows"],
+    "bathroom": 1,
+    "bedroom": 2,
+    "furnished": "Yes",
     "Views":11,
     "location":"Placeville",
+    "lat": 35.234,
+    "lng": 78.123,
     "ownerId":"5a79de27431d9e0a2c8fbd4b",
     "createdAt":ISODate("2018-02-06 12:26:57.209")
 }

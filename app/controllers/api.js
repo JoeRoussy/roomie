@@ -205,13 +205,9 @@ export const createUser = ({
                 email,
                 password: hashedPassword,
                 isLandlord: userType === process.env.USER_TYPE_LANDLORD,
-<<<<<<< HEAD
                 isEmailConfirmed: false,
-                ...imageFields
-=======
-                profilePictureLink,
-                isInactive: false
->>>>>>> master
+                isInactive: false,
+                profilePictureLink
             },
             returnInsertedDocument: true
         });

@@ -56,6 +56,7 @@
     "nodemailer-express-handlebars": "3.0.0",
     "nodemailer-juice": "1.0.0",
     "path": "^0.12.7",
+    "query-string": "5.1.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-hot-loader": "^3.1.3",

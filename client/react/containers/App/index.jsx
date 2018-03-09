@@ -12,7 +12,9 @@ import SignIn from '../SignIn';
 import ViewListing from '../ViewListing';
 import Profile from '../Profile';
 import ChangePassword from '../ChangePassword';
+import ForgotPassword from '../ForgotPassword';
 import Chat from '../Chat';
+import ForgotPasswordForm from '../ForgotPasswordForm';
 
 import './styles.css';
 
@@ -38,6 +40,8 @@ const App = ({
             <Route exact path="/sign-in" component={SignIn} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/change-password" component={ChangePassword} />
+            <Route exact path="/forgot-password" component={ForgotPassword} />
+            <Route exact path="/forgot-password-form" component={ForgotPasswordForm} />
         </main>
         <footer>
             Copyright © 2018 Roomie

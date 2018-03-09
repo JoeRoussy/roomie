@@ -41,7 +41,7 @@ const ForgotPasswordEmailForm = ({
             component={InputField}
             placeholder='Email'
         />
-        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Log In</Button>
+    <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Send Email</Button>
     </Form>
 );
 

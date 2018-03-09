@@ -2,7 +2,7 @@ import express from 'express';
 
 import { required } from '../components/custom-utils';
 import { getChildLogger } from '../components/log-factory';
-import { sendResetPasswordEmail } from '../controllers/passwordReset';
+import { sendEmail } from '../controllers/passwordReset';
 
 export default ({
     db = required('db'),
@@ -10,8 +10,8 @@ export default ({
 }) => {
     const passwordReset = express.Router();
 
-    passwordReset.post('/', sendResetPasswordEmail({
-        verificationsCollection: db.collection('verifications'),
+    passwordReset.post('/', sendEmail({
+        passwordResetsCollection: db.collection('passwordResets'),
         usersCollection: db.collection('users'),
         logger: getChildLogger({
             baseLogger,

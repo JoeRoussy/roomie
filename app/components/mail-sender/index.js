@@ -3,7 +3,7 @@ import nodemailerHandlebars from 'nodemailer-express-handlebars';
 import inlineCss from 'nodemailer-juice';
 import marked from 'marked';
 
-import { required } from '../custom-utils';
+import { required, RethrownError } from '../custom-utils';
 
 // Helpers for handlebars templating
 const _helpers = {
@@ -115,9 +115,41 @@ export const sendSignUpMessage = async({
         template: 'signUp'
     };
 
-    return await _sendMessage({
-        to: email,
-        message,
-        subject: 'Welcome to Roomie!'
-    });
-}
+    try {
+        return await _sendMessage({
+            to: email,
+            message,
+            subject: 'Welcome to Roomie!'
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error sending sign up message to user with email: ${email}`);
+    }
+};
+
+export const sendPasswordResetEmail = async({
+    user = required('user'),
+    resetLink = required('resetLink')
+}) => {
+    const {
+        name,
+        email
+    } = user;
+
+    const message = {
+        context: {
+            name,
+            resetLink
+        },
+        template: 'resetPassword'
+    };
+
+    try {
+        return await _sendMessage({
+            to: email,
+            message,
+            subject: 'Password Reset Requested'
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error sending sign up message to user with email: ${email}`);
+    }
+};

@@ -2,9 +2,10 @@ import {
     required,
     print,
     convertToObjectId,
-    RethrownError
+    RethrownError,
+    getUniqueHash
 } from '../custom-utils';
-import { get as getHash } from '../hash';
+//import { get as getHash } from '../hash';
 import { insert as insertInDb } from '../db/service';
 
 import { findAndUpdate } from '../db/service';
@@ -51,11 +52,10 @@ export const getEmailConfirmationLink = async({
         VERIFICATION_TYPES_EMAIL = required('VERIFICATION_TYPES_EMAIL')
     } = process.env;
 
-    const now = +new Date();
-    const userHash = await getHash({ input: user });
+    // const now = +new Date();
+    // const userHash = await getHash({ input: user });
 
-    // Append current timestamp to hash to guard against collisions
-    const urlIdentifyer = `${userHash}${now}`;
+    const urlIdentifyer = await getUniqueHash(user);
 
     // Now save the verification document
     try {
@@ -109,4 +109,35 @@ export const removeUserById = async({
     } catch (e) {
         throw new RethrownError(e, `Error removing user with id ${id}`);
     }
+};
+
+// Makes a password reset document and returns a link a user can use to reset their password
+export const getPasswordResetLink = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    user = required('user')
+}) => {
+    const {
+        _id: userId
+    } = user;
+
+    const {
+        FRONT_END_ROOT = required('FRONT_END_ROOT')
+    } = process.env;
+
+    const urlIdentifyer = await getUniqueHash(user);
+
+    try {
+        await insertInDb({
+            collection: passwordResetsCollection,
+            document: {
+                userId: userId,
+                urlIdentifyer
+            }
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error inserting password reset document for user with id: ${userId}`);
+    }
+
+    // Now make a link to reset the email
+    return `${FRONT_END_ROOT}/?passwordResetToken=${urlIdentifyer}`;
 };

@@ -16,7 +16,7 @@ export const sendEmail = ({
     } = req.body;
 
     const {
-        PASSWORD_RESET_ERRORS_NOT_USER_FOR_ID = required('PASSWORD_RESET_ERRORS_NOT_USER_FOR_ID').
+        PASSWORD_RESET_ERRORS_NO_USER_FOR_EMAIL = required('PASSWORD_RESET_ERRORS_NO_USER_FOR_EMAIL').
         PASSWORD_RESET_ERRORS_GENERIC = required('PASSWORD_RESET_ERRORS_GENERIC')
     } = process.env;
 
@@ -37,7 +37,14 @@ export const sendEmail = ({
             email
         });
     } catch (e) {
-        logger.error(e, `Error finding user associated with email: ${email}`)
+        logger.error(e, `Error finding user associated with email: ${email}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'There was an error processing your request',
+            errorKey: PASSWORD_RESET_ERRORS_GENERIC
+        });
     }
 
     if (!user) {
@@ -45,7 +52,7 @@ export const sendEmail = ({
             res,
             status: 400,
             message: 'Could not find user with that email',
-            errorKey: PASSWORD_RESET_ERRORS_NOT_USER_FOR_ID
+            errorKey: PASSWORD_RESET_ERRORS_NO_USER_FOR_EMAIL
         });
     }
 

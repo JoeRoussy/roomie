@@ -54,6 +54,16 @@ The following is the schema of every collection in the database
     "createdAt":ISODate("2018-02-06 12:26:57.209")
 }
 ```
+##### Password Reset
+```
+{
+    "_id" : ObjectId("5aa386a1cd37e6a171dc75c4"),
+    "userId" : ObjectId("5aa06d13b79334668e299784"),
+    "urlIdentifyer" : "4facffe8c323f961ad00bba16223a2bfedf2e8be4c499cb467aec0f85ef6878d1520666273741",
+    "expired" : true,
+    "createdAt" : ISODate("2018-03-10T07:17:53.741Z")
+}
+```
 #### Text Searches
 In order to perform a text search a collection needs to have a text index on the field being searched and it must also declare a language. Note that if you are using a text search on an aggregation pipeline, it must be the first field in the `$match` field. 
 

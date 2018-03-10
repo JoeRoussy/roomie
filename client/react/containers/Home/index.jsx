@@ -13,7 +13,6 @@ import { setPasswordResetToken } from '../../../redux/actions/forgotPasswordForm
 import './styles.css';
 
 @connect((store)=>({
-    searchArgs: store.form.homeSearch,
     user: store.userReducer.user,
     searchState: store.searchReducer
 }))
@@ -34,15 +33,15 @@ class Home extends Component {
 
     processLocation(searchArgs) {
         if(searchArgs === '') return null;
-        const processedArgs = `location=${searchArgs.trim()}`; //TODO PROCESS LOCATION
+        const processedArgs = [`location=${searchArgs.trim()}`]; //TODO PROCESS LOCATION
         return processedArgs;
     }
     submitSearch(event,searchArgs) {
         if(event.keyCode === 13){
             const processedArgs = this.processLocation(searchArgs);
             if(processedArgs === null || processedArgs === '') return;
-            this.props.dispatch(search(processedArgs));
-            return this.props.dispatch(push('/browse-listings'));
+            this.props.dispatch(search(processedArgs, 1));
+            return this.props.dispatch(push('/listings'));
         }
     }
 
@@ -77,12 +76,10 @@ class Home extends Component {
                     navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
                     inputProps = {locationProps}
                 />
-
                 {/* INSERT 5 POPULAR LISTINGS HERE */}
             </div>
         )
     }
-
 }
 
 export default Home;

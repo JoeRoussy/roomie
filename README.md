@@ -20,10 +20,21 @@ The following is the schema of every collection in the database
     "password" : "$2a$12$IcrNgsEvxlIwAATHyt6x7uDmWFIpLS5FJMonEZJdi2rbuUoPXX7y6",
     "profilePictureLink" : "/assets/42df91899b4f4ae0d143ac93125a86081517444232096.jpeg",
     "isLandlord" : false,
+    "isEmailConfirmed": true,
     "createdAt" : ISODate("2018-02-01T19:46:43.079Z")
 }
 ```
-
+##### Verification
+```
+{
+    "_id": ObjectId("5aa06d13b79334668e299785"),
+    "urlIdentifyer" : "1bb86f0ca20b6e2727e10de850339ed68945b382c30323c321c807bec1218e8a1520463123571",
+    "userId" : ObjectId("5aa06d13b79334668e299784"),
+    "isCompeted" : true,
+    "type" : "email",
+    "createdAt" : ISODate("2018-03-07T22:52:03.571Z")
+}
+```
 ##### Listing
 ```
 {
@@ -31,12 +42,32 @@ The following is the schema of every collection in the database
     "name":"Jugal's Place",
     "address":"1 Rainbow Road",
     "description":"It’s aite.",
+    "keywords": ["plants", "windows"],
+    "bathroom": 1,
+    "bedroom": 2,
+    "furnished": "Yes",
     "Views":11,
     "location":"Placeville",
+    "lat": 35.234,
+    "lng": 78.123,
     "ownerId":"5a79de27431d9e0a2c8fbd4b",
     "createdAt":ISODate("2018-02-06 12:26:57.209")
 }
 ```
+#### Text Searches
+In order to perform a text search a collection needs to have a text index on the field being searched and it must also declare a language. Note that if you are using a text search on an aggregation pipeline, it must be the first field in the `$match` field. 
+
+Declaring a language means each document has a `language` field set to a language, for example: `english`.
+
+To make a text index on a field, use the following command (in the mongo shell for example):
+```
+db.<collection>.createIndex( { <field>: "text" } )
+
+// For example:
+db.reviews.createIndex( { comments: "text" } )
+```
+The following collections have a text index:
+* Listings on location
 
 
 ### Logging

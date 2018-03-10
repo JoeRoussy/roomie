@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Container } from 'semantic-ui-react';
+import { Redirect } from 'react-router';
 
 import ChangePasswordForm from '../../components/ChangePasswordForm';
 import { navigateTo as getNavigateTo } from '../../../components';
@@ -27,7 +28,7 @@ const ChangePassword = ({
                 isProcessing={isProcessing}
                 errorMessage={errorMessage}
                 navigateTo={navigateTo}
-                initialValues={{ _id: user._id }}
+                initialValues={{ _id: user ? user._id : null }}
             />
         </Container>
     );

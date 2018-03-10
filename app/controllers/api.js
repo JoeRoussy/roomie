@@ -7,6 +7,7 @@ import { generateHash as generatePasswordHash, comparePasswords } from '../compo
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
+import { isPrice, isText } from '../../common/validation';
 import {
     insert as insertInDb,
     getById,
@@ -14,24 +15,55 @@ import {
     deleteById
 } from '../components/db/service';
 
-import { isText } from '../../common/validation'
-
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
-    // TODO: Get query parameters out of req.query
-
     const {
+        bathrooms,
+        bedrooms,
+        furnished,
+        keywords,
+        maxPrice,
+        minPrice,
         location = ''
     } = req.query;
 
+    // Perform validation
+    if (minPrice && !isPrice(minPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_NAN,
+            message: `Please enter a valid price for minimum price.`
+        });
+    }
+
+    if (maxPrice && !isPrice(maxPrice)) {
+       return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MAX_PRICE_NAN,
+            message: `Please enter a valid price for maximum price.`
+        });
+    }
+
+    if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_LESS_THAN_MAX_PRICE,
+            message: `Minimum price is greater than maximum price.`
+        });
+    }
+
+    //Search Db with query
     let result;
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
+            query: req.query // TODO: Make query use the maps
         });
     } catch (e) {
         logger.error(e, 'Error finding listings');
@@ -98,18 +130,18 @@ export const createUser = ({
         SIGNUP_ERRORS_GENERIC,
         SIGNUP_ERRORS_MISSING_VALUES,
         SIGNUP_ERRORS_INVALID_VALUES,
-        UPLOADS_RELATIVE_PATH
+        UPLOADS_RELATIVE_PATH,
+        DEFAULT_PROFILE_PICTURE_RELATIVE_PATH,
+        JWT_SECRET
     } = process.env;
 
-    let imageFields = {};
+    // Start with the default profile picture
+    let profilePictureLink = DEFAULT_PROFILE_PICTURE_RELATIVE_PATH;
 
     if (filename && mimetype && path) {
         // We have an image upload that we need to include in the saved user
         // NOTE: Validation middleware has already run by the time we get here so we can assume the image is valid
-
-        imageFields = {
-            profilePictureLink: `${UPLOADS_RELATIVE_PATH}${filename}`
-        };
+        profilePictureLink = `${UPLOADS_RELATIVE_PATH}${filename}`
     }
 
     if (!name || !email || !password || !userType) {
@@ -175,7 +207,7 @@ export const createUser = ({
                 isLandlord: userType === process.env.USER_TYPE_LANDLORD,
                 isEmailConfirmed: false,
                 isInactive: false,
-                ...imageFields
+                profilePictureLink
             },
             returnInsertedDocument: true
         });
@@ -244,7 +276,7 @@ export const createUser = ({
     }
 
     // Now that the user has been saved, return a jwt encapsulating the new user (transformered for output)
-    const token = jwt.sign(transformUserForOutput(savedUser), process.env.JWT_SECRET);
+    const token = jwt.sign(transformUserForOutput(savedUser), JWT_SECRET);
 
     return res.json({
         token
@@ -260,7 +292,7 @@ export const editUser = ({
         id
     } = req.params;
 
-    // We can only update the name and profiel picture using this route
+    // We can only update the name and profile picture using this route
     const {
         body: {
             name,

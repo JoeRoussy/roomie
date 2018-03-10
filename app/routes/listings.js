@@ -1,8 +1,8 @@
 import express from 'express';
-
 import { getChildLogger } from '../components/log-factory';
+import { isAuthenticated, isLandlord } from '../controllers/utils';
 import { required } from '../components/custom-utils';
-import { getListings, getListingById } from '../controllers/api';
+import { createListing, getListings, getListingById } from '../controllers/api';
 
 export default ({
     db = required('db'),
@@ -29,6 +29,20 @@ export default ({
             }
         })
     }));
+
+    listingsRouter.post('/listings', [
+        isAuthenticated,
+        isLandlord,
+        createListing({
+            listingsCollection: db.collection('listings'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-listings-create-listing'
+                }
+            })
+        })
+    ]);
 
     return listingsRouter;
 }

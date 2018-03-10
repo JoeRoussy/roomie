@@ -46,7 +46,7 @@ const signUpReducer = (state = config, actions) => {
                     data: {
                         errorKey
                     } = {}
-                }
+                } = {}
             } = payload;
 
             let errorMessage;

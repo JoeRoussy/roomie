@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Button, Card, Icon, Image, Grid , Loader, Dimmer, Segment} from 'semantic-ui-react';
 
-import { getListings } from '../../../redux/actions/listingsActions';
+import { getListings } from '../../../redux/actions/listingActions';
 import ListingCard from '../../components/ListingCard';
 import { search, handleLocationChange } from '../../../redux/actions/searchActions';
 import ViewListingsSearch from '../../components/Search/ViewListingsSearch';

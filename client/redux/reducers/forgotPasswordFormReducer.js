@@ -18,7 +18,7 @@ const forgotPasswordFormReducer = (state = config, actions) => {
             break;
         }
 
-        case 'PASSWORD_RESET_FORM_SUBMITTED': {
+        case 'PASSWORD_RESET_PASSWORD_FORM_SUBMITTED_PENDING': {
             state = {
                 ...state,
                 isProcessing: true
@@ -27,7 +27,7 @@ const forgotPasswordFormReducer = (state = config, actions) => {
             break;
         }
 
-        case 'PASSWORD_RESET_FORM_SUBMITTED_FULFILLED': {
+        case 'PASSWORD_RESET_PASSWORD_FORM_SUBMITTED_FULFILLED': {
             state = {
                 ...state,
                 isProcessing: false,
@@ -37,7 +37,9 @@ const forgotPasswordFormReducer = (state = config, actions) => {
             break;
         }
 
-        case 'PASSWORD_RESET_FORM_SUBMITTED_REJECTED': {
+        case 'PASSWORD_RESET_PASSWORD_FORM_SUBMITTED_REJECTED': {
+            // TODO: Handle error message
+
             state = {
                 ...state,
                 isProcessing: false

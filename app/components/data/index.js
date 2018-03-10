@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import {
     required,
     print,
@@ -131,7 +133,8 @@ export const getPasswordResetLink = async({
             collection: passwordResetsCollection,
             document: {
                 userId: userId,
-                urlIdentifyer
+                urlIdentifyer,
+                expired: false
             }
         });
     } catch (e) {
@@ -140,4 +143,50 @@ export const getPasswordResetLink = async({
 
     // Now make a link to reset the email
     return `${FRONT_END_ROOT}/?passwordResetToken=${urlIdentifyer}`;
+};
+
+// Returns a user wrapped in an envalope: { user }
+export const getUserForPasswordReset = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    urlIdentifyer = required('urlIdentifyer')
+}) => {
+    const {
+        PASSWORD_RESET_DURATION_DAYS = required('PASSWORD_RESET_DURATION_DAYS')
+    } = process.env;
+
+    const maxRequestDuration = +PASSWORD_RESET_DURATION_DAYS;
+    const maxPossibleDateString = moment().add(maxRequestDuration, 'days').endOf('day').toISOString();
+
+    try {
+        return await passwordResetsCollection.aggregate([
+            {
+                $match: {
+                    urlIdentifyer,
+                    createdAt: {
+                        $lte: new Date(maxPossibleDateString) // Need to pass a Date to mongo (not a moment)
+                    },
+                    expired: {
+                        $ne: true
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    passwordResetId: '$_id',
+                    user: { $arrayElemAt: [ '$users', 0 ] }
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding user for password reset with urlIdentifyer: ${urlIdentifyer}`);
+    }
 };

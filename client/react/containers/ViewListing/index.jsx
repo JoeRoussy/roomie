@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Item, Icon, Image, Label } from 'semantic-ui-react';
 
 import { getListingById } from '../../../redux/actions/listingsActions';
+import MapComponent from  '../../components/Map/Map';
 
 import './styles.css';
 
@@ -23,6 +24,13 @@ export default class ViewListing extends React.Component {
 
     render() {
         const { listing } = this.props;
+        console.log(listing)
+        const position = {
+          // lat: listing.lat,
+          // lng: listing.lng
+            lat: 37.762,
+            lng: 37.762
+        }
         return (
             <div>
                 <Item.Group divided>
@@ -39,6 +47,10 @@ export default class ViewListing extends React.Component {
                           </Item.Content>
                     </Item>
                 </Item.Group>
+
+                <div style= {{margin:'auto'}}>
+                  <MapComponent position={position} />
+                </div>
             </div>
         )
     }

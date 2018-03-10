@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { push } from 'react-router-redux';
 
 /*
     Since we are using the redux-promise-middleware, returning a promise as the payload of an action
@@ -20,12 +21,12 @@ export const getListingById = (id) => ({
     payload: axios.get(`${process.env.API_ROOT}/api/listings/${id}`)
 });
 
-export const submitForm = (formValues) => (dispatch) => {
+// Create listing
+export const submitCreateForm = (formValues) => (dispatch) => {
     dispatch({
         type: 'CREATE_LISTING_SUBMIT'
     });
 
-    // TODO: Pass the user id in here as well.
     axios.post(`${process.env.API_ROOT}/api/listings`, formValues)
         .then(res => {
             const {
@@ -40,6 +41,10 @@ export const submitForm = (formValues) => (dispatch) => {
                 type: 'CREATE_LISTING_FULFILLED',
                 payload: res
             });
+
+            // Route to the view listing page with the id of this listing
+            const path = `/listings/${listing._id}`;
+            dispatch(push(path));
         })
         .catch(e => {
             console.log(e);
@@ -49,3 +54,11 @@ export const submitForm = (formValues) => (dispatch) => {
             });
         });
 }
+
+export const editListing = () => ({
+    type: 'EDIT_LISTING'
+})
+
+export const cancelEditListing = () => ({
+    type: 'EDIT_LISTING_CANCELLED'
+})

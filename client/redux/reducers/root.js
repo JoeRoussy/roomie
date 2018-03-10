@@ -4,7 +4,7 @@ import { combineReducers } from 'redux';
 
 import { reducer as formReducer } from 'redux-form';
 
-import listingsReducer from './listingsReducer';
+import listingReducer from './listingReducer';
 import sampleReducer from './sampleReducer';
 import searchReducer from './searchReducer';
 import userReducer from './userReducer';
@@ -14,7 +14,7 @@ import signInReducer from './signInReducer';
 import profileReducer from './profileReducer';
 
 const reducers = combineReducers({
-    listingsReducer,
+    listingReducer,
 	sampleReducer,
     searchReducer,
     userReducer,

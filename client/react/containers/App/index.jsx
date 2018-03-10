@@ -9,8 +9,8 @@ import Home from '../home';
 import Navbar from '../../components/navbar';
 import SignUp from '../signup';
 import SignIn from '../SignIn';
-import ViewListing from '../ViewListing';
-import ManageListing from './ManageListing';
+import Listing from '../Listing';
+import CreateListing from '../CreateListing';
 import Profile from '../Profile';
 import Chat from '../chat';
 
@@ -34,9 +34,9 @@ const App = ({
             <Route exact path="/sign-up" component={SignUp} />
             <Route exact path="/chat" component={Chat} />
             <Route exact path="/listings" component={BrowseListings} />
-            <Route exact path="/listings/:id" component={ViewListing} />
+            <Route exact path="/listings/:id" component={Listing} />
+            <Route exact path="/create-listing" component={CreateListing} />
             <Route exact path="/sign-in" component={SignIn} />
-            <Route exact path="/edit" component={ManageListing} />
             <Route exact path="/profile" component={Profile} />
         </main>
         <footer>

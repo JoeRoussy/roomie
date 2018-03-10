@@ -14,8 +14,8 @@ export const getListings = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
-    // TODO: Get query parameters out of req.query
 
+    // TODO: Get query parameters out of req.query
     const {
         location = ''
     } = req.query;
@@ -108,7 +108,8 @@ export const createListing = ({
                 name,
                 address,
                 description,
-                location
+                location,
+                ownerId: req.user._id
             },
             returnInsertedDocument: true
         });

@@ -1,6 +1,7 @@
 import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
+import { isAuthenticated, isLandlord } from '../controllers/utils';
 import { createUser, createListing,getListings, getListingById } from '../controllers/api';
 
 import listingsRouter from './listings';
@@ -18,15 +19,19 @@ export default ({
         baseLogger
     }));
 
-    router.post('/listings', createListing({
-        listingsCollection: db.collection('listings'),
-        logger: getChildLogger({
-            baseLogger,
-            additionalFields: {
-                module: 'api-listings-create-listing'
-            }
+    router.post('/listings', [
+        isAuthenticated,
+        isLandlord,
+        createListing({
+            listingsCollection: db.collection('listings'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-listings-create-listing'
+                }
+            })
         })
-    }));
+    ]);
 
     router.use('/listings', listingsRouter);
 
@@ -42,7 +47,7 @@ export default ({
             }
         })
     }));
-    
+
     router.use('/users', usersRouter({
         db,
         baseLogger

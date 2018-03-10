@@ -43,14 +43,14 @@ const NavBar = ({
     return (
         <Menu fixed='top' inverted>
             <Container>
-                //left side
+                {/* Left side */}
                 <Menu.Item header onClick={() => navigateTo('/')}>Roomie</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/search')}>Search </Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/groups')}><Icon name='group'/> Groups</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='feed'/> Listings</Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/edit')}><Icon name='asl'/>Edit</Menu.Item>
-                //right side
+                <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add square'/>Create Listing</Menu.Item>
+                {/* Right side */}
                 <Menu.Menu position='right'>
                     {rightSection}
                 </Menu.Menu>

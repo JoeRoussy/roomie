@@ -3,6 +3,8 @@ import { Field, reduxForm } from 'redux-form';
 import { Form, Icon, Button, Message } from 'semantic-ui-react';
 import { LabelInputField, TextAreaField, Checkbox, SelectField } from 'react-semantic-redux-form';
 
+import RenderDropzone from '../RenderDropzone';
+
 const listingTypes = [
   { key: 'select', value:'', text:'Choose One' },
   { key: 'one', value: 'apartment', text: 'Apartment' },
@@ -12,6 +14,7 @@ const listingTypes = [
   { key: 'five', value: 'other', text: 'Other'}
 ]
 
+// TODO: Update validation with all required fields
 const validate = (values) => {
     let errors = {};
 
@@ -54,13 +57,11 @@ const validate = (values) => {
 }
 
 // NOTE: Valid is a prop passed in by redux-form
-const ListingForm = ({
+const CreateListingForm = ({
     onSubmit,
     isProcessing,
     valid,
-    errorMessage,
-    initialValues,
-    onEditCancelClicked
+    errorMessage
 }) => (
     <Form onSubmit={onSubmit} error={!!errorMessage}>
         <Message
@@ -147,12 +148,15 @@ const ListingForm = ({
             component={Checkbox}
             label='Air Conditioning'
         />
-        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update</Button>
-        <Button type='button' onClick={onEditCancelClicked} >Cancel</Button>
+        <Field
+            name='images'
+            component={RenderDropzone}
+        />
+        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Create</Button>
     </Form>
 )
 
 export default reduxForm({
-    form: 'listingForm',
+    form: 'createListingForm',
     validate
-})(ListingForm);
+})(CreateListingForm);

@@ -1,21 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import EditListing from '../../components/EditListing';
-import { submitForm } from '../../../redux/actions/listingsActions';
+import CreateListingForm from '../../components/CreateListingForm';
 
-const ManageListing = ({
+import { submitCreateForm } from '../../../redux/actions/listingActions';
+
+const CreateListing = ({
     onSubmit,
-    formValues,
+    formData,
     isFormProcessing,
     errorMessage
 }) => {
     return (
         <div>
             <h1>Create Listing</h1>
-            <EditListing
-                onSubmit={onSubmit}
-                formValues={formValues}
+            <CreateListingForm
+                onSubmit={onSubmit(formData)}
+                formData={formData}
                 isFormProcessing={isFormProcessing}
                 errorMessage={errorMessage}
             />
@@ -29,18 +30,18 @@ const mapStateToProps = ({
         errorMessage
     } = {},
     form: {
-        listingForm: {
+        createListingForm: {
             values
         } = {}
     } = {}
 }) => ({
     isFormProcessing,
-    formValues: values,
+    formData: values,
     errorMessage
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    onSubmit: (formData) => () => dispatch(submitForm(formData))
+    onSubmit: (formData) => () => dispatch(submitCreateForm(formData))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageListing);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateListing);

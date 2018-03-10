@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Button, Card, Icon, Image } from 'semantic-ui-react';
 
-import { getListings } from '../../../redux/actions/listingsActions';
+import { getListings } from '../../../redux/actions/listingActions';
 import ListingCard from '../../components/ListingCard';
 
 @connect((store) => ({
-    listings: store.listingsReducer.listings
+    listings: store.listingReducer.listings
 }))
 
 export default class Listings extends React.Component {
@@ -15,7 +15,6 @@ export default class Listings extends React.Component {
         super();
 
         this.mapListings = this.mapListings.bind(this);
-        this.refreshListings = this.refreshListings.bind(this);
         this.viewListing = this.viewListing.bind(this);
     }
 
@@ -25,10 +24,6 @@ export default class Listings extends React.Component {
 
     mapListings = (listings) => listings.map((listing, i) =>
         <ListingCard key = { i } listing = { listing } id = { i } viewListing = { () => this.viewListing(listing) } />)
-
-    refreshListings() {
-        this.props.dispatch(getListings());
-    }
 
     // Called when a listing card is clicked.
     // Route to the appropriate listing page using the id.
@@ -51,10 +46,7 @@ export default class Listings extends React.Component {
 
         return (
             <div>
-                <Button onClick= { this.refreshListings } >Refresh Listings</Button>
-                <div>
-                    {body}
-                </div>
+                {body}
             </div>
         )
     }

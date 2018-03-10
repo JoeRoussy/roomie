@@ -15,8 +15,25 @@ export const isAuthenticated = (req, res, next) => {
         return sendError({
             res,
             status: 403,
-            message: 'You are not authorized to perform this action'
+            message: 'You are not authorized to perform this action',
+            errorKey: process.env.USER_ERROR_NOT_LOGGED_IN
         });
+    }
+
+    return next();
+}
+
+// Checks if user is a landlord
+export const isLandlord = (req, res, next) => {
+    if (req.user) {
+        if(!req.user.isLandlord) {
+            return sendError({
+                res,
+                status: 403,
+                message: 'You must be a landlord to perform this action',
+                errorKey: process.env.USER_ERROR_NOT_LANDLORD
+            });
+        }
     }
 
     return next();

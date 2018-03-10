@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 
 import PasswordResetForm from '../../components/PasswordResetForm';
 import { submitForm } from '../../../redux/actions/forgotPasswordFormActions';
@@ -13,10 +14,16 @@ const ForgotPasswordForm = ({
     errorMessage,
     isProcessing,
     formData,
-    onSubmit
+    onSubmit,
+    user
 }) => {
+    // If the request ends up going through there will be a user added to the state
+    // In that case, go to the home page.
+    const redirectSection = user ? (<Redirect to='/' />) : '';
+
     return (
         <Container>
+            {redirectSection}
             <h1>Password Reset</h1>
             <h2>Enter your new password in the form below</h2>
             <PasswordResetForm
@@ -38,12 +45,16 @@ const mapStateToProps = ({
         passwordResetForm: {
             values
         } = {}
+    } = {},
+    userReducer: {
+        user
     } = {}
 }) => ({
     token,
     errorMessage,
     isProcessing,
-    formData: values
+    formData: values,
+    user
 });
 
 const mapDispatchToProps = (dispatch) => ({

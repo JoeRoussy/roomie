@@ -42,8 +42,6 @@ const forgotPasswordReducer = (state = config, actions) => {
                 } = {}
             } = payload;
 
-            console.log(payload.response);
-
             let errorMessage = 'There was an error processing your request.';
 
             if (errorKey === process.env.PASSWORD_RESET_ERRORS_NO_USER_FOR_EMAIL) {

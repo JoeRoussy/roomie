@@ -114,8 +114,6 @@ export const setNewPassword = ({
         password
     } = req.body;
 
-    // TODO: Validate the password
-
     const {
         PASSWORD_RESET_ERRORS_INVALID_TOKEN = required('PASSWORD_RESET_ERRORS_INVALID_TOKEN'),
         PASSWORD_RESET_ERRORS_GENERIC = required('PASSWORD_RESET_ERRORS_GENERIC')

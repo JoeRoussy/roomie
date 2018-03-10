@@ -13,11 +13,13 @@ import { setCurrentUser } from '../actions/userActions';
 // Here we need to dispatch our own actions based on promise outcome becuase we need to mutate local storage
 // if we get a token back. For consistencty, the fulfilled and rejected actions are still dispatched as the promise middleware
 // would have done.
-export const handleAuthenticationRequest = ({
+export const handleUserUpdateRequest = ({
     promise,
     submitActionName,
     dispatch,
-    successToast
+    successToast,
+    errorToast,
+    autoClose = true
 }) => {
     dispatch({
         type: submitActionName
@@ -33,19 +35,27 @@ export const handleAuthenticationRequest = ({
 
             if (successToast) {
                 toast.success(successToast, {
-                    autoClose: false
+                    autoClose
                 });
             }
 
+            const currentUser = token ? jwtDecode(token) : null;
+
             setJwt(token);
 
-            dispatch(setCurrentUser(jwtDecode(token)));
+            dispatch(setCurrentUser(currentUser));
             dispatch({
                 type: `${submitActionName}_FULFILLED`,
                 payload: res
             });
         })
         .catch(e => {
+            if (errorToast) {
+                toast.error(errorToast, {
+                    autoClose
+                });
+            }
+
             dispatch({
                 type: `${submitActionName}_REJECTED`,
                 payload: e

@@ -2,11 +2,18 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated } from '../components/custom-utils';
-import { findListings, getUserByEmail } from '../components/data';
-import { insert as insertInDb, getById, findAndUpdate } from '../components/db/service';
-import { generateHash as generatePasswordHash } from '../components/authentication';
+import { findListings, getUserByEmail, getEmailConfirmationLink, removeUserById } from '../components/data';
+import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
+import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
+import { isPrice, isText } from '../../common/validation';
+import {
+    insert as insertInDb,
+    getById,
+    findAndUpdate,
+    deleteById
+} from '../components/db/service';
 
 
 /* LISTINGS */
@@ -14,19 +21,52 @@ export const getListings = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
-
-    // TODO: Get query parameters out of req.query
     const {
+        bathrooms,
+        bedrooms,
+        furnished,
+        keywords,
+        maxPrice,
+        minPrice,
         location = ''
     } = req.query;
 
+    // Perform validation
+    if (minPrice && !isPrice(minPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_NAN,
+            message: `Please enter a valid price for minimum price.`
+        });
+    }
+
+    if (maxPrice && !isPrice(maxPrice)) {
+       return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MAX_PRICE_NAN,
+            message: `Please enter a valid price for maximum price.`
+        });
+    }
+
+    if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
+        return sendError({
+            res,
+            status: 400,
+            errorKey: SEARCH_ERRORS_MIN_PRICE_LESS_THAN_MAX_PRICE,
+            message: `Minimum price is greater than maximum price.`
+        });
+    }
+
+    //Search Db with query
     let result;
 
     try {
         result = yield findListings({
             listingsCollection,
-            query: { $where: `this.location.indexOf("${location}") != -1` } // TODO: Make query use the maps
-        })
+            query: req.query // TODO: Make query use the maps
+        });
     } catch (e) {
         logger.error(e, 'Error finding listings');
 
@@ -131,6 +171,7 @@ export const createListing = ({
 
 export const createUser = ({
     usersCollection = required('usersCollection'),
+    verificationsCollection = required('verificationsCollection'),
     logger = required('logger', 'You must pass in a logger for this function to use')
 }) => coroutine(function* (req, res) {
     const {
@@ -154,18 +195,18 @@ export const createUser = ({
         SIGNUP_ERRORS_GENERIC,
         SIGNUP_ERRORS_MISSING_VALUES,
         SIGNUP_ERRORS_INVALID_VALUES,
-        UPLOADS_RELATIVE_PATH
+        UPLOADS_RELATIVE_PATH,
+        DEFAULT_PROFILE_PICTURE_RELATIVE_PATH,
+        JWT_SECRET
     } = process.env;
 
-    let imageFields = {};
+    // Start with the default profile picture
+    let profilePictureLink = DEFAULT_PROFILE_PICTURE_RELATIVE_PATH;
 
     if (filename && mimetype && path) {
         // We have an image upload that we need to include in the saved user
         // NOTE: Validation middleware has already run by the time we get here so we can assume the image is valid
-
-        imageFields = {
-            profilePictureLink: `${UPLOADS_RELATIVE_PATH}${filename}`
-        };
+        profilePictureLink = `${UPLOADS_RELATIVE_PATH}${filename}`
     }
 
     if (!name || !email || !password || !userType) {
@@ -229,7 +270,9 @@ export const createUser = ({
                 email,
                 password: hashedPassword,
                 isLandlord: userType === process.env.USER_TYPE_LANDLORD,
-                ...imageFields
+                isEmailConfirmed: false,
+                isInactive: false,
+                profilePictureLink
             },
             returnInsertedDocument: true
         });
@@ -244,8 +287,61 @@ export const createUser = ({
         });
     }
 
+    // Make a confirmation document tied to the current user to confirm the email.
+    let emailConfirmationLink;
+    try {
+        emailConfirmationLink = yield getEmailConfirmationLink({
+            verificationsCollection,
+            user: savedUser
+        });
+    } catch (e) {
+        logger.error(e, 'Error making confirmation document for new user');
+
+        // Delete the user we made
+        deleteById({
+            collection: usersCollection,
+            id: savedUser._id
+        })
+            .catch((e) => {
+                logger.error({ user, err: e }, 'Could not delete user after failed confirmation document creation');
+            });
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not sign up',
+            errorKey: SIGNUP_ERRORS_GENERIC
+        });
+    }
+
+    // Send a welcome email to the user
+    try {
+        yield sendSignUpMessage({
+            user: savedUser,
+            emailConfirmationLink
+        });
+    } catch (e) {
+        // Log an error about not being able to send the email and try and delete the user we just made
+        logger.error(e, 'Could not send welcome email to user');
+
+        deleteById({
+            collection: usersCollection,
+            id: savedUser._id
+        })
+            .catch((e) => {
+                logger.error({ user, err: e }, 'Could not delete user after failed email send during user creation');
+            });
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not sign up',
+            errorKey: SIGNUP_ERRORS_GENERIC
+        });
+    }
+
     // Now that the user has been saved, return a jwt encapsulating the new user (transformered for output)
-    const token = jwt.sign(transformUserForOutput(savedUser), process.env.JWT_SECRET);
+    const token = jwt.sign(transformUserForOutput(savedUser), JWT_SECRET);
 
     return res.json({
         token
@@ -261,11 +357,12 @@ export const editUser = ({
         id
     } = req.params;
 
-    // We can only update the name and email using this route
+    // We can only update the name and profile picture using this route
     const {
         body: {
             name,
-            email
+            password,
+            oldPassword
         } = {},
         file: {
             filename,
@@ -277,20 +374,49 @@ export const editUser = ({
     const {
         PROFILE_EDIT_ERRORS_GENERIC,
         PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL,
-        UPLOADS_RELATIVE_PATH
+        UPLOADS_RELATIVE_PATH,
+        PROFILE_EDIT_ERRORS_INCORRECT_PASSWORD
     } = process.env;
 
-    // Make sure the user is not trying to change their email to one that already exists
-    if (email) {
-        let existingUser;
+    let hashedNewPassword;
+
+    if (password) {
+        // We need to make sure the old password was passed and it is correct
+        if (!oldPassword) {
+            logger.warn({ name, id }, 'Attempt to update password without providing old password');
+
+            return sendError({
+                res,
+                status: 400,
+                message: 'You must provide the current password of a user to change the password'
+            });
+        }
+
+        // Get the user that goes with this id and compare the passwords
+        let user;
 
         try {
-            existingUser = yield getUserByEmail({
-                email,
-                usersCollection
+            user = yield getById({
+                collection: usersCollection,
+                id
             });
         } catch (e) {
-            logger.error(e, 'Error getting user by email for duplicate email check');
+            logger.error(e, `Error fetching user with id: ${id} for checking old password before password update`);
+
+            return sendError({
+                res,
+                status: 400,
+                message: 'Could not update user',
+                errorKey: PROFILE_EDIT_ERRORS_GENERIC
+            });
+        }
+
+        let isPasswordValid;
+
+        try {
+            isPasswordValid = yield comparePasswords(oldPassword, user.password);
+        } catch (e) {
+            logger.error(e, 'Error during password comparison for password update');
 
             return sendError({
                 res,
@@ -300,17 +426,17 @@ export const editUser = ({
             });
         }
 
-        // Make sure there is not an existing user, and if there is, make sure it is not the current user
-        if (existingUser && !existingUser._id.equals(req.user._id)) {
-            logger.info({ currentUser: req.user, existingUser: existingUser }, 'Attempt to edit email to another email that already exists');
-
+        if (!isPasswordValid) {
             return sendError({
                 res,
                 status: 400,
-                message: 'A user already exists with that email',
-                errorKey: PROFILE_EDIT_ERRORS_DUPLICATE_EMAIL
+                message: 'Incorrect password',
+                errorKey: PROFILE_EDIT_ERRORS_INCORRECT_PASSWORD
             });
         }
+
+        // Now that we know everything is valid, hash the new password
+        hashedNewPassword = yield generatePasswordHash(password);
     }
 
     let profilePictureLink;
@@ -323,8 +449,8 @@ export const editUser = ({
     // Make sure the update does not contain any null values
     let update = {};
     update = extendIfPopulated(update, 'name', name);
-    update = extendIfPopulated(update, 'email', email);
     update = extendIfPopulated(update, 'profilePictureLink', profilePictureLink);
+    update = extendIfPopulated(update, 'password', hashedNewPassword);
 
     let newUser;
 
@@ -355,4 +481,30 @@ export const editUser = ({
     });
 });
 
-// TODO: More api route handlers here
+export const deleteCurrentUser = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You need to pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        _id: id
+    } = req.user;
+
+    try {
+        yield removeUserById({
+            id,
+            usersCollection
+        });
+    } catch (e) {
+        logger.error(e, `Error removing user with id: ${id}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not delete user'
+        });
+    }
+
+    return res.json({
+        user: transformUserForOutput(req.user)
+    });
+});

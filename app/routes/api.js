@@ -6,6 +6,7 @@ import { createUser, createListing,getListings, getListingById } from '../contro
 
 import listingsRouter from './listings';
 import usersRouter from './users';
+import verifyRouter from './verify';
 
 export default ({
     app = required('app'),
@@ -53,7 +54,10 @@ export default ({
         baseLogger
     }));
 
-    // TODO: More API routes here
+    router.use('/verify', verifyRouter({
+        db,
+        baseLogger
+    }));
 
     // Use the main api router under /api
     app.use('/api', router);

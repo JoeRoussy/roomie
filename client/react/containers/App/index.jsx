@@ -5,14 +5,15 @@ import { ToastContainer } from 'react-toastify';
 import { history } from '../../../redux/store';
 
 import BrowseListings from '../BrowseListings';
-import Home from '../home';
-import Navbar from '../../components/navbar';
-import SignUp from '../signup';
+import Home from '../Home';
+import Navbar from '../../components/Navbar';
+import SignUp from '../Signup';
 import SignIn from '../SignIn';
 import Listing from '../Listing';
 import CreateListing from '../CreateListing';
 import Profile from '../Profile';
-import Chat from '../chat';
+import ChangePassword from '../ChangePassword';
+import Chat from '../Chat';
 
 import './styles.css';
 
@@ -38,6 +39,7 @@ const App = ({
             <Route exact path="/create-listing" component={CreateListing} />
             <Route exact path="/sign-in" component={SignIn} />
             <Route exact path="/profile" component={Profile} />
+            <Route exact path="/change-password" component={ChangePassword} />
         </main>
         <footer>
             Copyright © 2018 Roomie

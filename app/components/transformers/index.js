@@ -9,6 +9,7 @@
 export const transformUserForOutput = (user) => {
     const {
         password,
+        isInactive,
         ...userProps
     } = user;
 

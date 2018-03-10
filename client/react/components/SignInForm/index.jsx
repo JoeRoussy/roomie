@@ -5,6 +5,8 @@ import { LabelInputField } from 'react-semantic-redux-form';
 
 import { isEmail, isPassword } from '../../../../common/validation';
 
+import './styles.css'
+
 
 const validate = (values) => {
     let errors = {};

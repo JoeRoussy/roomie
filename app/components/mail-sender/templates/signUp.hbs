@@ -1,0 +1,35 @@
+<!-- START CENTERED WHITE CONTAINER -->
+<table class="main">
+
+    <!-- START MAIN CONTENT AREA -->
+    <tr>
+        <td class="wrapper">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <p>Welcome {{ name }}!</p>
+                        <p>Thank you for joining roomie!</p>
+                        {{#if isLandlord}}
+                            <p>Listing your rooms on our site will give them unparalelled reach to students and young professionals all over Canada.</p>
+                            <p>We use the most advanced image processing technology to analyze the images you upload to make sure you are using the most effective images for your target audience.</p>
+                            <p>For premium members, we also offer analytics about your listings and suggestions based on the best performing listings on our platform.</p>
+                            <p>We look forward to being your partner in finding tenants for your listings.</p>
+                        {{else}}
+                            <p>Roomie offers an expansive and easy to use search tool for finding a room to rent in Canada. It is completely free to use for tenants.</p>
+                            <p>Roomie also offers roomate matching which suggests roommates based on your preferences (after filling out a short servey).</p>
+                            <p>Once you find roommates, you can chat in a group and choose a place together.</p>
+                            <p>Roomie also offers built in scheduling so you can book a meeting with a landlord right from a chat window, no calls or texts required.</p>
+                            <p>We look forward to helping you find your dream place!</p>
+                        {{/if}}
+                        <p>Please use the button below to confirm your email address:</p>
+                        {{> cta text='Confirm Email' href=emailConfirmationLink}}
+                        <p>Thanks!</p>
+                        <p>Roomie Team</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+<!-- END MAIN CONTENT AREA -->
+</table>

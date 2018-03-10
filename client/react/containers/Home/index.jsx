@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Container } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
@@ -55,11 +55,23 @@ class Home extends Component {
 
         return (
             <div>
-                <HomeSearch
-                    navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
-                    inputProps = {locationProps}
-                />
-                {/* INSERT 5 POPULAR LISTINGS HERE */}
+                <div className='section'>
+                    <Container>
+                        <HomeSearch
+                            navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
+                            inputProps = {locationProps}
+                        />
+                    </Container>
+                    {/* INSERT 5 POPULAR LISTINGS HERE */}
+                </div>
+                <div id='homeRoommatesSection' className='section primaryColourSection'>
+                    <Container>
+                        {/* TODO: Need to change functionality based on if they have groups or not */}
+                        <h2>Looking for Roommates?</h2>
+                        <p id="surveyDescription">Take a survey about your living preferences and we will find roommates for you to choose from that are looking in the same city as you!</p>
+                        <Button type='button' className='primaryColourAlt'>Get Started</Button>
+                    </Container>
+                </div>
             </div>
         )
     }

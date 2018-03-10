@@ -1,0 +1,15 @@
+#homeRoommatesSection {
+    text-align: center;
+}
+
+#homeRoommatesSection h2 {
+    margin-bottom: 50px;
+}
+
+#homeRoommatesSection .ui.button {
+    margin-top: 50px;
+}
+
+#homeRoommatesSection #surveyDescription {
+    font-size: 18px;
+}

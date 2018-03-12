@@ -13,6 +13,7 @@ import signUpReducer from './signUpReducer';
 import signInReducer from './signInReducer';
 import profileReducer from './profileReducer';
 import changePasswordReducer from './changePasswordReducer';
+import homeReducer from './homeReducer';
 
 const reducers = combineReducers({
     listingsReducer,
@@ -24,7 +25,8 @@ const reducers = combineReducers({
     signUpReducer,
     signInReducer,
     profileReducer,
-    changePasswordReducer
+    changePasswordReducer,
+    homeReducer
 });
 
 export default reducers;

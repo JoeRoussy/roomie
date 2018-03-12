@@ -6,12 +6,15 @@ import { push } from 'react-router-redux';
 import HomeSearch from '../../components/Search/HomeSearch';
 import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
 import { search, handleLocationChange } from '../../../redux/actions/searchActions';
+import { getRoommateSuggestionsForUser } from '../../../redux/actions/homeActions';
+import { navigateTo } from '../../../components';
 
 import './styles.css';
 
 @connect((store)=>({
     user: store.userReducer.user,
-    searchState: store.searchReducer
+    searchState: store.searchReducer,
+    roommateSuggestions: store.homeReducer.roommateSuggestions
 }))
 class Home extends Component {
     constructor(props){
@@ -21,7 +24,17 @@ class Home extends Component {
         this.handleLocationChange = this.handleLocationChange.bind(this);
         this.processLocation = this.processLocation.bind(this);
         this.submitSearch = this.submitSearch.bind(this);
+        this.navigateToRoommateSurvey = this.navigateToRoommateSurvey.bind(this);
+    }
 
+    componentWillMount() {
+        const {
+            user
+        } = this.props;
+
+        if (user) {
+            this.props.dispatch(getRoommateSuggestionsForUser(user));
+        }
     }
 
     navigateToCreateListing(user) {
@@ -46,11 +59,36 @@ class Home extends Component {
         this.props.dispatch(handleLocationChange(val))
     }
 
+    navigateToRoommateSurvey() {
+        navigateTo(this.props.dispatch)('/roommate-survey');
+    }
+
     render(){
          const locationProps = {
             value: this.props.searchState.location,
             onChange: (event) => this.handleLocationChange(event),
             onKeyUp: (event) => this.submitSearch(event, this.props.searchState.location)
+        }
+
+        let roommateSection;
+
+        // TODO: Add loading state for section during call to get roommates
+
+        if (this.props.roommateSuggestions.length) {
+            // TODO: View of the roommate cards
+            roommateSection = (
+                <Container>
+
+                </Container>
+            )
+        } else {
+            roommateSection = (
+                <Container>
+                    <h2>Looking for Roommates?</h2>
+                    <p id="surveyDescription">Take a survey about your living preferences and we will find roommates for you to choose from that are looking in the same city as you!</p>
+                    <Button type='button' className='primaryColourAlt' onClick={this.navigateToRoommateSurvey}>Get Started</Button>
+                </Container>
+            );
         }
 
         return (
@@ -65,12 +103,7 @@ class Home extends Component {
                     {/* INSERT 5 POPULAR LISTINGS HERE */}
                 </div>
                 <div id='homeRoommatesSection' className='section primaryColourSection'>
-                    <Container>
-                        {/* TODO: Need to change functionality based on if they have groups or not */}
-                        <h2>Looking for Roommates?</h2>
-                        <p id="surveyDescription">Take a survey about your living preferences and we will find roommates for you to choose from that are looking in the same city as you!</p>
-                        <Button type='button' className='primaryColourAlt'>Get Started</Button>
-                    </Container>
+                    {roommateSection}
                 </div>
             </div>
         )

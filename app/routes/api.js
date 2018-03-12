@@ -6,6 +6,7 @@ import { createUser, getListings, getListingById } from '../controllers/api';
 import listingsRouter from './listings';
 import usersRouter from './users';
 import verifyRouter from './verify';
+import citiesRouter from './cities';
 
 export default ({
     app = required('app'),
@@ -25,6 +26,11 @@ export default ({
     }));
 
     router.use('/verify', verifyRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/cities', citiesRouter({
         db,
         baseLogger
     }));

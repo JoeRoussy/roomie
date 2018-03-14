@@ -67,5 +67,8 @@ export const roommateSurvey = {
         'You often take initiative in social situations.'
     ],
     weightedMore: [ 0, 1, 2, 3, 4 ],
-    highWeight: 3
+    highWeight: 3,
+    errors: {
+        GENERIC: 'GENERIC'
+    }
 }

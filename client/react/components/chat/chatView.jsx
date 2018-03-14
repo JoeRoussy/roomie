@@ -1,7 +1,6 @@
 import { Button, Comment, Container, Menu, Icon } from 'semantic-ui-react';
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 
 const ListComments = ({
     chatLog

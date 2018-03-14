@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { Form, Icon, Button, Input, Message, Segment } from 'semantic-ui-react';
-import { Dropdown } from 'react-semantic-redux-form';
+import { Dropdown, SelectField } from 'react-semantic-redux-form';
 import { Slider } from 'react-semantic-ui-range';
 
 import { SliderWithValue } from '../SliderWithValue';
@@ -19,11 +19,12 @@ const validate = (values) => {
     let errors = {};
 
     const {
-        email,
-        password
+        city
     } = values;
 
-
+    if (!city) {
+        errors.city = 'Please select a city';
+    }
 
     return errors;
 };
@@ -35,7 +36,9 @@ const RoommateSurveyForm = ({
     isProcessing,
     onSliderChange,
     formValues,
-    questions
+    questions,
+    cities,
+    isCitiesLoading
 }) => (
     <Form onSubmit={onSubmit} error={!!errorMessage}>
         <Message
@@ -44,11 +47,12 @@ const RoommateSurveyForm = ({
             content={errorMessage}
         />
         <Field
-            name='cities'
-            component={Dropdown}
-            multiple
-            search
-            selection
+            name='city'
+            label='What city are you looking at?'
+            component={SelectField}
+            placeholder='Select City'
+            options={cities}
+            loading={isCitiesLoading}
         />
         {questions.map((question, index) => {
             const name = `question${index}`;

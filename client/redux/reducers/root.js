@@ -14,6 +14,7 @@ import signInReducer from './signInReducer';
 import profileReducer from './profileReducer';
 import changePasswordReducer from './changePasswordReducer';
 import homeReducer from './homeReducer';
+import roommateSurveyReducer from './roommateSurveyReducer';
 
 const reducers = combineReducers({
     listingsReducer,
@@ -26,7 +27,8 @@ const reducers = combineReducers({
     signInReducer,
     profileReducer,
     changePasswordReducer,
-    homeReducer
+    homeReducer,
+    roommateSurveyReducer
 });
 
 export default reducers;

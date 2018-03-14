@@ -7,6 +7,7 @@ import listingsRouter from './listings';
 import usersRouter from './users';
 import verifyRouter from './verify';
 import citiesRouter from './cities';
+import roommateSurveysRouter from './roommateSurveys';
 
 export default ({
     app = required('app'),
@@ -31,6 +32,11 @@ export default ({
     }));
 
     router.use('/cities', citiesRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/roommateSurveys', roommateSurveysRouter({
         db,
         baseLogger
     }));

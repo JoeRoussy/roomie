@@ -70,5 +70,6 @@ export const roommateSurvey = {
     highWeight: 3,
     errors: {
         GENERIC: 'GENERIC'
-    }
+    },
+    maxRecommendedRoommates: 5
 }

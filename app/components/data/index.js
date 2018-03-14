@@ -195,19 +195,110 @@ export const findRecommendedRoommates = async({
     recommendedRoommatesCollection = required('recommendedRoommatesCollection'),
     userSurveyResponse = required('userSurveyResponse')
 }) => {
+    const {
+        maxRecommendedRoommates
+    } = surveyContants;
+
     // First get all the roommate survey responses that are looking for the same city as our user
     let roommateSurveyResponses = [];
 
     try {
-        roommateSurveyResponses = await roommateSurveysCollection.find({
-            city: userSurveyResponse.city
-        });
+        roommateSurveyResponses = await roommateSurveysCollection.aggregate([
+            {
+                $match: {
+                    city: userSurveyResponse.city,
+                    userId: {
+                        $ne: userSurveyResponse.userId
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            }
+        ]).toArray();
+
+        // NOTE: Cheesey map to take 1 user out of the users because we don't have time to deal with the db upgrade to 3.4
+        roommateSurveyResponses = roommateSurveyResponses.map(({
+            users,
+            userId,
+            ...rest
+        }) => ({
+            user: users[0],
+            ...rest
+        }));
     } catch (e) {
         throw new RethrownError(e, 'Error getting roommate survey responses');
     }
 
-    console.log('roommateSurveyResponses', roommateSurveyResponses);
+    // If we have a small amount of people looking in the same city, just return them as we don't have any to sort through
+    if (roommateSurveyResponses.length <= maxRecommendedRoommates) {
+        return roommateSurveyResponses.map(transformRoommateResponseForOutput);
+    }
+
+    const {
+        userId: submittedUserId,
+        createdAt,
+        ...submittedUserQuestionResponses
+    } = userSurveyResponse;
+
+    // Compute the distance from our current user to each survey response.
+    const roommateDistances = roommateSurveyResponses.map((response) => {
+        const {
+            _id,
+            city,
+            user,
+            userId,
+            createdAt,
+            ...questionResponses
+        } = response;
+
+        // Compute the Euclidean distance between the current response and our user
+        const squaredDistance = Object.keys(questionResponses)
+            .reduce((accumulator, responseKey) => {
+                const componentDistance = Math.pow(submittedUserQuestionResponses[responseKey] - questionResponses[responseKey], 2);
+
+                return accumulator + componentDistance;
+            }, 0);
+
+        const distance = Math.sqrt(squaredDistance);
+
+        return {
+            user,
+            distance
+        };
+    });
+
+    // Sort the roommates by distance from low to high
+    roommateDistances.sort((a, b) => a.distance - b.distance);
+
+    let recommendedRoommates = [];
+
+    // Pick out the recommendedRoommates based on the number of recommended rommates in the config
+    for (let i = 0; i < surveyContants.maxRecommendedRoommates; i++) {
+        recommendedRoommates.push(roommateDistances[i]);
+    }
+
+    return recommendedRoommates.map(transformRoommateResponseForOutput);
 };
+
+// Helper for function above that takes the user out of a survey response
+function transformRoommateResponseForOutput(response) {
+    const {
+        user,
+        distance,
+        ...rest
+    } = response;
+
+    return {
+        ...user,
+        distance
+    };
+}
 
 // Generates some fake users and some roomate responses. All users are from Toronto.
 export const generateRoommateResponses = async({
@@ -215,7 +306,7 @@ export const generateRoommateResponses = async({
     roommateSurveysCollection = required('roommateSurveysCollection'),
     logger = required('logger', 'You must pass in a logging instance for this module to use')
 }) => {
-    let usersToMake = 1000;
+    let usersToMake = 5000;
 
     while (usersToMake > 0) {
         // Make a fake user
@@ -246,7 +337,7 @@ export const generateRoommateResponses = async({
 
         for (let i = 0; i < surveyContants.questions.length; i++) {
             // Random value between 0 and 10
-            randomAnswers[`question${i + 1}`] = Math.floor(Math.random() * (10 + 1));
+            randomAnswers[`question${i}`] = Math.floor(Math.random() * (10 + 1));
         }
 
         try {

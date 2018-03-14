@@ -8,7 +8,7 @@ export const submitForm = (formData)  => (dispatch) => {
         type: 'ROOMMATE_SURVEY_FORM_SUBMITTED'
     });
 
-    axios.post(`${process.env.API_ROOT}/roommateSurveys`, formData)
+    axios.post(`${process.env.API_ROOT}/api/roommateSurveys`, formData)
         .then((res) => {
             dispatch({
                 type: 'ROOMMATE_SURVEY_FORM_FULFILLED'

@@ -1,5 +1,5 @@
 import { wrap as coroutine } from 'co';
-import { required } from '../components/custom-utils';
+import { required, print } from '../components/custom-utils';
 import { insert as insertInDb, deleteById } from '../components/db/service';
 import { findRoommateSurveyResponse, findRecommendedRoommates } from '../components/data';
 import { sendError } from './utils';
@@ -13,7 +13,7 @@ const {
     } = {}
 } = roommateSurveyConstants;
 
-export const createRoommateSurvey({
+export const createRoommateSurvey = ({
     roommateSurveysCollection = required('roommateSurveysCollection'),
     recommendedRoommatesCollection = required('recommendedRoommatesCollection'),
     logger = required('logger', 'You must pass in a logging instance for this module to use')
@@ -40,7 +40,7 @@ export const createRoommateSurvey({
         });
     }
 
-    if (Object.keys.questionResponses.length !== questions.length) {
+    if (Object.keys(questionResponses).length !== questions.length) {
         return sendError({
             res,
             status: 400,
@@ -140,6 +140,10 @@ export const createRoommateSurvey({
             errorKey: GENERIC_ERROR_KEY
         })
     }
+
+    console.log('Recommend roommates');
+
+    print(recommendedRoommates)
 
     return res.json({
         recommendedRoommates

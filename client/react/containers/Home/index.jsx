@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Container } from 'semantic-ui-react';
+import { Button, Container, Dimmer, Loader, Card, Label, Image } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import moment from 'moment';
 
 import HomeSearch from '../../components/Search/HomeSearch';
 import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
@@ -14,7 +15,8 @@ import './styles.css';
 @connect((store)=>({
     user: store.userReducer.user,
     searchState: store.searchReducer,
-    roommateSuggestions: store.homeReducer.roommateSuggestions
+    recommendedRoommates: store.homeReducer.recommendedRoommates,
+    isRoommatesLoading: store.homeReducer.isLoadingRoommateSuggestions
 }))
 class Home extends Component {
     constructor(props){
@@ -74,19 +76,47 @@ class Home extends Component {
 
         // TODO: Add loading state for section during call to get roommates
 
-        if (this.props.roommateSuggestions.length) {
-            // TODO: View of the roommate cards
+        if (this.props.recommendedRoommates.length) {
+            const roommateCards = this.props.recommendedRoommates.map((roommate) => (
+                <Card>
+                    <Image src={`${process.env.ASSETS_ROOT}${roommate.profilePictureLink}`} />
+                    <Card.Content>
+                        <Card.Header>
+                            {roommate.name}
+                        </Card.Header>
+                        <Card.Meta>
+                            <span>{moment(roommate.createdAt).format('MMMM Do YYYY')}</span>
+                        </Card.Meta>
+                    </Card.Content>
+                    <Label color='green' floating>95%</Label>
+                </Card>
+            ));
+
             roommateSection = (
                 <Container>
-
+                    <Card.Group>
+                        {roommateCards}
+                    </Card.Group>
                 </Container>
             )
         } else {
-            roommateSection = (
-                <Container>
+            const innerSection = this.props.isRoommatesLoading ? (
+                <div id='loaderContainer'>
+                    <div id='loaderInnerWrapper'>
+                        <Loader active>Loading</Loader>
+                    </div>
+                </div>
+            ) : (
+                <div>
                     <h2>Looking for Roommates?</h2>
                     <p id="surveyDescription">Take a survey about your living preferences and we will find roommates for you to choose from that are looking in the same city as you!</p>
                     <Button type='button' className='primaryColourAlt' onClick={this.navigateToRoommateSurvey}>Get Started</Button>
+                </div>
+            );
+
+            roommateSection = (
+                <Container>
+                    {innerSection}
                 </Container>
             );
         }

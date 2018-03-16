@@ -74,7 +74,31 @@ export default ({
                 }
             })
         })
-    ])
+    ]);
+
+    userRouter.get('/:id/recommendedRoommates', (req, res) => {
+        setTimeout(function() {
+            res.json({
+                recommendedRoommates: [
+                    {
+                        name: 'Name 1'
+                    },
+                    {
+                        name: 'Name 2'
+                    },
+                    {
+                        name: 'Name 3'
+                    },
+                    {
+                        name: 'Name 4'
+                    },
+                    {
+                        name: 'Name 5'
+                    }
+                ]
+            });
+        }, 2000)
+    })
 
     return userRouter;
 }

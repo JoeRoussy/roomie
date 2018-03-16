@@ -5,6 +5,7 @@ import { createUser, getListings, getListingById } from '../controllers/api';
 
 import listingsRouter from './listings';
 import usersRouter from './users';
+import channelsRouter from './channels';
 
 export default ({
     app = required('app'),
@@ -19,6 +20,11 @@ export default ({
     }));
 
     router.use('/users', usersRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/channels', channelsRouter({
         db,
         baseLogger
     }));

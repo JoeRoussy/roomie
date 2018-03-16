@@ -189,7 +189,7 @@ export const findRoommateSurveyResponse = async({
     }
 };
 
-// Uses KNN to find similar roommates based on responses to roommate survey and what city thay are looking for
+// Uses minimum Euclidean distance with respect to question responses to find recommended roommates (who are also looking in the same city)
 export const findRecommendedRoommates = async({
     roommateSurveysCollection = required('roommateSurveysCollection'),
     recommendedRoommatesCollection = required('recommendedRoommatesCollection'),

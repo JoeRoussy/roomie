@@ -11,12 +11,14 @@ export const submitForm = (formData)  => (dispatch) => {
     axios.post(`${process.env.API_ROOT}/api/roommateSurveys`, formData)
         .then((res) => {
             dispatch({
-                type: 'ROOMMATE_SURVEY_FORM_FULFILLED'
+                type: 'ROOMMATE_SURVEY_FORM_FULFILLED',
+                payload: res
             });
 
             toast.success('You are one step closer to finding your new roommates!');
 
-            dispatch(push('/roommate-suggestions'));
+            // The homepage will render the recommended roommates in place of the survey link
+            dispatch(push('/'));
         })
         .catch((e) => {
             dispatch({

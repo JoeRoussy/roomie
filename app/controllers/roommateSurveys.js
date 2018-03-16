@@ -1,5 +1,5 @@
 import { wrap as coroutine } from 'co';
-import { required, print } from '../components/custom-utils';
+import { required, print, convertToObjectId } from '../components/custom-utils';
 import { insert as insertInDb, deleteById } from '../components/db/service';
 import { findRoommateSurveyResponse, findRecommendedRoommates } from '../components/data';
 import { sendError } from './utils';
@@ -20,15 +20,25 @@ export const createRoommateSurvey = ({
 }) => coroutine(function* (req, res) {
     const {
         city,
-        userId,
         ...questionResponses
     } = req.body;
 
+    let {
+        user: {
+            _id: userId
+        } = {}
+    } = req;
+
+    // Make sure the userId is an object ID
+    userId = convertToObjectId(userId);
+
     if (!userId) {
+        logger.warn(req.user, 'Missing userId in req.user. Values of req.user included in this log');
+
         return sendError({
             res,
-            status: 400,
-            message: 'Must include userId in request'
+            status: 500,
+            message: 'Could not find logged in user to arribute survey to'
         });
     }
 
@@ -72,7 +82,7 @@ export const createRoommateSurvey = ({
         try {
             yield deleteById({
                 collection: roommateSurveysCollection,
-                id: userId
+                id: existingSurveyResponse._id
             });
         } catch (e) {
             logger.error(e, `Error deleting existing survey response for user with id: ${userId}`);
@@ -93,7 +103,7 @@ export const createRoommateSurvey = ({
         userSurveyResponse = yield insertInDb({
             collection: roommateSurveysCollection,
             document: {
-                userId,
+                userId: convertToObjectId(userId),
                 city,
                 ...questionResponses
             },
@@ -140,10 +150,6 @@ export const createRoommateSurvey = ({
             errorKey: GENERIC_ERROR_KEY
         })
     }
-
-    console.log('Recommend roommates');
-
-    print(recommendedRoommates)
 
     return res.json({
         recommendedRoommates

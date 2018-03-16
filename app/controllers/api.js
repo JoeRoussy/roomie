@@ -530,7 +530,6 @@ export const postMessage = ({
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
     let message;
-    console.log(req.body);
     if(!req.body.channelId || isEmpty(req.body.channelId))
     {
         return  sendError({
@@ -562,7 +561,6 @@ export const postMessage = ({
             message: 'Error finding channel'
         });
     }
-    console.log(channel);
     //if the channel was not found
     if(!channel){
         logger.error(e, 'Error finding channel' );

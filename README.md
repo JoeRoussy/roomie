@@ -64,8 +64,35 @@ The following is the schema of every collection in the database
     "createdAt" : ISODate("2018-03-10T07:17:53.741Z")
 }
 ```
+
+##### Channel
+```
+{
+    "_id" : ObjectId("5aa40a9e383fdf132025ccc4"),
+    "name" : "Test",
+    "users" : [
+        {
+            "userId" : ObjectId("5aa16bcedc440749402697ba"),
+            "acceptedInvite" : true
+        }
+    ],
+    "admin" : ObjectId("5aa16bcedc440749402697ba"),
+    "createdAt" : ISODate("2018-03-10T16:41:02.740Z")
+}
+```
+##### Message
+```
+{
+    "_id" : ObjectId("5aa54cae956974424063e266"),
+    "channelId" : ObjectId("5aa40a9e383fdf132025ccc4"),
+    "userName" : "5a9cb7dbc227cc57bc7b9555",
+    "body" : "Hello",
+    "createdAt" : ISODate("2018-03-11T15:35:10.643Z")
+}
+```
+
 #### Text Searches
-In order to perform a text search a collection needs to have a text index on the field being searched and it must also declare a language. Note that if you are using a text search on an aggregation pipeline, it must be the first field in the `$match` field. 
+In order to perform a text search a collection needs to have a text index on the field being searched and it must also declare a language. Note that if you are using a text search on an aggregation pipeline, it must be the first field in the `$match` field.
 
 Declaring a language means each document has a `language` field set to a language, for example: `english`.
 

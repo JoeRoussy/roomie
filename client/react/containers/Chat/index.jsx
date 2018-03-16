@@ -99,9 +99,11 @@ class Chat extends React.Component{
 
     acceptInvite(){
         this.props.dispatch(acceptInviteToChannel(this.getActiveChannel()));
+        this.setDisplayInviteModal(false);
     }
     declineInvite(){
         this.props.dispatch(declineInviteToChannel(this.getActiveChannel()));
+        this.setDisplayInviteModal(false);
     }
 
     changeChannel(channel){
@@ -121,6 +123,7 @@ class Chat extends React.Component{
     }
 
     createChannel(){
+        this.setDisplayNewChannelModal(false);
         this.props.dispatch(createChannel(this.getNewChannelName()));
     }
 
@@ -135,6 +138,7 @@ class Chat extends React.Component{
     }
 
     blankNewChannelName(){
+        this.setDisplayNewChannelModal(false);
         this.props.dispatch(modifyNewChannelName(''));
     }
 
@@ -177,14 +181,12 @@ class Chat extends React.Component{
                             onConfirm={this.createChannel}
                             onClose={this.blankNewChannelName}
                             displayModal={this.getDisplayNewChannelModal()}
-                            toggleDisplayNewChannelModal={this.setDisplayNewChannelModal}
                         />
                         <AcceptInviteModal
                             channel={this.getActiveChannel()}
                             onAccept={this.acceptInvite}
                             onDecline={this.declineInvite}
                             displayModal={this.getDisplayInviteModal()}
-                            toggleDisplay={this.setDisplayInviteModal}
                         />
                     </Grid.Column>
                     <Grid.Column width={11}>

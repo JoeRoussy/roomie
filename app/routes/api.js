@@ -34,8 +34,6 @@ export default ({
         db,
         baseLogger
     }));
-    
-    // TODO: More API routes here
 
     // Use the main api router under /api
     app.use('/api', router);

@@ -15,8 +15,8 @@ const AcceptInviteModal = ({
                 You have been invted to the channel {channel.name}.
             </Modal.Content>
             <Modal.Actions>
-                <Button positive onClick={()=>{onAccept();toggleDisplay(false)}}>Accept <Icon name='checkmark'/></Button>
-                <Button negative onClick={()=>{onDecline();toggleDisplay(false)}}>Decline <Icon name='remove'/></Button>
+                <Button positive onClick={()=>{onAccept()}}>Accept <Icon name='checkmark'/></Button>
+                <Button negative onClick={()=>{onDecline()}}>Decline <Icon name='remove'/></Button>
             </Modal.Actions>
         </Modal>
 

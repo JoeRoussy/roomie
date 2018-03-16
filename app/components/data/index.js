@@ -193,7 +193,7 @@ export const getChannels = async({
         throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
     }
 };
-export const getMessages = async({
+export const getMessagesByChannelId = async({
     messagesCollection = required('messagesCollection'),
     query
 }) => {

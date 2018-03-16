@@ -7,7 +7,6 @@ const CreateChannelModal = ({
     onClose,
     text,
     displayModal,
-    toggleDisplayNewChannelModal
 }) => (
     <Container fluid >
         <Modal open={displayModal} onClose={onClose}>
@@ -21,8 +20,8 @@ const CreateChannelModal = ({
                 />
             </Modal.Content>
             <Modal.Actions>
-                <Button positive onClick={()=>{onConfirm();toggleDisplayNewChannelModal(false)}}>Create <Icon name='checkmark'/></Button>
-                <Button negative onClick={()=>{onClose();toggleDisplayNewChannelModal(false)}}>Cancel <Icon name='remove'/></Button>
+                <Button positive onClick={()=>{onConfirm()}}>Create <Icon name='checkmark'/></Button>
+                <Button negative onClick={()=>{onClose()}}>Cancel <Icon name='remove'/></Button>
             </Modal.Actions>
         </Modal>
 

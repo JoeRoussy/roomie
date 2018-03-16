@@ -461,6 +461,7 @@ export const findChannels = ({
             message: 'Error finding channels'
         });
     }
+
     return res.json({
         channels: result
     });
@@ -490,6 +491,7 @@ export const postChannel = ({
             message: 'Error creating channel'
         });
     }
+    
     return res.json({
         channel: channel
     });
@@ -519,6 +521,7 @@ export const findMessages = ({
             message: 'Error finding mesages'
         });
     }
+
     return res.json({
         messages: result
     });
@@ -607,6 +610,7 @@ export const postMessage = ({
             message: 'Error sending mesage'
         });
     }
+
     return res.json({
         message: message
     });

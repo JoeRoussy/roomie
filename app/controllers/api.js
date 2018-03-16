@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated, convertToObjectId } from '../components/custom-utils';
 import { findListings, getUserByEmail, getEmailConfirmationLink, removeUserById,getUsersById, getChannels,getMessages } from '../components/data';
-import { insert as insertInDb, getById, findAndUpdate } from '../components/db/service';
 import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';

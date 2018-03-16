@@ -3,12 +3,12 @@ import {Divider,Grid} from 'semantic-ui-react'
 import {push} from 'react-router-redux';
 import React, {Component}  from 'react';
 
-import ChannelBar from '../components/chat/ChannelBar'
-import ChatInput from '../components/chat/ChatInput'
-import ChatView from '../components/chat/ChatView'
-import ExtraInfoBar from '../components/chat/ExtraInfoBar'
-import CreateChannelModal from '../components/chat/createChannelModal'
-import AcceptInviteModal from '../components/chat/acceptInviteModal'
+import ChannelBar from '../../components/chat/ChannelBar'
+import ChatInput from '../../components/chat/ChatInput'
+import ChatView from '../../components/chat/ChatView'
+import ExtraInfoBar from '../../components/chat/ExtraInfoBar'
+import CreateChannelModal from '../../components/chat/createChannelModal'
+import AcceptInviteModal from '../../components/chat/acceptInviteModal'
 
 import {
     getChannels,
@@ -22,7 +22,7 @@ import {
     modifyDisplayInviteModal,
     acceptInviteToChannel,
     declineInviteToChannel
-} from '../../redux/actions/chatActions';
+} from '../../../redux/actions/chatActions';
 
 import './styles.css';
 

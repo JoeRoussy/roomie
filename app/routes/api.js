@@ -6,6 +6,7 @@ import { createUser, getListings, getListingById } from '../controllers/api';
 import listingsRouter from './listings';
 import usersRouter from './users';
 import channelsRouter from './channels';
+import verifyRouter from './verify';
 
 export default ({
     app = required('app'),
@@ -29,6 +30,11 @@ export default ({
         baseLogger
     }));
 
+    router.use('/verify', verifyRouter({
+        db,
+        baseLogger
+    }));
+    
     // TODO: More API routes here
 
     // Use the main api router under /api

@@ -1,4 +1,4 @@
-export const isEmpty = (value) => !value;
+export const isEmpty = (value) => !value
 
 export const isText = (value) => {
     // We accept strings and numbers as text
@@ -19,7 +19,7 @@ export const isEmail = (value) => {
     return regex.test(value);
 }
 
-export const isPassword = (value, checkLength) => {
+export const isPassword = (value, checkLength = true) => {
     if (!isText(value)) {
         return false;
     }
@@ -35,4 +35,8 @@ export const isPassword = (value, checkLength) => {
 
     // Coerce password length into a number before making the comparisson
     return value.length >= +MIN_PASSWORD_LENGTH;
+}
+
+export const isPrice = (value) =>{
+    return /^[0-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(value)
 }

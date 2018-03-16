@@ -12,6 +12,7 @@ import ChatReducer from './chatReducer';
 import signUpReducer from './signUpReducer';
 import signInReducer from './signInReducer';
 import profileReducer from './profileReducer';
+import changePasswordReducer from './changePasswordReducer';
 
 const reducers = combineReducers({
     listingsReducer,
@@ -22,7 +23,8 @@ const reducers = combineReducers({
     form: formReducer,
     signUpReducer,
     signInReducer,
-    profileReducer
+    profileReducer,
+    changePasswordReducer
 });
 
 export default reducers;

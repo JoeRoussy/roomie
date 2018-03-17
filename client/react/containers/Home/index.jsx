@@ -102,6 +102,10 @@ class Home extends Component {
                     <Card.Group id='roommateCards' className='centered'>
                         {roommateCards}
                     </Card.Group>
+                    <div id='retakeSurvey'>
+                        <h3>Not Finding A Good Fit?</h3>
+                        <Button className='primaryColourAlt' onClick={this.navigateToRoommateSurvey}>Take Survey Again</Button>
+                    </div>
                 </Container>
             )
         } else {

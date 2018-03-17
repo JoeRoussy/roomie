@@ -45,10 +45,18 @@
     margin-right: 20px;
 }
 
+#homeRoommatesSection #roommateCards .button, #homeRoommatesSection #retakeSurvey .button {
+    margin-top: 0;
+}
+
 #homeRoommatesSection #roommateCards .card .header {
     text-align: left;
 }
 
 #homeRoommatesSection #roommateCards .card .meta {
     text-align: left;
+}
+
+#homeRoommatesSection #retakeSurvey {
+    margin-top: 30px;
 }

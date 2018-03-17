@@ -115,9 +115,6 @@ export const getEmailConfirmationLink = async({
         VERIFICATION_TYPES_EMAIL = required('VERIFICATION_TYPES_EMAIL')
     } = process.env;
 
-    // const now = +new Date();
-    // const userHash = await getHash({ input: user });
-
     const urlIdentifyer = await getUniqueHash(user);
 
     // Now save the verification document

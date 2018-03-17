@@ -47,6 +47,14 @@ const NavBar = ({
         schedule = <Menu.Item onClick={() => navigateTo('/schedule')}><Icon name='calendar'/> Schedule </Menu.Item>
     }
 
+    let createListing;
+    let viewListings;
+
+    if (user && user.isLandlord) {
+        createListing = <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add square'/>Create Listing</Menu.Item>
+        viewListings = <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='feed'/> Listings</Menu.Item>
+    }
+
     return (
         <Menu fixed='top' inverted>
             <Container>
@@ -55,10 +63,10 @@ const NavBar = ({
                 <Menu.Item onClick={() => navigateTo('/search')}>Search </Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/groups')}><Icon name='group'/> Groups</Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='feed'/> Listings</Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add square'/>Create Listing</Menu.Item>
+                {viewListings}
+                {createListing}
                 {schedule}
-              
+
                 {/* Right side */}
                 <Menu.Menu position='right'>
                     {rightSection}

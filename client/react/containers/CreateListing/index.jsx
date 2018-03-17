@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { arrayPush, arrayRemove } from 'redux-form';
+import { Redirect } from 'react-router';
 
 import CreateListingForm from '../../components/CreateListingForm';
 import { submitCreateForm } from '../../../redux/actions/listingActions';
@@ -22,6 +23,9 @@ import './styles.css';
         errorMessage: provinceErrorMessage,
         cities,
         provinces
+    } = {},
+    userReducer: {
+        user
     } = {}
 }) => ({
     formData: values,
@@ -29,7 +33,8 @@ import './styles.css';
     provinceErrorMessage,
     provinces,
     cities,
-    isFormProcessing
+    isFormProcessing,
+    user
 }))
 
 export default class CreateListing extends React.Component {
@@ -69,11 +74,15 @@ export default class CreateListing extends React.Component {
             provinceErrorMessage,
             formData,
             provinces,
-            cities
+            cities,
+            user
         } = this.props;
+
+        const redirectSection = !user.isLandlord ? (<Redirect to='/' />) : '';
 
         return (
             <div>
+                {redirectSection}
                 <h1>Create Listing</h1>
                 <CreateListingForm
                     onSubmit={(formData) => () => this.onSubmit(formData)}

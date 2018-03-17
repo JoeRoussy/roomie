@@ -12,7 +12,6 @@ export default ({
 
     roommateSurveysRouter.post('/', createRoommateSurvey({
         roommateSurveysCollection: db.collection('roommateSurveys'),
-        recommendedRoommatesCollection: db.collection('recommendedRoommates'),
         logger: getChildLogger({
             baseLogger,
             additionalFields: {

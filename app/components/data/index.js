@@ -192,7 +192,6 @@ export const findRoommateSurveyResponse = async({
 // Uses minimum Euclidean distance with respect to question responses to find recommended roommates (who are also looking in the same city)
 export const findRecommendedRoommates = async({
     roommateSurveysCollection = required('roommateSurveysCollection'),
-    recommendedRoommatesCollection = required('recommendedRoommatesCollection'),
     userSurveyResponse = required('userSurveyResponse')
 }) => {
     const {
@@ -324,7 +323,8 @@ export const generateRoommateResponses = async({
                     email,
                     password,
                     isLandlord: false, // All these fake users are tenants,
-                    emailConfirmed: true // Makes things easier in case we implement email verification checks
+                    emailConfirmed: true, // Makes things easier in case we implement email verification checks,
+                    profilePictureLink: process.env.DEFAULT_PROFILE_PICTURE_RELATIVE_PATH
                 },
                 returnInsertedDocument: true
             });

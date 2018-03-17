@@ -2,7 +2,7 @@ import express from 'express';
 
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { createUser, editUser, deleteCurrentUser } from '../controllers/api';
+import { createUser, editUser, deleteCurrentUser, fetchRecommenedRoommates } from '../controllers/users';
 import { canModifyUser, isAuthenticated } from '../controllers/utils';
 import {
     singleFile as parseSingleFileUpload,
@@ -76,29 +76,19 @@ export default ({
         })
     ]);
 
-    userRouter.get('/:id/recommendedRoommates', (req, res) => {
-        setTimeout(function() {
-            res.json({
-                recommendedRoommates: [
-                    {
-                        name: 'Name 1'
-                    },
-                    {
-                        name: 'Name 2'
-                    },
-                    {
-                        name: 'Name 3'
-                    },
-                    {
-                        name: 'Name 4'
-                    },
-                    {
-                        name: 'Name 5'
-                    }
-                ]
-            });
-        }, 2000)
-    })
+    userRouter.get('/:id/recommendedRoommates', [
+        isAuthenticated,
+        fetchRecommenedRoommates({
+            roommateSurveysCollection: db.collection('roommateSurveys'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-get-roommate-recommendations'
+                }
+            })
+        })
+    ]);
+
 
     return userRouter;
 }

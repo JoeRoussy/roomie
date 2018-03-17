@@ -15,7 +15,6 @@ const {
 
 export const createRoommateSurvey = ({
     roommateSurveysCollection = required('roommateSurveysCollection'),
-    recommendedRoommatesCollection = required('recommendedRoommatesCollection'),
     logger = required('logger', 'You must pass in a logging instance for this module to use')
 }) => coroutine(function* (req, res) {
     const {
@@ -120,13 +119,12 @@ export const createRoommateSurvey = ({
         });
     }
 
-    // Compute knn for this user
+    // Compute recommendedRoommates for this user
     let recommendedRoommates = [];
 
     try {
         recommendedRoommates = yield findRecommendedRoommates({
             roommateSurveysCollection,
-            recommendedRoommatesCollection,
             userSurveyResponse
         });
     } catch (e) {

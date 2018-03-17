@@ -19,6 +19,7 @@
     min-height: 150px;
     height: 100%;
     width: 100%;
+    text-align: center;
 }
 
 #homeRoommatesSection #loaderContainer #loaderInnerWrapper {
@@ -37,4 +38,17 @@
 
 #homeRoommatesSection #loaderContainer #loaderInnerWrapper .loader:after {
     border-color: #fff transparent transparent;
+}
+
+#homeRoommatesSection #roommateCards .card {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#homeRoommatesSection #roommateCards .card .header {
+    text-align: left;
+}
+
+#homeRoommatesSection #roommateCards .card .meta {
+    text-align: left;
 }

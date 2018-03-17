@@ -15,8 +15,6 @@ const homeReducer = (state = config, actions) => {
                 isLoadingRoommateSuggestions: true
             };
 
-            console.log('The get roommate suggestions is pending');
-
             break;
         }
 
@@ -26,8 +24,6 @@ const homeReducer = (state = config, actions) => {
                     recommendedRoommates
                 } = {}
             } = payload;
-
-            console.log('The get roommate suggestions has fulfilled');
 
             state = {
                 ...state,
@@ -43,8 +39,6 @@ const homeReducer = (state = config, actions) => {
                 ...state,
                 isLoadingRoommateSuggestions: false
             };
-
-            console.log('The get roommate suggestions has failed');
 
             break;
         }

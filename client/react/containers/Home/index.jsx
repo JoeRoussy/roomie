@@ -74,27 +74,32 @@ class Home extends Component {
 
         let roommateSection;
 
-        // TODO: Add loading state for section during call to get roommates
-
         if (this.props.recommendedRoommates.length) {
             const roommateCards = this.props.recommendedRoommates.map((roommate) => (
-                <Card>
-                    <Image src={`${process.env.ASSETS_ROOT}${roommate.profilePictureLink}`} />
+                <Card key={roommate._id} raised>
+                    <Label color='green' floating>95%</Label>
                     <Card.Content>
+                        <Image size='tiny' floated='right' src={`${process.env.ASSETS_ROOT}${roommate.profilePictureLink}`} />
                         <Card.Header>
                             {roommate.name}
                         </Card.Header>
                         <Card.Meta>
+                            <span>Joined:</span>
+                        </Card.Meta>
+                        <Card.Meta>
                             <span>{moment(roommate.createdAt).format('MMMM Do YYYY')}</span>
                         </Card.Meta>
                     </Card.Content>
-                    <Label color='green' floating>95%</Label>
+                    <Card.Content centered>
+                        <Button color='green'>Message</Button>
+                    </Card.Content>
                 </Card>
             ));
 
             roommateSection = (
                 <Container>
-                    <Card.Group>
+                    <h2>Roommates Recommened For You</h2>
+                    <Card.Group id='roommateCards' className='centered'>
                         {roommateCards}
                     </Card.Group>
                 </Container>

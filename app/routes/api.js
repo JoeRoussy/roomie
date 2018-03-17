@@ -6,6 +6,7 @@ import listingsRouter from './listings';
 import usersRouter from './users';
 import channelsRouter from './channels';
 import verifyRouter from './verify';
+import passwordResetRouter from './passwordReset';
 import scheduleRouter from './schedule';
 import locationsRouter from './locations';
 
@@ -41,7 +42,13 @@ export default ({
         baseLogger
     }));
 
+    router.use('/passwordReset', passwordResetRouter({
+        db,
+        baseLogger
+    }));
+
     router.use('/locations', locationsRouter({
+        db,
         baseLogger
     }));
 

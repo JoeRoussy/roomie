@@ -1,10 +1,13 @@
+import moment from 'moment';
+
 import {
     required,
     print,
     convertToObjectId,
-    RethrownError
+    RethrownError,
+    getUniqueHash
 } from '../custom-utils';
-import { get as getHash } from '../hash';
+//import { get as getHash } from '../hash';
 import { insert as insertInDb } from '../db/service';
 
 import { findAndUpdate } from '../db/service';
@@ -112,11 +115,7 @@ export const getEmailConfirmationLink = async({
         VERIFICATION_TYPES_EMAIL = required('VERIFICATION_TYPES_EMAIL')
     } = process.env;
 
-    const now = +new Date();
-    const userHash = await getHash({ input: user });
-
-    // Append current timestamp to hash to guard against collisions
-    const urlIdentifyer = `${userHash}${now}`;
+    const urlIdentifyer = await getUniqueHash(user);
 
     // Now save the verification document
     try {
@@ -169,6 +168,84 @@ export const removeUserById = async({
         });
     } catch (e) {
         throw new RethrownError(e, `Error removing user with id ${id}`);
+    }
+};
+
+// Makes a password reset document and returns a link a user can use to reset their password
+export const getPasswordResetLink = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    user = required('user')
+}) => {
+    const {
+        _id: userId
+    } = user;
+
+    const {
+        FRONT_END_ROOT = required('FRONT_END_ROOT')
+    } = process.env;
+
+    const urlIdentifyer = await getUniqueHash(user);
+
+    try {
+        await insertInDb({
+            collection: passwordResetsCollection,
+            document: {
+                userId: userId,
+                urlIdentifyer,
+                expired: false
+            }
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error inserting password reset document for user with id: ${userId}`);
+    }
+
+    // Now make a link to reset the email
+    return `${FRONT_END_ROOT}/?passwordResetToken=${urlIdentifyer}`;
+};
+
+// Returns a user wrapped in an envalope: { user }
+export const getUserForPasswordReset = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    urlIdentifyer = required('urlIdentifyer')
+}) => {
+    const {
+        PASSWORD_RESET_DURATION_DAYS = required('PASSWORD_RESET_DURATION_DAYS')
+    } = process.env;
+
+    const maxRequestDuration = +PASSWORD_RESET_DURATION_DAYS;
+    const maxPossibleDateString = moment().add(maxRequestDuration, 'days').endOf('day').toISOString();
+
+    try {
+        return await passwordResetsCollection.aggregate([
+            {
+                $match: {
+                    urlIdentifyer,
+                    createdAt: {
+                        $lte: new Date(maxPossibleDateString) // Need to pass a Date to mongo (not a moment)
+                    },
+                    expired: {
+                        $ne: true
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    passwordResetId: '$_id',
+                    user: { $arrayElemAt: [ '$users', 0 ] }
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding user for password reset with urlIdentifyer: ${urlIdentifyer}`);
     }
 };
 

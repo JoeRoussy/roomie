@@ -1,12 +1,14 @@
 import faker from 'faker';
+import moment from 'moment';
 
 import {
     required,
     print,
     convertToObjectId,
-    RethrownError
+    RethrownError,
+    getUniqueHash
 } from '../custom-utils';
-import { get as getHash } from '../hash';
+//import { get as getHash } from '../hash';
 import { insert as insertInDb } from '../db/service';
 import { findAndUpdate } from '../db/service';
 import { generateHash as hashPassword } from '../authentication';
@@ -115,11 +117,7 @@ export const getEmailConfirmationLink = async({
         VERIFICATION_TYPES_EMAIL = required('VERIFICATION_TYPES_EMAIL')
     } = process.env;
 
-    const now = +new Date();
-    const userHash = await getHash({ input: user });
-
-    // Append current timestamp to hash to guard against collisions
-    const urlIdentifyer = `${userHash}${now}`;
+    const urlIdentifyer = await getUniqueHash(user);
 
     // Now save the verification document
     try {
@@ -188,6 +186,20 @@ export const findRoommateSurveyResponse = async({
         throw new RethrownError(e, `Error finding roommateSurveys collection using userId set to: ${userId}`);
     }
 };
+
+// Helper for function above that takes the user out of a survey response
+function transformRoommateResponseForOutput(response) {
+    const {
+        user,
+        distance,
+        ...rest
+    } = response;
+
+    return {
+        ...user,
+        distance
+    };
+}
 
 // Uses minimum Euclidean distance with respect to question responses to find recommended roommates (who are also looking in the same city)
 export const findRecommendedRoommates = async({
@@ -292,19 +304,44 @@ export const findRecommendedRoommates = async({
     return recommendedRoommates.map(transformRoommateResponseForOutput);
 };
 
-// Helper for function above that takes the user out of a survey response
-function transformRoommateResponseForOutput(response) {
+// Returns a user wrapped in an envalope: { user }
+export const getUserForPasswordReset = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    urlIdentifyer = required('urlIdentifyer')
+}) => {
     const {
-        user,
-        distance,
-        ...rest
-    } = response;
+        PASSWORD_RESET_DURATION_DAYS = required('PASSWORD_RESET_DURATION_DAYS')
+    } = process.env;
 
-    return {
-        ...user,
-        distance
-    };
-}
+    const maxRequestDuration = +PASSWORD_RESET_DURATION_DAYS;
+    const maxPossibleDateString = moment().add(maxRequestDuration, 'days').endOf('day').toISOString();
+
+    try {
+        return await passwordResetsCollection.aggregate([
+            {
+                $match: {
+                    urlIdentifyer,
+                    createdAt: {
+                        $lte: new Date(maxPossibleDateString) // Need to pass a Date to mongo (not a moment)
+                    },
+                    expired: {
+                        $ne: true
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(`Could not find user for password reset with urlIdentifyer: ${urlIdentifyer}`);
+    }
+};
 
 // Generates some fake users and some roomate responses. All users are from Toronto.
 export const generateRoommateResponses = async({
@@ -362,4 +399,80 @@ export const generateRoommateResponses = async({
 
         --usersToMake;
     }
+};
+
+export const getUserTimeblocks = async({
+    id = required('id'),
+    timeblocksCollection = required('timeblocksCollection')
+}) => {
+    try{
+        return await timeblocksCollection.find({ userId: id }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
+    }
+}
+
+export const getUsersById = async({
+    usersCollection = required('usersCollection'),
+    ids = required('ids')
+}) => {
+    try {
+        return await usersCollection.find({"_id":{$in:ids}}).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error could not find users by ids: ${ids}`);
+    }
+};
+
+export const getChannels = async({
+    channelsCollection = required('channelsCollection'),
+    query
+}) => {
+    try {
+        return await channelsCollection.find(query).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
+    }
+};
+
+export const getMessagesByChannelId = async({
+    messagesCollection = required('messagesCollection'),
+    query
+}) => {
+    try {
+        return await messagesCollection.find(query).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
+    }
+};
+
+// Makes a password reset document and returns a link a user can use to reset their password
+export const getPasswordResetLink = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    user = required('user')
+}) => {
+    const {
+        _id: userId
+    } = user;
+
+    const {
+        FRONT_END_ROOT = required('FRONT_END_ROOT')
+    } = process.env;
+
+    const urlIdentifyer = await getUniqueHash(user);
+
+    try {
+        await insertInDb({
+            collection: passwordResetsCollection,
+            document: {
+                userId: userId,
+                urlIdentifyer,
+                expired: false
+            }
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error inserting password reset document for user with id: ${userId}`);
+    }
+
+    // Now make a link to reset the email
+    return `${FRONT_END_ROOT}/?passwordResetToken=${urlIdentifyer}`;
 };

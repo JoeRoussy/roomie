@@ -57,7 +57,8 @@ export const singleFile = (name, storagePath) => {
 
     const upload = multer({ storage });
 
-    return upload.single(name);
+    //return upload.single(name);
+    return upload.array(name);
 }
 
 // Ensures an images is valid by inspecting the contents of the image itself. Prevents a client of lying about the mimetype

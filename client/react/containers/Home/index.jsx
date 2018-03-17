@@ -3,12 +3,15 @@ import { Button, Container, Dimmer, Loader, Card, Label, Image } from 'semantic-
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import moment from 'moment';
+import queryString from 'query-string';
+import { Redirect } from 'react-router';
 
 import HomeSearch from '../../components/Search/HomeSearch';
 import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
 import { search, handleLocationChange } from '../../../redux/actions/searchActions';
 import { getRoommateSuggestionsForUser } from '../../../redux/actions/homeActions';
 import { navigateTo } from '../../../components';
+import { setPasswordResetToken } from '../../../redux/actions/forgotPasswordFormActions';
 
 import './styles.css';
 
@@ -18,6 +21,7 @@ import './styles.css';
     recommendedRoommates: store.homeReducer.recommendedRoommates,
     isRoommatesLoading: store.homeReducer.isLoadingRoommateSuggestions
 }))
+
 class Home extends Component {
     constructor(props){
         super(props)
@@ -27,6 +31,7 @@ class Home extends Component {
         this.processLocation = this.processLocation.bind(this);
         this.submitSearch = this.submitSearch.bind(this);
         this.navigateToRoommateSurvey = this.navigateToRoommateSurvey.bind(this);
+        this.onPasswordResetToken = this.onPasswordResetToken.bind(this);
     }
 
     componentWillMount() {
@@ -65,11 +70,24 @@ class Home extends Component {
         navigateTo(this.props.dispatch)('/roommate-survey');
     }
 
+    onPasswordResetToken(token) {
+        this.props.dispatch(setPasswordResetToken(token));
+    }
+
     render(){
          const locationProps = {
             value: this.props.searchState.location,
             onChange: (event) => this.handleLocationChange(event),
             onKeyUp: (event) => this.submitSearch(event, this.props.searchState.location)
+        };
+
+        // TODO: There has to be a better way with server side rendering
+        const queryParams = queryString.parse(this.props.location.search);
+        let passwordResetRedirect = '';
+
+        if (queryParams.passwordResetToken) {
+            passwordResetRedirect = (<Redirect to='/forgot-password-form'/>);
+            this.onPasswordResetToken(queryParams.passwordResetToken);
         }
 
         let roommateSection;
@@ -132,6 +150,7 @@ class Home extends Component {
 
         return (
             <div>
+                {passwordResetRedirect}
                 <div className='section'>
                     <Container>
                         <HomeSearch

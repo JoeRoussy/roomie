@@ -4,7 +4,8 @@ import { Input,Container} from 'semantic-ui-react'
 const chatInput = ({
     onChange,
     onKeyUp,
-    text
+    text,
+    disabled
 }) => (
     <Container fluid >
             <Input
@@ -13,6 +14,7 @@ const chatInput = ({
                 onChange={onChange}
                 onKeyUp={onKeyUp}
                 value={text}
+                disabled={disabled}
             />
     </Container>
 );

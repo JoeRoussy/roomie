@@ -1,13 +1,16 @@
 import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { createUser, getListings, getListingById } from '../controllers/api';
 
 import listingsRouter from './listings';
 import usersRouter from './users';
+import channelsRouter from './channels';
 import verifyRouter from './verify';
 import citiesRouter from './cities';
 import roommateSurveysRouter from './roommateSurveys';
+import passwordResetRouter from './passwordReset';
+import scheduleRouter from './schedule';
+import locationsRouter from './locations';
 
 export default ({
     app = required('app'),
@@ -21,7 +24,17 @@ export default ({
         baseLogger
     }));
 
+    router.use('/schedule', scheduleRouter({
+        db,
+        baseLogger
+    }));
+
     router.use('/users', usersRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/channels', channelsRouter({
         db,
         baseLogger
     }));
@@ -36,7 +49,17 @@ export default ({
         baseLogger
     }));
 
+    router.use('/passwordReset', passwordResetRouter({
+        db,
+        baseLogger
+    }));
+
     router.use('/roommateSurveys', roommateSurveysRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/locations', locationsRouter({
         db,
         baseLogger
     }));

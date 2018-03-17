@@ -37,6 +37,18 @@ export const isPassword = (value, checkLength = true) => {
     return value.length >= +MIN_PASSWORD_LENGTH;
 }
 
-export const isPrice = (value) =>{
-    return /^[0-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(value)
+export const isPrice = (value) => {
+    return /^[0-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(value);
+}
+
+export const isInteger = (value) => {
+    return value && !isNaN(Number(value)) && Number.isInteger(value*1);
+}
+
+export const isFullOrHalfInt = (value) => {
+    return value && !isNaN(Number(value)) && Number.isInteger(value*2);
+}
+
+export const isPostalCode = (value) => {
+    return /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value);
 }

@@ -171,3 +171,35 @@ export const removeUserById = async({
         throw new RethrownError(e, `Error removing user with id ${id}`);
     }
 };
+
+export const getUsersById = async({
+    usersCollection = required('usersCollection'),
+    ids = required('ids')
+}) => {
+    try {
+        return await usersCollection.find({"_id":{$in:ids}}).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error could not find users by ids: ${ids}`);
+    }
+}
+
+export const getChannels = async({
+    channelsCollection = required('channelsCollection'),
+    query
+}) => {
+    try {
+        return await channelsCollection.find(query).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
+    }
+};
+export const getMessagesByChannelId = async({
+    messagesCollection = required('messagesCollection'),
+    query
+}) => {
+    try {
+        return await messagesCollection.find(query).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
+    }
+};

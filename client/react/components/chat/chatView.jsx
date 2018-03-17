@@ -8,9 +8,9 @@ const ListComments = ({
 }) => chatLog.map((message,i) => (
     <Comment key= {i}>
         <Comment.Content>
-            <Comment.Author as='a'>{message.userName}</Comment.Author>
+            <Comment.Author as='a'>{message.userId}</Comment.Author>
             <Comment.Metadata>
-                <div>{message.timestamp}</div>
+                <div>{message.createdAt}</div>
             </Comment.Metadata>
             <Comment.Text>{message.body}</Comment.Text>
         </Comment.Content>

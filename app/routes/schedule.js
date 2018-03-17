@@ -2,7 +2,7 @@ import express from 'express';
 
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { getSchedules, postTimeblock, postMeeting, deleteTimeblock, deleteMeeting } from '../controllers/schedule';
+import { getSchedules, findAggregatedSchedules, postTimeblock, postMeeting, deleteTimeblock, deleteMeeting } from '../controllers/schedule';
 import { isAuthenticated, isEmailVerified } from '../controllers/utils'
 export default ({
     db = required('db'),
@@ -16,6 +16,23 @@ export default ({
         getSchedules({
             meetingsCollection: db.collection('meetings'),
             timeblocksCollection: db.collection('timeblocks'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-schedule-get'
+                }
+            })
+        })
+    ]);
+
+    scheduleRouter.post('/', [
+        isAuthenticated, 
+        isEmailVerified,
+        findAggregatedSchedules({
+            meetingsCollection: db.collection('meetings'),
+            timeblocksCollection: db.collection('timeblocks'),
+            usersCollection: db.collection('users'),
+            listingsCollection: db.collection('listings'),
             logger: getChildLogger({
                 baseLogger,
                 additionalFields: {
@@ -40,6 +57,7 @@ export default ({
             })
         })
     ]);
+
 
     scheduleRouter.post('/timeblock', [
         isAuthenticated,

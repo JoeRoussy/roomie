@@ -83,6 +83,127 @@ export const getSchedules=({
     });
 });
 
+export const findAggregatedSchedules=({
+    meetingsCollection = required('meetingsCollection'),
+    timeblocksCollection = required('timeblocksCollection'),
+    usersCollection = required('usersCollection'),
+    listingsCollection = required('listingsCollection'),
+    logger = required('logger', 'You must pass a logger for this function to use')
+}) => coroutine(function* (req, res){
+    //Extract values
+    const {
+        _id: userId
+    } = req.user;
+
+    const {
+        participants
+    } = req.body;
+
+    const participantsInSchedule = participants.concat(userId);
+
+    if(!participantsInSchedule || !Array.isArray(participantsInSchedule) || participantsInSchedule.length < 1){
+        return sendError({
+            res,
+            status: 400,
+            message: "Invalid participantsInSchedule list"
+        });
+    }
+
+    //Check that participantsInSchedule are real users
+    let usersInSchedule;
+    const getAllUsers = participantsInSchedule.map(p => getById({
+        collection: usersCollection,
+        id: convertToObjectId(p)
+    }));
+
+    try {
+        usersInSchedule = yield Promise.all(getAllUsers);
+    } catch (e) {
+        logger.error(e, 'Sorry boss, you have an invalid user')
+        return sendError({
+            res,
+            status: 400,
+            message: 'user not found.'
+        }); 
+    }
+
+    //Get all the time blocks for each user
+    let timeblocksInSchedule = [];
+    const getAllTimeblocks = usersInSchedule.map( p => getUserTimeblocks({
+        id: convertToObjectId(p._id),
+        timeblocksCollection
+    }));
+
+    try {
+        timeblocksInSchedule = timeblocksInSchedule.concat(yield Promise.all(getAllTimeblocks));
+    } catch (e) {
+        logger.error(e, 'Sorry boss, you have invalid timeblocks')
+        return sendError({
+            res,
+            status: 400,
+            message: 'Timeblocks not found.'
+        }); 
+    }
+
+    //Get all the meetings for each user
+    let meetingsInSchedule =[];
+    const getAllMeetings = usersInSchedule.map( p => getUserMeetings({
+        id: convertToObjectId(p._id),
+        meetingsCollection
+    }));
+    
+    try {
+        meetingsInSchedule = meetingsInSchedule.concat(yield Promise.all(getAllMeetings));
+    } catch (e) {
+        logger.error(e, 'Sorry boss, you have invalid meetings')
+        return sendError({
+            res,
+            status: 400,
+            message: 'Meetings not found.'
+        }); 
+    }
+    //combine all results in a list of events
+    let events = [];
+    let hashmap = {}
+    events = events.concat(timeblocksInSchedule).concat(meetingsInSchedule).flatten();
+
+    for(let i = 0; i < events.length; ++i){
+        hashmap[events[i]._id] = true;
+    }
+
+    events = events.filter(event => {
+        if(hashmap[event._id]){
+            hashmap[event._id] = false;
+            return true;
+        }
+        return false;
+    })
+
+    console.log(events);
+    let id = 0;
+    events = events.map((item)=>{
+        let title;
+        if(item.type === 'Unavailable'){
+            title = item.type
+        }
+        else{
+            title = `Meeting with: ${item.participants.map((person)=>person.name).toString()}`
+        }
+        return {
+            id: id++,
+            title: title,
+            allDay: false,
+            start: new Date(2018, 2, 16, 0, 0, 0),
+            end: new Date(2018, 2, 16, 1, 0, 0)
+        }
+    });
+
+    //Return result
+    return res.json({
+        aggregatedEvents: events
+    });
+});
+
 export const postMeeting=({
     meetingsCollection = required('meetingsCollection'),
     usersCollection = required('usersCollection'),
@@ -247,6 +368,11 @@ export const postMeeting=({
         usersInMeeting = yield Promise.all(getAllUsers);
     } catch (e) {
         logger.error(e, 'Sorry boss, you have an invalid user')
+        return sendError({
+            res,
+            status: 400,
+            message: 'user not found.'
+        }); 
     }
 
     
@@ -586,12 +712,13 @@ export const deleteTimeblock=({
 
 /*
 TODO:
-create button for view listing to schedule
-create aggregated schedule
-set up meeting form (includes search componenet)
-create meeting
+create delete route [done]
+create button for view listing to schedule 
+create aggregated schedule [done]
+set up meeting form (includes search componenet) 
+create meeting [done]
 create notification page
-handle delete for decline
-handle put for accept
+handle delete for decline [done]
+handle put for accept [done]
 
 */

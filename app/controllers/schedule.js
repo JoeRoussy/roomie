@@ -45,8 +45,7 @@ export const getSchedules=({
         meetingResults = yield getUserMeetings({
             id: convertToObjectId(_id),
             meetingsCollection
-        });
-        console.log("###", meetingResults)
+        }); 
     } catch(e){
         logger.error(e, 'Error finding meetings');
 
@@ -211,45 +210,6 @@ export const postMeeting=({
         });
     }
 
-    //Make sure participants exist and there is one Landlord
-    let containsLandlord = false;
-    let landlordId;
-    let participantsAsUsers;
-    let usersInMeeting;
-
-    const getAllUsers = participants.map(p => getById({
-        collection: usersCollection,
-        id: convertToObjectId(p)
-    }));
-
-
-
-    try {
-        usersInMeeting = yield Promise.all(getAllUsers);
-    } catch (e) {
-        logger.error(e, 'Sorry boss, you have an invalid user')
-    }
-
-    
-
-    participantsAsUsers = usersInMeeting.map((p) => {
-        console.log(p)
-        if(p.isLandlord) {
-            containsLandlord = true;
-            landlordId = p._id;
-        }
-
-        return { id: convertToObjectId(p._id), acceptedInvite: false, name:p.name }
-    });
-
-    if(!containsLandlord){
-        return sendError({
-            res,
-            status: 400,
-            message: 'No landlord was found in participants.'
-        });
-    }
-
     let listingValidation;
     try {
         listingValidation = yield getById({
@@ -271,6 +231,42 @@ export const postMeeting=({
         });
     }
 
+    //Make sure participants exist and there is one Landlord
+    let containsLandlord = false;
+    let participantsAsUsers;
+    let usersInMeeting;
+
+    const getAllUsers = participants.map(p => getById({
+        collection: usersCollection,
+        id: convertToObjectId(p)
+    }));
+
+
+
+    try {
+        usersInMeeting = yield Promise.all(getAllUsers);
+    } catch (e) {
+        logger.error(e, 'Sorry boss, you have an invalid user')
+    }
+
+    
+
+    participantsAsUsers = usersInMeeting.map((p) => {
+        if(convertToObjectId(p._id).equals(listingValidation.ownerId)) {
+            containsLandlord = true;
+        }
+
+        return { id: convertToObjectId(p._id), acceptedInvite: false, name:p.name }
+    });
+
+    if(!containsLandlord){
+        return sendError({
+            res,
+            status: 400,
+            message: 'No landlord was found in participants.'
+        });
+    }
+
     //Perform Query
     let result;
     const newMeeting = {
@@ -278,7 +274,7 @@ export const postMeeting=({
         start,
         end,
         date,
-        owners: [convertToObjectId(userId), convertToObjectId(landlordId)],
+        owners: [convertToObjectId(userId), convertToObjectId(listingValidation.ownerId)],
         listing: convertToObjectId(listing)
     }
     try{
@@ -433,16 +429,80 @@ export const deleteMeeting=({
 }) => coroutine(function* (req, res){
     //Extract values
     const {
+        id
+    } = req.params;
 
-    } = req.body;
+    const {
+        _id: userId
+    } = req.user;
 
     //Perform Validation
+    let meeting;
+    try {
+        meeting = yield getById({
+            collection: meetingsCollection,
+            id: convertToObjectId(id)
+        });
+    } catch (e){
+        return sendError({
+            res,
+            status: 500,
+            message: 'Error retrieving meeting'
+        });
+    }
+
+    if(!meeting){
+        return sendError({
+            res,
+            status: 400,
+            message: 'Error finding meeting'
+        })
+    }
+
+    //Check if user is part of meeting
+    const ObjectUserId = convertToObjectId(userId);
+    let userInMeeting = false;
+    let userIsOwner = false;
+    for(let i=0; i<meeting.participants.length; ++i){
+        if(ObjectUserId.equals(convertToObjectId(meeting.participants[i].id))){
+            userInMeeting = true;
+            break;
+        }
+    }
+    for(let i=0; i<meeting.owners.length; ++i){
+        if(ObjectUserId.equals(convertToObjectId(meeting.owners[i]))){
+            userIsOwner = true;
+            break;
+        }
+    }
+
+    if(!userInMeeting){
+        return sendError({
+            res,
+            status: 400,
+            message: 'User is not part of meeting'
+        });
+    }
 
     //Perform Query
     let result;
-
     try{
-
+        if(userIsOwner){ //delete listing
+            result = yield deleteById({
+                collection: meetingsCollection,
+                id: convertToObjectId(id)
+            })
+        }
+        else{ //remove user from meeting
+            const meetingUpdate = {
+                ...meeting,
+                participants: meeting.participants.filter((item)=>(!item.id.equals(ObjectUserId)))
+            }
+            result = yield meetingsCollection.update(
+                {_id: convertToObjectId(id)},
+                meetingUpdate
+            )
+        }
     } catch(e){
         logger.error(e, 'Error deleting meeting');
 
@@ -468,7 +528,7 @@ export const deleteTimeblock=({
     } = req.params;
 
     const {
-        _id
+        _id: userId
     } = req.user;
     //Perform Validation
     let timeblock;
@@ -493,7 +553,7 @@ export const deleteTimeblock=({
         })
     }
 
-    if(!timeblock.userId.equals(convertToObjectId(_id))){
+    if(!timeblock.userId.equals(convertToObjectId(userId))){
         return sendError({
             res,
             status: 400,
@@ -523,3 +583,15 @@ export const deleteTimeblock=({
         result
     });
 });
+
+/*
+TODO:
+create button for view listing to schedule
+create aggregated schedule
+set up meeting form (includes search componenet)
+create meeting
+create notification page
+handle delete for decline
+handle put for accept
+
+*/

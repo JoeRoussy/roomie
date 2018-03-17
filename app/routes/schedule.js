@@ -30,6 +30,8 @@ export default ({
         isEmailVerified,
         postMeeting({
             meetingsCollection: db.collection('meetings'),
+            usersCollection: db.collection('users'),
+            listingsCollection: db.collection('listings'),
             logger: getChildLogger({
                 baseLogger,
                 additionalFields: {

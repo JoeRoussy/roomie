@@ -20,7 +20,7 @@ export const createTimeblock = (options, user) => {
 }
 
 export const createMeeting = (options, user) => {
-    const id = user._id.toString();
+    const id = user._id;
     const submissionData = {...options, ...user};
     const action = {
         type: "POST_MEETING",
@@ -30,8 +30,8 @@ export const createMeeting = (options, user) => {
 }
 
 export const deleteTimeblock = (options, user) => {
-    const userId = user._id.toString();
-    const timeblockId = options._id.toString();
+    const userId = user._id;
+    const timeblockId = options._id;
     const action = {
         type: "DELETE_TIMEBLOCK",
         payload: axios.delete(`${process.env.API_ROOT}/api/schedule/timeblock/${timeblockId}`, user)
@@ -40,8 +40,8 @@ export const deleteTimeblock = (options, user) => {
 }
 
 export const deleteMeeting = (options, user) => {
-    const userId = user._id.toString();
-    const meetingId = options._id.toString();
+    const userId = user._id;
+    const meetingId = options._id;
     const action = {
         type: "DELETE_MEETING",
         payload: axios.delete(`${process.env.API_ROOT}/api/schedule/meeting/${meetingId}`, user)

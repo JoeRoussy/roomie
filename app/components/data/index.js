@@ -183,6 +183,17 @@ export const getUserTimeblocks = async({
     }
 }
 
+export const getUserMeetings = async({
+    id = required('id'),
+    meetingsCollection = required('meetingsCollection')
+}) => {
+    try{
+        return await meetingsCollection.find({ participants: {$elemMatch: { id: id} } }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
+    }
+}
+
 export const getUsersById = async({
     usersCollection = required('usersCollection'),
     ids = required('ids')

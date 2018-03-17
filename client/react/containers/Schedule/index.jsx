@@ -110,7 +110,6 @@ class Schedule extends Component{
                     showMultiDayTimes
                     defaultDate={new Date()}
                     selectable
-                    onSelectEvent={}
                 />
             </div>  
             

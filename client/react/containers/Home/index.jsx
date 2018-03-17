@@ -108,7 +108,7 @@ class Home extends Component {
                             <span>{moment(roommate.createdAt).format('MMMM Do YYYY')}</span>
                         </Card.Meta>
                     </Card.Content>
-                    <Card.Content centered>
+                    <Card.Content className='centered'>
                         <Button color='green'>Message</Button>
                     </Card.Content>
                 </Card>

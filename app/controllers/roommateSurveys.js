@@ -19,6 +19,7 @@ export const createRoommateSurvey = ({
 }) => coroutine(function* (req, res) {
     const {
         city,
+        province,
         ...questionResponses
     } = req.body;
 

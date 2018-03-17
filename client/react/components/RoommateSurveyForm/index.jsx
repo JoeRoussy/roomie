@@ -38,7 +38,9 @@ const RoommateSurveyForm = ({
     formValues,
     questions,
     cities,
-    isCitiesLoading
+    provinces,
+    isProvincesLoading,
+    onProvinceSelected
 }) => (
     <Form onSubmit={onSubmit} error={!!errorMessage}>
         <Message
@@ -47,13 +49,23 @@ const RoommateSurveyForm = ({
             content={errorMessage}
         />
         <Field
-            name='city'
-            label='What city are you looking at?'
+            name='province'
+            label='What province are you looking at?'
             component={SelectField}
-            placeholder='Select City'
-            options={cities}
-            loading={isCitiesLoading}
+            placeholder='Select Province'
+            options={provinces}
+            loading={isProvincesLoading}
+            onChange={onProvinceSelected}
         />
+        {cities ? (
+            <Field
+                name='city'
+                label='What city are you looking at?'
+                component={SelectField}
+                placeholder='Select City'
+                options={cities}
+            />
+        ) : ''}
         {questions.map((question, index) => {
             const name = `question${index}`;
 

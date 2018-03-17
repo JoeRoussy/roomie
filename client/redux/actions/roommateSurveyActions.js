@@ -27,8 +27,3 @@ export const submitForm = (formData)  => (dispatch) => {
             });
         })
 };
-
-export const fetchCities = () => ({
-    type: 'ROOMMATE_SURVEY_FETCH_CITIES',
-    payload: axios.get(`${process.env.API_ROOT}/api/cities`)
-});

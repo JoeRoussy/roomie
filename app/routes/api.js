@@ -6,7 +6,6 @@ import listingsRouter from './listings';
 import usersRouter from './users';
 import channelsRouter from './channels';
 import verifyRouter from './verify';
-import citiesRouter from './cities';
 import roommateSurveysRouter from './roommateSurveys';
 import passwordResetRouter from './passwordReset';
 import scheduleRouter from './schedule';
@@ -40,11 +39,6 @@ export default ({
     }));
 
     router.use('/verify', verifyRouter({
-        db,
-        baseLogger
-    }));
-
-    router.use('/cities', citiesRouter({
         db,
         baseLogger
     }));

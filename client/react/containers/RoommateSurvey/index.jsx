@@ -4,7 +4,8 @@ import { Redirect } from 'react-router';
 import { change } from 'redux-form';
 import { Container } from 'semantic-ui-react';
 
-import { submitForm, fetchCities } from '../../../redux/actions/roommateSurveyActions';
+import { submitForm } from '../../../redux/actions/roommateSurveyActions';
+import { getProvinces, getCitiesForProvince } from '../../../redux/actions/locationActions'
 import RoommateSurveyForm from '../../components/RoommateSurveyForm';
 import { roommateSurvey as constants } from '../../../../common/constants';
 
@@ -16,22 +17,26 @@ import './styles.css';
     } = {},
     roommateSurveyReducer: {
         isFormProcessing,
-        errorMessage,
-        cities,
-        isCitiesLoading
+        errorMessage
     } = {},
     form: {
         roommateSurvey: {
             values
         } = {}
+    } = {},
+    locationReducer: {
+        provinces,
+        cities,
+        isProvincesLoading
     } = {}
 }) => ({
     user,
     isFormProcessing,
     errorMessage,
     formValues: values,
+    provinces,
     cities,
-    isCitiesLoading
+    isProvincesLoading
 }))
 class RoommateSurvey extends React.Component {
     constructor() {
@@ -39,6 +44,7 @@ class RoommateSurvey extends React.Component {
 
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onSliderChange = this.onSliderChange.bind(this);
+        this.fetchCitiesForProvince = this.fetchCitiesForProvince.bind(this);
         this.questions = constants.questions;
         this.initialFormValues = this.questions.reduce((accumulator, currentValue, currentIndex) => ({
             [`question${currentIndex}`]: 5,
@@ -47,7 +53,7 @@ class RoommateSurvey extends React.Component {
     }
 
     componentWillMount() {
-        this.props.dispatch(fetchCities());
+        this.props.dispatch(getProvinces());
     }
 
     onFormSubmit(formData) {
@@ -58,6 +64,10 @@ class RoommateSurvey extends React.Component {
         this.props.dispatch(change('roommateSurvey', slider, value));
     }
 
+    fetchCitiesForProvince(province) {
+        this.props.dispatch(getCitiesForProvince(province))
+    }
+
     render() {
         const {
             user,
@@ -65,7 +75,8 @@ class RoommateSurvey extends React.Component {
             isFormProcessing,
             errorMessage,
             cities,
-            isCitiesLoading,
+            provinces,
+            isProvincesLoading,
             formValues
         } = this.props;
 
@@ -85,8 +96,10 @@ class RoommateSurvey extends React.Component {
                     onSliderChange={this.onSliderChange}
                     questions={this.questions}
                     initialValues={this.initialFormValues}
+                    provinces={provinces}
+                    onProvinceSelected={(e, province) => this.fetchCitiesForProvince(province)}
                     cities={cities}
-                    isCitiesLoading={isCitiesLoading}
+                    isProvincesLoading={isProvincesLoading}
                 />
             </Container>
         );

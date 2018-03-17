@@ -20,6 +20,7 @@ export default ({
     //get all channels the user has access to
     channelsRouter.get('/', findChannels({
         channelsCollection: db.collection('channels'),
+        usersCollection: db.collection('users'),
         logger: getChildLogger({
             baseLogger,
             additionalFields: {
@@ -75,7 +76,6 @@ export default ({
             }
         })
     }));
-
 
     //post a message to a channel
     //body.message = message to post

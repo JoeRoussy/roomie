@@ -29,6 +29,7 @@ import './styles.css';
 @connect((store)=>({
     channels: store.ChatReducer.channels,
     activeChannel: store.ChatReducer.activeChannel,
+    activeChannelUsers: store.ChatReducer.activeChannelUsers,
     chatLog: store.ChatReducer.chatLog,
     pendingMessages: store.ChatReducer.pendingMessages,
     newChannelName: store.ChatReducer.newChannelName,
@@ -49,6 +50,7 @@ class Chat extends React.Component{
         this.getDisplayNewChannelModal = this.getDisplayNewChannelModal.bind(this);
         this.getDisplayInviteModal = this.getDisplayInviteModal.bind(this);
         this.setDisplayInviteModal = this.setDisplayInviteModal.bind(this);
+        this.getActiveChannelUsers = this.getActiveChannelUsers.bind(this);
         this.getNewChannelName = this.getNewChannelName.bind(this);
         this.setDisplayNewChannelModal = this.setDisplayNewChannelModal.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
@@ -95,6 +97,10 @@ class Chat extends React.Component{
     }
     setDisplayInviteModal(displayModal){
         this.props.dispatch(modifyDisplayInviteModal(displayModal));
+    }
+
+    getActiveChannelUsers(){
+        return this.props.activeChannelUsers;
     }
 
     acceptInvite(){
@@ -190,7 +196,10 @@ class Chat extends React.Component{
                         />
                     </Grid.Column>
                     <Grid.Column width={11}>
-                        <ChatView chatLog={this.getChatLog()}/>
+                        <ChatView
+                            chatLog={this.getChatLog()}
+                            users={this.getActiveChannelUsers()}
+                        />
                         <Divider horizontal></Divider>
                         <ChatInput
                             onChange={this.handleMessageChange}
@@ -200,7 +209,9 @@ class Chat extends React.Component{
                         />
                     </Grid.Column>
                     <Grid.Column width={3}>
-                        <ExtraInfoBar/>
+                        <ExtraInfoBar
+                            users={this.getActiveChannelUsers()}
+                        />
                     </Grid.Column>
                 </Grid>
 

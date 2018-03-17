@@ -491,7 +491,6 @@ export const findChannels = ({
         r[e._id] = transformUserForOutput(e);
         return r;
     },{})
-    console.log(users)
 
     channels = channels.map((channel)=>{
             channel.users = channel.users.map((user)=>{

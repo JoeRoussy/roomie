@@ -1,6 +1,7 @@
 const config = {
     channels: [],
     activeChannel: {},
+    activeChannelUsers:{},
     chatLog: [],
     pendingMessages: {},
     newChannelName:'',
@@ -49,9 +50,14 @@ const ChatReducer = (state = config, actions) => {
         }
 
         case 'SET_ACTIVE_CHANNEL':{
+            const channelUsers = actions.payload.channel.users.reduce((r,e)=>{
+                    r[e.userId] = e;
+                    return r;
+                },{})
             state = {
                 ...state,
-                activeChannel: actions.payload.channel
+                activeChannel: actions.payload.channel,
+                activeChannelUsers: channelUsers
             }
             break;
         }

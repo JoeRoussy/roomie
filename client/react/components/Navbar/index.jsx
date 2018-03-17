@@ -41,16 +41,24 @@ const NavBar = ({
         ];
     }
 
+    //Schedule
+    let schedule;
+    if(user){
+        schedule = <Menu.Item onClick={() => navigateTo('/schedule')}><Icon name='calendar'/> Schedule </Menu.Item>
+    }
+
     return (
         <Menu fixed='top' inverted>
             <Container>
-                //left side
+                {/*//left side*/}
                 <Menu.Item header onClick={() => navigateTo('/')}>Roomie</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/search')}>Search </Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/groups')}><Icon name='group'/> Groups</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='user'/> Listings</Menu.Item>
-                //right side
+                {schedule}
+
+                {/*//right side*/}
                 <Menu.Menu position='right'>
         			{rightSection}
         		</Menu.Menu>

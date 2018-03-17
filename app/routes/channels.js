@@ -8,8 +8,9 @@ import {
     findMessages,
     postMessage,
     inviteUserToChannel,
-    acceptInviteToChannel
-} from '../controllers/api';
+    acceptInviteToChannel,
+    leaveChannel
+} from '../controllers/chat';
 
 export default ({
     db = required('db'),
@@ -62,6 +63,18 @@ export default ({
             baseLogger,
             additionalFields: {
                 module: 'api-channels-invite'
+            }
+        })
+    }));
+
+    //leave a channel put /:id/leave
+    //body.userId = user to revove
+    channelsRouter.put('/:id/leave', leaveChannel({
+        channelsCollection: db.collection('channels'),
+        logger: getChildLogger({
+            baseLogger,
+            additionalFields: {
+                module: 'api-channels-leave'
             }
         })
     }));

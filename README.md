@@ -38,20 +38,37 @@ The following is the schema of every collection in the database
 ##### Listing
 ```
 {
-    “_id":"5a664d7d1c805e089c349ec6",
-    "name":"Jugal's Place",
-    "address":"1 Rainbow Road",
-    "description":"It’s aite.",
-    "keywords": ["plants", "windows"],
-    "bathroom": 1,
-    "bedroom": 2,
-    "furnished": "Yes",
-    "Views":11,
-    "location":"Placeville",
-    "lat": 35.234,
-    "lng": 78.123,
-    "ownerId":"5a79de27431d9e0a2c8fbd4b",
-    "createdAt":ISODate("2018-02-06 12:26:57.209")
+	"_id":"5aac89adbe2fda7d603853ed",
+	"name":"Listing Numero Uno",
+	"description":"The best listing around. Just stop looking. You've found it.",
+	"country":"Canada",
+	"province":"Ontario",
+	"postalCode":"N6G 1A5",
+	"city":"London",
+	"street":"1 Beaufort Street",
+	"type":"condo",
+	"price":"500",
+	"bedrooms":"1",
+	"bathrooms":"4.5",
+	"unit":null,
+	"utilities":"true",
+	"furnished":"true",
+	"parking":"true",
+	"internet":"true",
+	"laundry":"true",
+	"airConditioning":"false",
+	"location":"1 Beaufort St, London, ON N6G 1A5, Canada",
+	"images":[
+		"/assets/2aea07c9bad2491861707075776954c91521256877077.jpeg",
+		"/assets/2aea07c9bad2491861707075776954c91521256877077.jpeg",
+		"/assets/2aea07c9bad2491861707075776954c91521256877077.jpeg",
+		"/assets/2aea07c9bad2491861707075776954c91521256877077.jpeg"
+	],
+	"ownerId":"5aa5cd3c7e6f341e38492ff3",
+	"keywords":[],
+	"lat":42.996502,
+	"lng":-81.262221,
+	"createdAt":"2018-03-17T03:21:17.830Z"
 }
 ```
 ##### Password Reset

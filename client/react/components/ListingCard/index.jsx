@@ -12,7 +12,7 @@ const ListingCard = ({
         header = { listing.name }
         meta = { listing.address }
         description = { listing.description }
-        extra = { <span ><Icon name = 'user' />{ listing.views } Views</span> }
+        extra = { <span ><Icon name = 'user' />{ listing.views ? listing.views : '0' } Views</span> }
         key = { id }
         onClick = { viewListing }
     />

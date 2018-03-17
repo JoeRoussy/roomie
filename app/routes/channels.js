@@ -28,6 +28,18 @@ export default ({
         })
     }));
 
+    //get all channels the user has access to
+    channelsRouter.get('/', findChannels({
+        channelsCollection: db.collection('channels'),
+        usersCollection: db.collection('users'),
+        logger: getChildLogger({
+            baseLogger,
+            additionalFields: {
+                module: 'api-channels'
+            }
+        })
+    }));
+
     //invite user(s) to a channel
     //body.userIds = array of user id strings
     channelsRouter.post('/:id/invites', inviteUserToChannel({
@@ -64,16 +76,6 @@ export default ({
         })
     }));
 
-    //get all messages in a channel
-    channelsRouter.get('/:id', findMessages({
-        messagesCollection: db.collection('messages'),
-        logger: getChildLogger({
-            baseLogger,
-            additionalFields: {
-                module: 'api-channels'
-            }
-        })
-    }));
 
     //post a message to a channel
     //body.message = message to post

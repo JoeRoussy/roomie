@@ -23,6 +23,19 @@ export const isAuthenticated = (req, res, next) => {
     return next();
 }
 
+
+export const isEmailVerified = (req, res, next) => {
+    if (!req.user.isEmailConfirmed) {
+        return sendError({
+            res,
+            status: 400,
+            message: 'You need to confirm your email to perform this action'
+        });
+    }
+
+    return next();
+}
+
 // Checks if user is a landlord
 export const isLandlord = (req, res, next) => {
     if (req.user) {

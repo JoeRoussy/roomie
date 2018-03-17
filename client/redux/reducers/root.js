@@ -4,7 +4,7 @@ import { combineReducers } from 'redux';
 
 import { reducer as formReducer } from 'redux-form';
 
-import listingsReducer from './listingsReducer';
+import listingReducer from './listingReducer';
 import sampleReducer from './sampleReducer';
 import searchReducer from './searchReducer';
 import userReducer from './userReducer';
@@ -15,9 +15,12 @@ import signUpReducer from './signUpReducer';
 import signInReducer from './signInReducer';
 import profileReducer from './profileReducer';
 import changePasswordReducer from './changePasswordReducer';
+import forgotPasswordFormReducer from './forgotPasswordFormReducer';
+import forgotPasswordReducer from './forgotPasswordReducer';
+import locationReducer from './locationReducer';
 
 const reducers = combineReducers({
-    listingsReducer,
+    listingReducer,
 	sampleReducer,
     searchReducer,
     userReducer,
@@ -28,7 +31,10 @@ const reducers = combineReducers({
     signUpReducer,
     signInReducer,
     profileReducer,
-    changePasswordReducer
+    changePasswordReducer,
+    forgotPasswordFormReducer,
+    forgotPasswordReducer,
+    locationReducer
 });
 
 export default reducers;

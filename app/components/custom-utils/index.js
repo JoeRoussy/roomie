@@ -1,4 +1,6 @@
 import { ObjectId } from 'mongodb';
+import { randomBytes } from 'crypto';
+import { get as getHash } from '../hash';
 
 export const required = (param, customMessage) => {
     if (typeof customMessage === 'string') {
@@ -181,3 +183,16 @@ export const extendIfPopulated = (obj, key, value) => {
 
     return obj;
 }
+
+// Returns a hash of an object that includes a random value and appends the date on the end to protect against collisions
+export const getUniqueHash = async (obj) => {
+    const objToHash = {
+        ...obj,
+        randomValue: randomBytes(16).toString('hex')
+    };
+
+    const now = +new Date();
+    const hash = await getHash({ input: objToHash });
+
+    return hash + now;
+};

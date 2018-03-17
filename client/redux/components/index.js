@@ -68,9 +68,13 @@ export const buildFormSubmissionData = (formData, imageFileNames) => {
     const submissionData = new FormData();
 
     Object.keys(formData).forEach((key) => {
-        if (imageFileNames.includes(key) && formData[key]) {
-            // Only append this if the form data is truthy. This lets us set file inputs to null if we want
-            submissionData.append('profilePic', formData[key][0]);
+        if (imageFileNames.includes(key)) {
+            if (Array.isArray(formData[key])) {
+                formData[key].forEach((image) => submissionData.append(key, image));
+            } else {
+                // In this case, the form field has just one image, but does not have a 'forEach' method
+                submissionData.append(key, formData[key][0]);
+            }
         } else {
             submissionData.append(key, formData[key]);
         }

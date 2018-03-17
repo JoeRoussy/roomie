@@ -28,8 +28,9 @@ export default ({
         })
     }));
 
-    //get all channels the user has access to
-    channelsRouter.post('/', postChannels({
+    //Create a channel
+    //body.channelName = channel name
+    channelsRouter.post('/', postChannel({
         channelsCollection: db.collection('channels'),
         logger: getChildLogger({
             baseLogger,

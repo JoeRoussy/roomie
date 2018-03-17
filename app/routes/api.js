@@ -4,6 +4,7 @@ import { required } from '../components/custom-utils';
 
 import listingsRouter from './listings';
 import usersRouter from './users';
+import channelsRouter from './channels';
 import verifyRouter from './verify';
 import locationsRouter from './locations';
 
@@ -20,6 +21,11 @@ export default ({
     }));
 
     router.use('/users', usersRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/channels', channelsRouter({
         db,
         baseLogger
     }));

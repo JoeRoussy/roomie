@@ -136,7 +136,7 @@ class Home extends Component {
             ) : (
                 <div>
                     <h2>Looking for Roommates?</h2>
-                    <p id="surveyDescription">Take a survey about your living preferences and we will find roommates for you to choose from that are looking in the same city as you!</p>
+                    <p id="surveyDescription">Looking for a Roomie? Complete the short survey to find the right match for you!</p>
                     <Button type='button' className='primaryColourAlt' onClick={this.navigateToRoommateSurvey}>Get Started</Button>
                 </div>
             );

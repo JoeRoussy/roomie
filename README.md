@@ -83,11 +83,11 @@ The following is the schema of every collection in the database
 ##### Message
 ```
 {
-    "_id" : ObjectId("5aa54cae956974424063e266"),
-    "channelId" : ObjectId("5aa40a9e383fdf132025ccc4"),
-    "userName" : "5a9cb7dbc227cc57bc7b9555",
-    "body" : "Hello",
-    "createdAt" : ISODate("2018-03-11T15:35:10.643Z")
+    "_id" : ObjectId("5aac8660b8e7ff26a82c3104"),
+    "channelId" : ObjectId("5aac757d8e6a2640b05c3550"),
+    "userId" : ObjectId("5aac72b3be01c43ac828c2e3"),
+    "body" : "Test",
+    "createdAt" : ISODate("2018-03-17T03:07:12.947Z")
 }
 ```
 

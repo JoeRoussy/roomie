@@ -596,7 +596,7 @@ export const postMessage = ({
             collection: messagesCollection,
             document: {
                 "channelId" :  convertToObjectId(req.body.channelId),
-                "userName" : req.user._id,
+                "userId" : convertToObjectId(req.user._id),
                 "body" : req.body.message
             },
             returnInsertedDocument: true

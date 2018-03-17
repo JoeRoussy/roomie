@@ -123,8 +123,8 @@ class Chat extends React.Component{
     }
 
     createChannel(){
-        this.setDisplayNewChannelModal(false);
         this.props.dispatch(createChannel(this.getNewChannelName()));
+        this.setDisplayNewChannelModal(false);
     }
 
     handleMessageChange(event){

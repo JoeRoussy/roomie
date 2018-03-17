@@ -20,6 +20,7 @@ export default ({
     //get all channels the user has access to
     channelsRouter.get('/', findChannels({
         channelsCollection: db.collection('channels'),
+        usersCollection: db.collection('users'),
         logger: getChildLogger({
             baseLogger,
             additionalFields: {
@@ -29,7 +30,11 @@ export default ({
     }));
 
     //get all channels the user has access to
+<<<<<<< Updated upstream
     channelsRouter.post('/', postChannels({
+=======
+    channelsRouter.post('/', postChannel({
+>>>>>>> Stashed changes
         channelsCollection: db.collection('channels'),
         logger: getChildLogger({
             baseLogger,
@@ -75,7 +80,10 @@ export default ({
         })
     }));
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     //post a message to a channel
     //body.message = message to post
     channelsRouter.post('/:id/messages', postMessage({

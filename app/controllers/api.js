@@ -443,12 +443,13 @@ export const deleteCurrentUser = ({
 });
 export const findChannels = ({
     channelsCollection = required('channelsCollection'),
+    usersCollection = required('usersCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
-    let result;
+    let channels;
 
     try {
-        result = yield getChannels({
+        channels = yield getChannels({
             channelsCollection,
             query: {users: { $elemMatch: {"userId":convertToObjectId(req.user._id)} } }
         })
@@ -462,8 +463,47 @@ export const findChannels = ({
         });
     }
 
+    //look through channels for unique user ids
+    let userIds = {};
+    channels.map((channel)=>{
+        channel.users.map((user)=>{
+            userIds[user.userId] = 1;
+        })
+    });
+    userIds = Object.keys(userIds).map((userId)=>{return convertToObjectId(userId)});
+    let users;
+    //look up users from the channels
+    try {
+        users =  yield getUsersById({
+            usersCollection,
+            ids: userIds
+        });
+    } catch (e) {
+        logger.error(e, 'Error finding users' );
+        return sendError({
+            res,
+            status: 500,
+            message: 'Error finding users'
+        });
+    }
+
+    users = users.reduce((r,e)=>{
+        r[e._id] = transformUserForOutput(e);
+        return r;
+    },{})
+    console.log(users)
+
+    channels = channels.map((channel)=>{
+            channel.users = channel.users.map((user)=>{
+                return {...users[user.userId],
+                        ...user
+                }
+            })
+            return channel;
+        });
+
     return res.json({
-        channels: result
+        channels: channels
     });
 });
 

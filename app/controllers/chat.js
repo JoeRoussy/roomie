@@ -291,27 +291,33 @@ export const inviteUserToChannel = ({
             message: 'Error finding users'
         });
     }
+    const uniqueUsers = {}
+    channel.users.forEach((user)=>{
+        uniqueUsers[user.userId] = user;
+    });
     //add the users to the users that exist to the channel
-    const users = channel.users.concat(userArray.map((user)=>{
+    let newUsers = userArray.map((user)=>{
         return {
             "userId":user._id,
-            acceptedInvite:false
+            "acceptedInvite":false,
+            "isActive":true
         }
-    }));
-
-    //make sure that users that are already in the chat are not reinvited
-    const uniqueIds = {};
-    const users2 = users.filter((user)=>{
-        if(uniqueIds[user.userId]){
+    }).filter((user)=>{
+        if(uniqueUsers[user.userId]){
+            uniqueUsers[user.userId].isActive = true;
+            uniqueUsers[user.userId].acceptedInvite = false;
             return false;
         }
-        uniqueIds[user.userId] = true;
         return true;
     });
 
+
+
+    //make sure that users that are already in the chat are not reinvited
+    const users2 = Object.values(uniqueUsers).concat(newUsers);
     //update the document in the database
     try {
-        channel = findAndUpdate({
+        channel = yield findAndUpdate({
             collection: channelsCollection,
             query: {"_id":channel._id},
             update: {"users":users2}

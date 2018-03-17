@@ -10,7 +10,7 @@ import { getProvinces, getCitiesForProvince } from '../../../redux/actions/locat
 import './styles.css';
 
 @connect(({
-    listingsReducer: {
+    listingReducer: {
         isFormProcessing,
         errorMessage
     } = {},
@@ -86,7 +86,7 @@ export default class CreateListing extends React.Component {
                 <h1>Create Listing</h1>
                 <CreateListingForm
                     onSubmit={(formData) => () => this.onSubmit(formData)}
-                    isFormProcessing={isFormProcessing}
+                    isProcessing={isFormProcessing}
                     errorMessage={errorMessage}
                     provinceErrorMessage={provinceErrorMessage}
                     onImageDrop={(images) => this.onImageDrop(images)}

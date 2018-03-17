@@ -375,7 +375,7 @@ export const postMeeting=({
         }); 
     }
 
-    
+    //TODO Check is userInMeeting is not an empty result    
 
     participantsAsUsers = usersInMeeting.map((p) => {
         if(convertToObjectId(p._id).equals(listingValidation.ownerId)) {
@@ -713,7 +713,7 @@ export const deleteTimeblock=({
 /*
 TODO:
 create delete route [done]
-create button for view listing to schedule 
+create button for view listing to schedule [done]
 create aggregated schedule [done]
 set up meeting form (includes search componenet) 
 create meeting [done]

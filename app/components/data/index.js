@@ -336,6 +336,13 @@ export const getUserForPasswordReset = async({
                     foreignField: '_id',
                     as: 'users'
                 }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    passwordResetId: '$_id',
+                    user: { $arrayElemAt: [ '$users', 0 ] }
+                }
             }
         ]).toArray();
     } catch (e) {

@@ -29,13 +29,12 @@ export default ({
     }));
 
     //get all channels the user has access to
-    channelsRouter.get('/', findChannels({
+    channelsRouter.post('/', postChannels({
         channelsCollection: db.collection('channels'),
-        usersCollection: db.collection('users'),
         logger: getChildLogger({
             baseLogger,
             additionalFields: {
-                module: 'api-channels'
+                module: 'api-create-channel'
             }
         })
     }));

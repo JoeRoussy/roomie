@@ -246,7 +246,6 @@ export const getUserForPasswordReset = async({
         ]).toArray();
     } catch (e) {
         throw new RethrownError(e, `Error finding user for password reset with urlIdentifyer: ${urlIdentifyer}`);
-
     }
 };
 

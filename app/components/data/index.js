@@ -171,3 +171,14 @@ export const removeUserById = async({
         throw new RethrownError(e, `Error removing user with id ${id}`);
     }
 };
+
+export const getUserTimeblocks = async({
+    id = required('id'),
+    timeblocksCollection = required('timeblocksCollection')
+}) => {
+    try{
+        return await timeblocksCollection.find({ userId: id }).toArray();
+    } catch (e){
+        throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
+    }
+}

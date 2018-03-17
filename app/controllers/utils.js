@@ -22,6 +22,18 @@ export const isAuthenticated = (req, res, next) => {
     return next();
 }
 
+export const isEmailVerified = (req, res, next) => {
+    if (!req.user.isEmailConfirmed) {
+        return sendError({
+            res,
+            status: 400,
+            message: 'You need to confirm your email to perform this action'
+        });
+    }
+
+    return next();
+}
+
 // Makes sure the current user is allowed to modify the user specified in the params of the route
 // TODO: Add admin users later?
 export const canModifyUser = (req, res, next) => {

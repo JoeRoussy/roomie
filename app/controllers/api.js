@@ -1,5 +1,4 @@
 import { wrap as coroutine } from 'co';
-import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated, convertToObjectId } from '../components/custom-utils';
 import { getUserByEmail, getEmailConfirmationLink, removeUserById,getUsersById, getChannels,getMessagesByChannelId } from '../components/data';

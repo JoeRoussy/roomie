@@ -13,6 +13,8 @@ import signUpReducer from './signUpReducer';
 import signInReducer from './signInReducer';
 import profileReducer from './profileReducer';
 import changePasswordReducer from './changePasswordReducer';
+import homeReducer from './homeReducer';
+import roommateSurveyReducer from './roommateSurveyReducer';
 import forgotPasswordFormReducer from './forgotPasswordFormReducer';
 import forgotPasswordReducer from './forgotPasswordReducer';
 import locationReducer from './locationReducer';
@@ -28,6 +30,8 @@ const reducers = combineReducers({
     signInReducer,
     profileReducer,
     changePasswordReducer,
+    homeReducer,
+    roommateSurveyReducer,
     forgotPasswordFormReducer,
     forgotPasswordReducer,
     locationReducer

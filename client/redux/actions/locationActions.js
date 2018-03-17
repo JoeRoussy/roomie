@@ -5,7 +5,7 @@ export const getProvinces = () => ({
     payload: axios.get(`${process.env.API_ROOT}/api/locations/provinces`)
 });
 
-export const getCitiesForProvince = (city) => ({
+export const getCitiesForProvince = (province) => ({
     type: 'GET_CITIES_FOR_PROVINCE',
-    payload: axios.get(`${process.env.API_ROOT}/api/locations/${city}/cities`)
+    payload: axios.get(`${process.env.API_ROOT}/api/locations/${province}/cities`)
 });

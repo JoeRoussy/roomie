@@ -2,7 +2,7 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated, convertToObjectId } from '../components/custom-utils';
-import { findListings, getUserByEmail, getEmailConfirmationLink, removeUserById,getUsersById, getChannels,getMessages } from '../components/data';
+import { findListings, getUserByEmail, getEmailConfirmationLink, removeUserById,getUsersById, getChannels,getMessagesByChannelId } from '../components/data';
 import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
@@ -491,7 +491,7 @@ export const postChannel = ({
             message: 'Error creating channel'
         });
     }
-    
+
     return res.json({
         channel: channel
     });
@@ -508,7 +508,7 @@ export const findMessages = ({
     let result;
 
     try {
-        result = yield getMessages({
+        result = yield getMessagesByChannelId({
             messagesCollection,
             query: { channelId: convertToObjectId(channelId) }
         })

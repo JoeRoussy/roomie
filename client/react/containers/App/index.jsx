@@ -14,6 +14,7 @@ import Profile from '../Profile';
 import ChangePassword from '../ChangePassword';
 import Chat from '../Chat';
 import Schedule from '../Schedule';
+import ScheduleMeeting from '../ScheduleMeeting';
 
 import './styles.css';
 
@@ -40,6 +41,7 @@ const App = ({
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/change-password" component={ChangePassword} />
             <Route exact path="/schedule" component={Schedule} />
+            <Route exact path="/schedule-meeting" component={ScheduleMeeting} />
         </main>
         <footer>
             Copyright © 2018 Roomie

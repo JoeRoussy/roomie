@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
+import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { Item, Icon, Image, Label } from 'semantic-ui-react';
+import { Button, Item, Icon, Image, Label } from 'semantic-ui-react';
 
 import { getListingById } from '../../../redux/actions/listingsActions';
+import { navigateTo } from '../../../components';
 
 import './styles.css';
 
@@ -39,6 +41,7 @@ export default class ViewListing extends React.Component {
                           </Item.Content>
                     </Item>
                 </Item.Group>
+                <Button onClick={()=>(navigateTo(this.props.dispatch)('/schedule-meeting'))}> Schedule Meeting </Button>
             </div>
         )
     }

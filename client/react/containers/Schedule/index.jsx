@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 import { change } from 'redux-form';
 import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -67,6 +68,7 @@ class Schedule extends Component{
     }
 
     render(){
+        const redirectSection = this.props.userInfo.user ? '' : <Redirect to='/sign-in'/>;
         const availabilityOptions = [{text:'Unavailable' , value:'Unavailable'}];
         const repeatingOptions = [{text:'None' , value:'None'}, {text:'Daily' , value:'Daily' }, {text:'Weekly' , value:'Weekly' }];
 
@@ -114,7 +116,9 @@ class Schedule extends Component{
             </div>  
             
         return (
+
             <div id='scheduleWrapper'>
+                {redirectSection}
                 {/* Timeblock */}
                 {timeblock}
 

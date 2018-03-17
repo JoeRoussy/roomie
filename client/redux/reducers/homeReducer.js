@@ -42,6 +42,22 @@ const homeReducer = (state = config, actions) => {
 
             break;
         }
+
+        case 'SET_CURRENT_USER': {
+            const {
+                user
+            } = payload;
+
+            // If there is not user, clear out the recommendedRoommates
+            if (!user) {
+                state = {
+                    ...state,
+                    recommendedRoommates: []
+                };
+            }
+
+            break;
+        }
     }
 
     return state;

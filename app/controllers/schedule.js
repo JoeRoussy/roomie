@@ -120,7 +120,7 @@ export const postTimeblock=({
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res){
     //Extract values
-    const {
+    let {
         date,
         start,
         end,
@@ -128,9 +128,8 @@ export const postTimeblock=({
         repeating,
         user
     } = req.body;
-    
+
     //Perform Validation
-    const now = moment();
     if(!date){
         logger.error("Error: Date not defined")
         return sendError({
@@ -181,17 +180,27 @@ export const postTimeblock=({
         });
     }
 
-    if(!start && !end && start.diff(end, 'minutes') < 0){
-        logger.error("Error: Start time > End Time")
+    console.log('Date', date);
+    console.log('Start', start);
+    console.log('End', end);
+    // Make start, end, and date moments
+    const now = moment();
+    const startMoment = moment(start);
+    const endMoment = moment(end);
+    const dateMoment = moment(date);
+
+    if (endMoment.isBefore(startMoment)) {
+        logger.error("Error: Start time > End Time");
+
         return sendError({
             res,
             status: 400,
             errorKey: SCHEDULE_START_END_MISMATCH,
-            message: `Please select a start time earlier than the end time`
+            message: 'Please select a start time earlier than the end time'
         });
     }
 
-    if(!date && now.diff(date, 'days') <0){
+    if(dateMoment.isBefore(now, 'day')){
         logger.error("Error: Date < Now")
         return sendError({
             res,

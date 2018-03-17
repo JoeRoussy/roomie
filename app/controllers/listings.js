@@ -1,5 +1,6 @@
 import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
 
 import { required } from '../components/custom-utils';
 import { findListings } from '../components/data';

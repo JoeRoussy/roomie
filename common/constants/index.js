@@ -71,5 +71,7 @@ export const roommateSurvey = {
     errors: {
         GENERIC: 'GENERIC'
     },
-    maxRecommendedRoommates: 6
+    maxRecommendedRoommates: 6,
+    minResponse: 0,
+    maxResponse: 10
 }

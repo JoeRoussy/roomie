@@ -195,7 +195,9 @@ export const findRecommendedRoommates = async({
     userSurveyResponse = required('userSurveyResponse')
 }) => {
     const {
-        maxRecommendedRoommates
+        maxRecommendedRoommates,
+        minResponse,
+        maxResponse
     } = surveyContants;
 
     // First get all the roommate survey responses that are looking for the same city as our user
@@ -265,9 +267,14 @@ export const findRecommendedRoommates = async({
             }, 0);
 
         const distance = Math.sqrt(squaredDistance);
+        const maxDistance = Object.keys(questionResponses).length * Math.pow(maxResponse - minResponse, 2);
+        const percentMatch = 100 - distance / maxDistance;
 
         return {
-            user,
+            user: {
+                ...user,
+                percentMatch
+            },
             distance
         };
     });

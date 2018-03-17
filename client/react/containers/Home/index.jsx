@@ -77,7 +77,7 @@ class Home extends Component {
         if (this.props.recommendedRoommates.length) {
             const roommateCards = this.props.recommendedRoommates.map((roommate) => (
                 <Card key={roommate._id} raised>
-                    <Label color='green' floating>95%</Label>
+                    <Label color='green' floating>{Math.floor(roommate.percentMatch)}%</Label>
                     <Card.Content>
                         <Image size='tiny' floated='right' src={`${process.env.ASSETS_ROOT}${roommate.profilePictureLink}`} />
                         <Card.Header>

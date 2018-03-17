@@ -1,3 +1,4 @@
+import faker from 'faker';
 import moment from 'moment';
 
 import {
@@ -9,8 +10,9 @@ import {
 } from '../custom-utils';
 //import { get as getHash } from '../hash';
 import { insert as insertInDb } from '../db/service';
-
 import { findAndUpdate } from '../db/service';
+import { generateHash as hashPassword } from '../authentication';
+import { roommateSurvey as surveyContants } from '../../../common/constants';
 
 // Get listings based on an optional query
 export const findListings = async({
@@ -171,36 +173,135 @@ export const removeUserById = async({
     }
 };
 
-// Makes a password reset document and returns a link a user can use to reset their password
-export const getPasswordResetLink = async({
-    passwordResetsCollection = required('passwordResetsCollection'),
-    user = required('user')
+// Finds an existing roommate survey response by user id
+export const findRoommateSurveyResponse = async({
+    roommateSurveysCollection = required('roommateSurveysCollection'),
+    userId = required('userId')
 }) => {
-    const {
-        _id: userId
-    } = user;
-
-    const {
-        FRONT_END_ROOT = required('FRONT_END_ROOT')
-    } = process.env;
-
-    const urlIdentifyer = await getUniqueHash(user);
-
     try {
-        await insertInDb({
-            collection: passwordResetsCollection,
-            document: {
-                userId: userId,
-                urlIdentifyer,
-                expired: false
-            }
+        return await roommateSurveysCollection.findOne({
+            userId
         });
     } catch (e) {
-        throw new RethrownError(e, `Error inserting password reset document for user with id: ${userId}`);
+        throw new RethrownError(e, `Error finding roommateSurveys collection using userId set to: ${userId}`);
+    }
+};
+
+// Helper for function above that takes the user out of a survey response
+function transformRoommateResponseForOutput(response) {
+    const {
+        user,
+        distance,
+        ...rest
+    } = response;
+
+    return {
+        ...user,
+        distance
+    };
+}
+
+// Uses minimum Euclidean distance with respect to question responses to find recommended roommates (who are also looking in the same city)
+export const findRecommendedRoommates = async({
+    roommateSurveysCollection = required('roommateSurveysCollection'),
+    userSurveyResponse = required('userSurveyResponse')
+}) => {
+    const {
+        maxRecommendedRoommates,
+        minResponse,
+        maxResponse
+    } = surveyContants;
+
+    // First get all the roommate survey responses that are looking for the same city as our user
+    let roommateSurveyResponses = [];
+
+    try {
+        roommateSurveyResponses = await roommateSurveysCollection.aggregate([
+            {
+                $match: {
+                    city: userSurveyResponse.city,
+                    userId: {
+                        $ne: userSurveyResponse.userId
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            }
+        ]).toArray();
+
+        // NOTE: Cheesey map to take 1 user out of the users because we don't have time to deal with the db upgrade to 3.4
+        roommateSurveyResponses = roommateSurveyResponses.map(({
+            users,
+            userId,
+            ...rest
+        }) => ({
+            user: users[0],
+            ...rest
+        }));
+    } catch (e) {
+        throw new RethrownError(e, 'Error getting roommate survey responses');
     }
 
-    // Now make a link to reset the email
-    return `${FRONT_END_ROOT}/?passwordResetToken=${urlIdentifyer}`;
+    // If we have a small amount of people looking in the same city, just return them as we don't have any to sort through
+    if (roommateSurveyResponses.length <= maxRecommendedRoommates) {
+        return roommateSurveyResponses.map(transformRoommateResponseForOutput);
+    }
+
+    const {
+        userId: submittedUserId,
+        createdAt,
+        ...submittedUserQuestionResponses
+    } = userSurveyResponse;
+
+    // Compute the distance from our current user to each survey response.
+    const roommateDistances = roommateSurveyResponses.map((response) => {
+        const {
+            _id,
+            city,
+            user,
+            userId,
+            createdAt,
+            ...questionResponses
+        } = response;
+
+        // Compute the Euclidean distance between the current response and our user
+        const squaredDistance = Object.keys(questionResponses)
+            .reduce((accumulator, responseKey) => {
+                const componentDistance = Math.pow(submittedUserQuestionResponses[responseKey] - questionResponses[responseKey], 2);
+
+                return accumulator + componentDistance;
+            }, 0);
+
+        const distance = Math.sqrt(squaredDistance);
+        const maxDistance = Object.keys(questionResponses).length * Math.pow(maxResponse - minResponse, 2);
+        const percentMatch = 100 - distance / maxDistance;
+
+        return {
+            user: {
+                ...user,
+                percentMatch
+            },
+            distance
+        };
+    });
+
+    // Sort the roommates by distance from low to high
+    roommateDistances.sort((a, b) => a.distance - b.distance);
+
+    let recommendedRoommates = [];
+
+    // Pick out the recommendedRoommates based on the number of recommended rommates in the config
+    for (let i = 0; i < surveyContants.maxRecommendedRoommates; i++) {
+        recommendedRoommates.push(roommateDistances[i]);
+    }
+
+    return recommendedRoommates.map(transformRoommateResponseForOutput);
 };
 
 // Returns a user wrapped in an envalope: { user }
@@ -245,7 +346,65 @@ export const getUserForPasswordReset = async({
             }
         ]).toArray();
     } catch (e) {
-        throw new RethrownError(e, `Error finding user for password reset with urlIdentifyer: ${urlIdentifyer}`);
+        throw new RethrownError(`Could not find user for password reset with urlIdentifyer: ${urlIdentifyer}`);
+    }
+};
+
+// Generates some fake users and some roomate responses. All users are from Toronto.
+export const generateRoommateResponses = async({
+    usersCollection = required('usersCollection'),
+    roommateSurveysCollection = required('roommateSurveysCollection'),
+    logger = required('logger', 'You must pass in a logging instance for this module to use')
+}) => {
+    let usersToMake = 5000;
+
+    while (usersToMake > 0) {
+        // Make a fake user
+        const name = faker.name.findName();
+        const email = faker.internet.email();
+        const password = await hashPassword(faker.internet.password());
+
+        let savedUser;
+
+        try {
+            savedUser = await insertInDb({
+                collection: usersCollection,
+                document: {
+                    name,
+                    email,
+                    password,
+                    isLandlord: false, // All these fake users are tenants,
+                    emailConfirmed: true, // Makes things easier in case we implement email verification checks,
+                    profilePictureLink: process.env.DEFAULT_PROFILE_PICTURE_RELATIVE_PATH
+                },
+                returnInsertedDocument: true
+            });
+        } catch (e) {
+            logger.error(e, `Error saving fake user with email: ${email}`);
+        }
+
+        // Now make a fake survey response for this user
+        let randomAnswers = {};
+
+        for (let i = 0; i < surveyContants.questions.length; i++) {
+            // Random value between 0 and 10
+            randomAnswers[`question${i}`] = Math.floor(Math.random() * (10 + 1));
+        }
+
+        try {
+            await insertInDb({
+                collection: roommateSurveysCollection,
+                document: {
+                    userId: savedUser._id,
+                    city: 'Toronto',
+                    ...randomAnswers
+                }
+            });
+        } catch (e) {
+            logger.error(e, `Error saving roommate survey for user with id: ${savedUser._id}`);
+        }
+
+        --usersToMake;
     }
 };
 
@@ -302,4 +461,36 @@ export const getMessagesByChannelId = async({
     } catch (e) {
         throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
     }
+};
+
+// Makes a password reset document and returns a link a user can use to reset their password
+export const getPasswordResetLink = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    user = required('user')
+}) => {
+    const {
+        _id: userId
+    } = user;
+
+    const {
+        FRONT_END_ROOT = required('FRONT_END_ROOT')
+    } = process.env;
+
+    const urlIdentifyer = await getUniqueHash(user);
+
+    try {
+        await insertInDb({
+            collection: passwordResetsCollection,
+            document: {
+                userId: userId,
+                urlIdentifyer,
+                expired: false
+            }
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error inserting password reset document for user with id: ${userId}`);
+    }
+
+    // Now make a link to reset the email
+    return `${FRONT_END_ROOT}/?passwordResetToken=${urlIdentifyer}`;
 };

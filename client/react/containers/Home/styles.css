@@ -1,0 +1,62 @@
+#homeRoommatesSection {
+    text-align: center;
+}
+
+#homeRoommatesSection h2 {
+    margin-bottom: 50px;
+}
+
+#homeRoommatesSection .ui.button {
+    margin-top: 50px;
+}
+
+#homeRoommatesSection #surveyDescription {
+    font-size: 18px;
+}
+
+#homeRoommatesSection #loaderContainer {
+    display: table;
+    min-height: 150px;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+#homeRoommatesSection #loaderContainer #loaderInnerWrapper {
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#homeRoommatesSection #loaderContainer #loaderInnerWrapper .loader {
+    color: white;
+}
+
+#homeRoommatesSection #loaderContainer #loaderInnerWrapper .loader:before {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+#homeRoommatesSection #loaderContainer #loaderInnerWrapper .loader:after {
+    border-color: #fff transparent transparent;
+}
+
+#homeRoommatesSection #roommateCards .card {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#homeRoommatesSection #roommateCards .button, #homeRoommatesSection #retakeSurvey .button {
+    margin-top: 0;
+}
+
+#homeRoommatesSection #roommateCards .card .header {
+    text-align: left;
+}
+
+#homeRoommatesSection #roommateCards .card .meta {
+    text-align: left;
+}
+
+#homeRoommatesSection #retakeSurvey {
+    margin-top: 30px;
+}

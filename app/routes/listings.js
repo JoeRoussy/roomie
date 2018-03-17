@@ -2,7 +2,7 @@ import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { isAuthenticated, isLandlord } from '../controllers/utils';
 import { required } from '../components/custom-utils';
-import { createListing, getListings, getListingById } from '../controllers/api';
+import { createListing, getListings, getListingById } from '../controllers/listings';
 import {
     singleFile as parseSingleFileUpload,
     error as handleImageUploadError,

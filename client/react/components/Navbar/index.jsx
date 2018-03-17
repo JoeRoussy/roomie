@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { Container, Menu, Icon } from 'semantic-ui-react';
+import { Container, Menu, Icon, Image } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 
 import { navigateTo as getNavigateTo, setJwt } from '../../../components';
@@ -51,23 +51,21 @@ const NavBar = ({
     let viewListings;
 
     if (user && user.isLandlord) {
-        createListing = <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add square'/>Create Listing</Menu.Item>
-        viewListings = <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='feed'/> Listings</Menu.Item>
+        createListing = <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add'/>Create Listing</Menu.Item>
+        viewListings = <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='home'/>Listings</Menu.Item>
     }
 
     return (
-        <Menu fixed='top' inverted>
+        <Menu fixed='top'>
             <Container>
-                {/* Left side */}
-                <Menu.Item header onClick={() => navigateTo('/')}>Roomie</Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/search')}>Search </Menu.Item>
+                <Menu.Item header onClick={() => navigateTo('/')}><Image src='/images/logo.svg' size='small' /></Menu.Item>
+                <Menu.Item onClick={() => navigateTo('/search')}><Icon name='search'/>Search </Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/groups')}><Icon name='group'/> Groups</Menu.Item>
                 {viewListings}
                 {createListing}
                 {schedule}
 
-                {/* Right side */}
                 <Menu.Menu position='right'>
                     {rightSection}
                 </Menu.Menu>

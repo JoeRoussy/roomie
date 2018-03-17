@@ -1,20 +1,25 @@
 import React, { Component } from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Container, Dimmer, Loader, Card, Label, Image } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import moment from 'moment';
 import queryString from 'query-string';
 import { Redirect } from 'react-router';
 
 import HomeSearch from '../../components/Search/HomeSearch';
 import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
 import { search, handleLocationChange } from '../../../redux/actions/searchActions';
+import { getRoommateSuggestionsForUser } from '../../../redux/actions/homeActions';
+import { navigateTo } from '../../../components';
 import { setPasswordResetToken } from '../../../redux/actions/forgotPasswordFormActions';
 
 import './styles.css';
 
 @connect((store)=>({
     user: store.userReducer.user,
-    searchState: store.searchReducer
+    searchState: store.searchReducer,
+    recommendedRoommates: store.homeReducer.recommendedRoommates,
+    isRoommatesLoading: store.homeReducer.isLoadingRoommateSuggestions
 }))
 
 class Home extends Component {
@@ -25,7 +30,18 @@ class Home extends Component {
         this.handleLocationChange = this.handleLocationChange.bind(this);
         this.processLocation = this.processLocation.bind(this);
         this.submitSearch = this.submitSearch.bind(this);
+        this.navigateToRoommateSurvey = this.navigateToRoommateSurvey.bind(this);
         this.onPasswordResetToken = this.onPasswordResetToken.bind(this);
+    }
+
+    componentWillMount() {
+        const {
+            user
+        } = this.props;
+
+        if (user) {
+            this.props.dispatch(getRoommateSuggestionsForUser(user));
+        }
     }
 
     navigateToCreateListing(user) {
@@ -50,6 +66,10 @@ class Home extends Component {
         this.props.dispatch(handleLocationChange(val))
     }
 
+    navigateToRoommateSurvey() {
+        navigateTo(this.props.dispatch)('/roommate-survey');
+    }
+
     onPasswordResetToken(token) {
         this.props.dispatch(setPasswordResetToken(token));
     }
@@ -70,14 +90,79 @@ class Home extends Component {
             this.onPasswordResetToken(queryParams.passwordResetToken);
         }
 
+        let roommateSection;
+
+        if (this.props.recommendedRoommates.length) {
+            const roommateCards = this.props.recommendedRoommates.map((roommate) => (
+                <Card key={roommate._id} raised>
+                    <Label color='green' floating>{Math.floor(roommate.percentMatch)}%</Label>
+                    <Card.Content>
+                        <Image size='tiny' floated='right' src={`${process.env.ASSETS_ROOT}${roommate.profilePictureLink}`} />
+                        <Card.Header>
+                            {roommate.name}
+                        </Card.Header>
+                        <Card.Meta>
+                            <span>Joined:</span>
+                        </Card.Meta>
+                        <Card.Meta>
+                            <span>{moment(roommate.createdAt).format('MMMM Do YYYY')}</span>
+                        </Card.Meta>
+                    </Card.Content>
+                    <Card.Content className='centered'>
+                        <Button color='green'>Message</Button>
+                    </Card.Content>
+                </Card>
+            ));
+
+            roommateSection = (
+                <Container>
+                    <h2>Roommates Recommened For You</h2>
+                    <Card.Group id='roommateCards' className='centered'>
+                        {roommateCards}
+                    </Card.Group>
+                    <div id='retakeSurvey'>
+                        <h3>Not Finding A Good Fit?</h3>
+                        <Button className='primaryColourAlt' onClick={this.navigateToRoommateSurvey}>Take Survey Again</Button>
+                    </div>
+                </Container>
+            )
+        } else {
+            const innerSection = this.props.isRoommatesLoading ? (
+                <div id='loaderContainer'>
+                    <div id='loaderInnerWrapper'>
+                        <Loader active>Loading</Loader>
+                    </div>
+                </div>
+            ) : (
+                <div>
+                    <h2>Looking for a Roomie?</h2>
+                    <p id="surveyDescription">Complete the short survey to find the right match for you!</p>
+                    <Button type='button' className='primaryColourAlt' onClick={this.navigateToRoommateSurvey}>Get Started</Button>
+                </div>
+            );
+
+            roommateSection = (
+                <Container>
+                    {innerSection}
+                </Container>
+            );
+        }
+
         return (
             <div>
                 {passwordResetRedirect}
-                <HomeSearch
-                    navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
-                    inputProps = {locationProps}
-                />
-                {/* INSERT 5 POPULAR LISTINGS HERE */}
+                <div className='section'>
+                    <Container>
+                        <HomeSearch
+                            navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
+                            inputProps = {locationProps}
+                        />
+                    </Container>
+                    {/* INSERT 5 POPULAR LISTINGS HERE */}
+                </div>
+                <div id='homeRoommatesSection' className='section primaryColourSection'>
+                    {roommateSection}
+                </div>
             </div>
         )
     }

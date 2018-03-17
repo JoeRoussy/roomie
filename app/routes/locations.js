@@ -2,7 +2,7 @@ import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
 
-import { getProvinces , getCitiesForProvince} from '../controllers/api';
+import { getProvinces , getCitiesForProvince} from '../controllers/locations';
 
 export default ({
     baseLogger = required('baseLogger')

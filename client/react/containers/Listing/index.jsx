@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Button, Item, Icon, Image, Label } from 'semantic-ui-react';
 
 import ListingForm from '../../components/ListingForm';
+import ListingDisplay from '../../components/ListingDisplay';
+
 import {
     getListingById,
     editListing,
@@ -89,21 +91,12 @@ export default class Listing extends React.Component {
             );
         } else if (listing) {
             bodySection = (
-                <Item.Group divided>
-                    <Item>
-                          <Item.Content>
-                              <Item.Header as='a'>{ listing.name }</Item.Header>
-                              <Item.Meta>
-                                  <span className='address'>{ listing.address }</span>
-                              </Item.Meta>
-                              <Item.Description>{ listing.description }</Item.Description>
-                              <Item.Extra>
-                                  <Label icon='globe' content='View Map' />
-                                  {editButton}
-                              </Item.Extra>
-                          </Item.Content>
-                    </Item>
-                </Item.Group>
+                <div>
+                    <ListingDisplay
+                        listing={ listing }
+                    />
+                    {editButton}
+                </div>
             );
         } else {
             bodySection = '';

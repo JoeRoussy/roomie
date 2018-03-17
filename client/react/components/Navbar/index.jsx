@@ -51,8 +51,8 @@ const NavBar = ({
     let viewListings;
 
     if (user && user.isLandlord) {
-        createListing = <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add square'/>Create Listing</Menu.Item>
-        viewListings = <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='feed'/> Listings</Menu.Item>
+        createListing = <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add'/>Create Listing</Menu.Item>
+        viewListings = <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='home'/>Listings</Menu.Item>
     }
 
     return (

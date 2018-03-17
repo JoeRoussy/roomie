@@ -59,7 +59,7 @@ const PasswordResetForm = ({
             placeholder='Confirm Password'
             type='password'
         />
-    <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update Password</Button>
+        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update Password</Button>
     </Form>
 );
 

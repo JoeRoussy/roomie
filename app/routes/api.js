@@ -1,7 +1,6 @@
 import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { createUser, getListings, getListingById } from '../controllers/api';
 
 import listingsRouter from './listings';
 import usersRouter from './users';
@@ -9,6 +8,7 @@ import channelsRouter from './channels';
 import verifyRouter from './verify';
 import passwordResetRouter from './passwordReset';
 import scheduleRouter from './schedule';
+import locationsRouter from './locations';
 
 export default ({
     app = required('app'),
@@ -43,6 +43,11 @@ export default ({
     }));
 
     router.use('/passwordReset', passwordResetRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/locations', locationsRouter({
         db,
         baseLogger
     }));

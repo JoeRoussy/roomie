@@ -16,6 +16,7 @@ import './styles.css';
     user: store.userReducer.user,
     searchState: store.searchReducer
 }))
+
 class Home extends Component {
     constructor(props){
         super(props)

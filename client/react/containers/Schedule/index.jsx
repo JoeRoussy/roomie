@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { change } from 'redux-form';
-import { Button } from 'semantic-ui-react';
-import TimeblockForm from '../../components/TimeblockForm';
+import BigCalendar from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-import { createTimeblock } from '../../../redux/actions/scheduleActions';
+import { Button, Loader, Dimmer } from 'semantic-ui-react';
+import TimeblockForm from '../../components/TimeblockForm';
+import { createTimeblock, getSchedules } from '../../../redux/actions/scheduleActions';
+
+import './styles.css';
 
 
 @connect((store)=>({
     formInfo: store.form.timeblockForm,
-    userInfo: store.userReducer
+    userInfo: store.userReducer,
+    scheduleInfo: store.scheduleReducer
 }))
 class Schedule extends Component{
     constructor(props){
@@ -20,12 +25,17 @@ class Schedule extends Component{
             selectedStartTime: moment(),
             selectedEndTime: moment().add(1,'hour')
         }
-
+        BigCalendar.momentLocalizer(moment);
         this.dateChange = this.dateChange.bind(this);
         this.startTimeChange = this.startTimeChange.bind(this);
         this.endTimeChange = this.endTimeChange.bind(this);
         this.toggleForm = this.toggleForm.bind(this);
         this.submitTimeblock = this.submitTimeblock.bind(this);
+    }
+
+    componentDidMount(){
+        const user = this.props.userInfo;
+        if(user) this.props.dispatch(getSchedules(user));
     }
 
     dateChange(date){
@@ -57,7 +67,7 @@ class Schedule extends Component{
     }
 
     render(){
-        const availabilityOptions = [{text:'Unavailable' , value:'Unavailable'}, {text:'Available' , value:'Available' }];
+        const availabilityOptions = [{text:'Unavailable' , value:'Unavailable'}];
         const repeatingOptions = [{text:'None' , value:'None'}, {text:'Daily' , value:'Daily' }, {text:'Weekly' , value:'Weekly' }];
 
         const timeblock = this.state.isEditingTimeblock ? 
@@ -71,6 +81,7 @@ class Schedule extends Component{
                 endTime={this.state.selectedEndTime}
                 availabilityOptions={availabilityOptions}
                 repeatingOptions={repeatingOptions}
+                cancel={this.toggleForm}
                 initialValues={{
                     date: moment(),
                     start: moment(),
@@ -82,13 +93,34 @@ class Schedule extends Component{
                 :
             <Button onClick={this.toggleForm} content='Set Availability'/>
 
+        const events = !this.props.scheduleInfo.loading ? this.props.scheduleInfo.events : [];
+
+        let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
+
+        const schedule = this.props.scheduleInfo.loading ? 
+            <Dimmer active>
+                <Loader>Loading</Loader>
+            </Dimmer>
+                :
+            <div id='scheudleCalendarView'>
+                <BigCalendar
+                    events={events}
+                    views={['month', 'agenda']}
+                    step={60}
+                    showMultiDayTimes
+                    defaultDate={new Date()}
+                    selectable
+                    onSelectEvent={}
+                />
+            </div>  
+            
         return (
-            <div>
+            <div id='scheduleWrapper'>
                 {/* Timeblock */}
                 {timeblock}
 
                 {/* Schedule */}
-
+                {schedule}
             </div>
         )
     }

@@ -83,7 +83,8 @@ const TimeblockForm = ({
     startTimeChange,
     endTimeChange,
     availabilityOptions,
-    repeatingOptions
+    repeatingOptions,
+    cancel
 }) => {
     return (
         <div>
@@ -158,6 +159,7 @@ const TimeblockForm = ({
                 </div>
 
                 <Button type='submit' content='Save Availability'/>
+                <Button type='button' onClick={cancel} content='Cancel'/>
                 <Divider />
             </Form>
         </div>

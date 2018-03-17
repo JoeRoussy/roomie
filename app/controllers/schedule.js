@@ -11,7 +11,6 @@ import {
     deleteById
 } from '../components/db/service';
 
-
 export const getSchedules=({
     meetingsCollection = required('meetingsCollection'),
     timeblocksCollection = required('timeblocksCollection'),
@@ -23,7 +22,7 @@ export const getSchedules=({
     } = req.user;
 
     //Perform Query
-    let timeblockResults;
+    let timeblockResults = [];
 
     try{
         timeblockResults = yield getUserTimeblocks({
@@ -40,9 +39,47 @@ export const getSchedules=({
         });
     }
 
+    let meetingResults = [];
+
+    // try{
+    //     meetingResults = yield getUserMeetings({
+    //         id: convertToObjectId(_id),
+    //         meetingsCollection
+    //     });
+    // } catch(e){
+    //     logger.error(e, 'Error finding meetings');
+
+    //     return sendError({
+    //         res,
+    //         status: 500,
+    //         message: 'Error finding meetings'
+    //     });
+    // }
+
+    let eventResults = [].concat(timeblockResults).concat(meetingResults);
+    let id = 0;
+    eventResults = eventResults.map((item)=>{
+        let title;
+        if(item.type === 'Unavailable'){
+            title = item.type
+        }
+        else{
+            title = `Meeting with: ${item.participants}`
+        }
+        return {
+            id: id++,
+            title: title,
+            allDay: false,
+            start: new Date(2018, 2, 16, 0, 0, 0),
+            end: new Date(2018, 2, 16, 1, 0, 0)
+        }
+    });
+
     //Return result
     return res.json({
-        timeblocks:timeblockResults
+        timeblocks:timeblockResults,
+        meetings: meetingResults,
+        events: eventResults
     });
 });
 
@@ -239,7 +276,6 @@ export const deleteTimeblock=({
     const {
         _id
     } = req.user;
-    console.log(req.user)
     //Perform Validation
     let timeblock;
     try {
@@ -262,7 +298,7 @@ export const deleteTimeblock=({
             message: 'Error finding timeblock'
         })
     }
-    console.log("###", convertToObjectId(timeblock.userId), convertToObjectId(_id))
+
     if(!timeblock.userId.equals(convertToObjectId(_id))){
         return sendError({
             res,

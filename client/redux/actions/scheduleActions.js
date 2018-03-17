@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 export const getSchedules = (user) => {
-    const id = user._id.toString();
+    const id = user._id;
     const action = {
         type: "GET_SCHEDULES",
         payload: axios.get(`${process.env.API_ROOT}/api/schedule/`, user)

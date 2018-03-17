@@ -172,6 +172,17 @@ export const removeUserById = async({
     }
 };
 
+export const getUserTimeblocks = async({
+    id = required('id'),
+    timeblocksCollection = required('timeblocksCollection')
+}) => {
+    try{
+        return await timeblocksCollection.find({ userId: id }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
+    }
+}
+
 export const getUsersById = async({
     usersCollection = required('usersCollection'),
     ids = required('ids')
@@ -181,7 +192,7 @@ export const getUsersById = async({
     } catch (e) {
         throw new RethrownError(e, `Error could not find users by ids: ${ids}`);
     }
-}
+};
 
 export const getChannels = async({
     channelsCollection = required('channelsCollection'),
@@ -193,6 +204,7 @@ export const getChannels = async({
         throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
     }
 };
+
 export const getMessagesByChannelId = async({
     messagesCollection = required('messagesCollection'),
     query

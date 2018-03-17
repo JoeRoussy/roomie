@@ -7,6 +7,7 @@ import listingsRouter from './listings';
 import usersRouter from './users';
 import channelsRouter from './channels';
 import verifyRouter from './verify';
+import scheduleRouter from './schedule';
 
 export default ({
     app = required('app'),
@@ -16,6 +17,11 @@ export default ({
     const router = express.Router();
 
     router.use('/listings', listingsRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/schedule', scheduleRouter({
         db,
         baseLogger
     }));

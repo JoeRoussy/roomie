@@ -3,52 +3,13 @@ import { Field, reduxForm } from 'redux-form';
 import { Form, Icon, Button, Message } from 'semantic-ui-react';
 import { LabelInputField, TextAreaField, Checkbox, SelectField } from 'react-semantic-redux-form';
 
-const listingTypes = [
-  { key: 'select', value:'', text:'Choose One' },
-  { key: 'one', value: 'apartment', text: 'Apartment' },
-  { key: 'two', value: 'condo', text: 'Condominium' },
-  { key: 'three', value: 'house', text: 'House'},
-  { key: 'four', value: 'townhouse', text: 'Town House'},
-  { key: 'five', value: 'other', text: 'Other'}
-]
+import RenderDropzone from '../RenderDropzone';
+import { isInteger, isPrice, isFullOrHalfInt, isPostalCode } from '../../../../common/validation';
+import { listingTypes } from '../../../../common/constants';
 
+// TODO: Add validation
 const validate = (values) => {
     let errors = {};
-
-    const {
-        name,
-        address,
-        description,
-        location
-    } = values;
-
-    if (!name) {
-        errors = {
-            name: 'Please a name for the listing.',
-            ...errors
-        };
-    }
-
-    if (!description) {
-        errors = {
-            description: 'Please enter a description for the listing.',
-            ...errors
-        };
-    }
-
-    if (!address) {
-        errors = {
-            address: 'Please enter the address of the listing.',
-            ...errors
-        };
-    }
-
-    if (!location) {
-        errors = {
-            location: 'Please enter the location of the listing.',
-            ...errors
-        };
-    }
 
     return errors;
 }
@@ -59,14 +20,19 @@ const ListingForm = ({
     isProcessing,
     valid,
     errorMessage,
-    initialValues,
-    onEditCancelClicked
+    provinceErrorMessage,
+    onImageDrop,
+    onImageRemove,
+    onProvinceSelect,
+    provinces,
+    cities,
+    formData
 }) => (
-    <Form onSubmit={onSubmit} error={!!errorMessage}>
+    <Form onSubmit={onSubmit(formData)} error={!!(errorMessage || provinceErrorMessage)}>
         <Message
             error
             header='Error'
-            content={errorMessage}
+            content={errorMessage ? errorMessage : provinceErrorMessage}
         />
         <Field
             name='name'
@@ -76,11 +42,51 @@ const ListingForm = ({
             placeholder='Listing Name'
         />
         <Field
-            name='address'
+            name='country'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='map pin' size='large' /> }}
+            label={{ content: <Icon color='blue' name='globe' size='large' /> }}
             labelPosition='left'
-            placeholder='Address'
+            placeholder='Canada'
+            readOnly
+            value='Canada'
+        />
+        <Field
+            name='province'
+            component={SelectField}
+            label='Province'
+            options={provinces}
+            placeholder='Select a province'
+            style={{marginTop: 0 + 'px'}}
+            onChange={onProvinceSelect}
+        />
+        <Field
+            name='city'
+            component={SelectField}
+            label='City'
+            options={cities}
+            placeholder='Select a city'
+            style={{marginTop: 0 + 'px'}}
+        />
+        <Field
+            name='postalCode'
+            component={LabelInputField}
+            label='Postal Code'
+            labelPosition='left'
+            placeholder='Postal Code'
+        />
+        <Field
+            name='street'
+            component={LabelInputField}
+            label='Street Address'
+            labelPosition='left'
+            placeholder='Street Address'
+        />
+        <Field
+            name='unit'
+            component={LabelInputField}
+            label='Unit Number (Optional)'
+            labelPosition='left'
+            placeholder='Unit Number'
         />
         <Field
             name='price'
@@ -100,7 +106,7 @@ const ListingForm = ({
             component={SelectField}
             label='Type of listing'
             options={listingTypes}
-            placeholder='Type of listing'
+            placeholder='Select type of listing'
             style={{marginTop: 0 + 'px'}}
         />
         <Field
@@ -143,9 +149,17 @@ const ListingForm = ({
             label='Laundry'
         />
         <Field
-            name='airconditioning'
+            name='airConditioning'
             component={Checkbox}
             label='Air Conditioning'
+        />
+        <Field
+            name='images'
+            component={RenderDropzone}
+            multiple
+            onImageDrop={onImageDrop}
+            onImageRemove={onImageRemove}
+            accept="image/*"
         />
         <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update</Button>
         <Button type='button' onClick={onEditCancelClicked} >Cancel</Button>

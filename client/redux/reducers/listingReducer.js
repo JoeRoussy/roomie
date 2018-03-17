@@ -72,7 +72,6 @@ const listingReducer = (state = config, actions) => {
                 isFormProcessing: true,
                 errorMessage: null
             };
-
             break;
         }
         case 'CREATE_LISTING_FULFILLED': {
@@ -81,7 +80,6 @@ const listingReducer = (state = config, actions) => {
                     listing
                 } = {}
             } = payload;
-
             state = {
                 ...state,
                 isFormProcessing: false,
@@ -104,10 +102,8 @@ const listingReducer = (state = config, actions) => {
             if (errorKey) {
                 // We got an error key back so use an error message that relates to it
                 const errorMessages = {
-                    [process.env.LISTING_ERRORS_MISSING_VALUES]: 'Please make sure you fill all required fields',
                     [process.env.LISTING_ERRORS_GENERIC]: 'Your request could not be processed',
-                    [process.env.LISTING_ERRORS_INVALID_VALUES]: 'Invalid values entered for one or more fields',
-                    [process.env.LISTING_ERRORS_INVALID_ADDRESS]: 'Invalid address given',
+                    [process.env.LISTING_ERRORS_INVALID_ADDRESS]: 'The listing address could not be found.',
                     [process.env.USER_ERROR_NOT_LOGGED_IN]: 'You must be a logged in user',
                     [process.env.USER_ERROR_NOT_LANDLORD]: 'You must be a landlord user'
                 };

@@ -5,6 +5,7 @@ import { required } from '../components/custom-utils';
 import listingsRouter from './listings';
 import usersRouter from './users';
 import verifyRouter from './verify';
+import locationsRouter from './locations';
 
 export default ({
     app = required('app'),
@@ -25,6 +26,10 @@ export default ({
 
     router.use('/verify', verifyRouter({
         db,
+        baseLogger
+    }));
+
+    router.use('/locations', locationsRouter({
         baseLogger
     }));
 

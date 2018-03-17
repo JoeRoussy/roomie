@@ -1,30 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { arrayPush, arrayRemove } from 'redux-form';
 
 import CreateListingForm from '../../components/CreateListingForm';
-
 import { submitCreateForm } from '../../../redux/actions/listingActions';
+import { getProvinces, getCitiesForProvince } from '../../../redux/actions/locationActions';
 
-const CreateListing = ({
-    onSubmit,
-    formData,
-    isFormProcessing,
-    errorMessage
-}) => {
-    return (
-        <div>
-            <h1>Create Listing</h1>
-            <CreateListingForm
-                onSubmit={onSubmit(formData)}
-                formData={formData}
-                isFormProcessing={isFormProcessing}
-                errorMessage={errorMessage}
-            />
-        </div>
-    );
-};
+import './styles.css';
 
-const mapStateToProps = ({
+@connect(({
     listingsReducer: {
         isFormProcessing,
         errorMessage
@@ -33,15 +17,77 @@ const mapStateToProps = ({
         createListingForm: {
             values
         } = {}
+    } = {},
+    locationReducer: {
+        errorMessage: provinceErrorMessage,
+        cities,
+        provinces
     } = {}
 }) => ({
-    isFormProcessing,
     formData: values,
-    errorMessage
-})
+    errorMessage,
+    provinceErrorMessage,
+    provinces,
+    cities,
+    isFormProcessing
+}))
 
-const mapDispatchToProps = (dispatch) => ({
-    onSubmit: (formData) => () => dispatch(submitCreateForm(formData))
-});
+export default class CreateListing extends React.Component {
+    constructor(props) {
+        super(props);
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateListing);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onImageDrop = this.onImageDrop.bind(this);
+        this.onImageRemove = this.onImageRemove.bind(this);
+        this.onProvinceSelect = this.onProvinceSelect.bind(this);
+    }
+
+    componentWillMount() {
+        this.props.dispatch(getProvinces());
+    }
+
+    onSubmit(formData) {
+        this.props.dispatch(submitCreateForm(formData));
+    }
+
+    onImageDrop(images) {
+        images.forEach((image) => this.props.dispatch(arrayPush('createListingForm', 'images', image)));
+    }
+
+    onImageRemove(imageIndex) {
+        this.props.dispatch(arrayRemove('createListingForm', 'images', imageIndex));
+    }
+
+    onProvinceSelect(e, province) {
+        this.props.dispatch(getCitiesForProvince(province));
+    }
+
+    render() {
+        const {
+            isFormProcessing,
+            errorMessage,
+            provinceErrorMessage,
+            formData,
+            provinces,
+            cities
+        } = this.props;
+
+        return (
+            <div>
+                <h1>Create Listing</h1>
+                <CreateListingForm
+                    onSubmit={(formData) => () => this.onSubmit(formData)}
+                    isFormProcessing={isFormProcessing}
+                    errorMessage={errorMessage}
+                    provinceErrorMessage={provinceErrorMessage}
+                    onImageDrop={(images) => this.onImageDrop(images)}
+                    onImageRemove={(imageIndex) => () => this.onImageRemove(imageIndex)}
+                    provinces={provinces}
+                    onProvinceSelect={(e, province) => this.onProvinceSelect(e, province)}
+                    cities={cities}
+                    formData={formData}
+                />
+            </div>
+        )
+    }
+}

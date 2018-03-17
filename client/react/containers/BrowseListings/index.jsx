@@ -91,7 +91,7 @@ export default class Listings extends React.Component {
         let body;
         if(waitingForSearch){
             //TODO: fix css such that the dimmer doesnt flow into menu bar
-            body = (<div fluid>
+            body = (<div>
                         <Dimmer active>
                             <Loader inline inverted>Fetching Results</Loader>
                         </Dimmer>

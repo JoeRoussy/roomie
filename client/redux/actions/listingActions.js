@@ -2,6 +2,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { push } from 'react-router-redux';
 
+import { buildFormSubmissionData } from '../components';
+
 /*
     Since we are using the redux-promise-middleware, returning a promise as the payload of an action
     dispatches that action but will also dispatch GET_LISTINGS_PENDING, GET_LISTINGS_FULFILLED, and GET_LISTINGS_REJECTED
@@ -27,7 +29,9 @@ export const submitCreateForm = (formValues) => (dispatch) => {
         type: 'CREATE_LISTING_SUBMIT'
     });
 
-    axios.post(`${process.env.API_ROOT}/api/listings`, formValues)
+    const formSubmission = buildFormSubmissionData(formValues, [ 'images' ]);
+
+    axios.post(`${process.env.API_ROOT}/api/listings`, formSubmission)
         .then(res => {
             const {
                 data: {

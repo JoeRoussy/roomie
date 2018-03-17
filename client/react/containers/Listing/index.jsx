@@ -80,7 +80,7 @@ export default class Listing extends React.Component {
         if (isEditing) {
             bodySection = (
                 <ListingForm
-                    onSubmit={() => this.onSubmit(formData)}
+                    onSubmit={(formData) => () => this.onSubmit(formData)}
                     onEditCancelClicked={ this.onEditCancelClicked }
                     initialValues={{ ...listing }}
                     isProcessing={ isFormProcessing }

@@ -4,25 +4,23 @@ import { Form, Icon, Button, Message } from 'semantic-ui-react';
 import { LabelInputField, TextAreaField, Checkbox, SelectField } from 'react-semantic-redux-form';
 
 import RenderDropzone from '../RenderDropzone';
+import { isInteger, isPrice, isFullOrHalfInt, isPostalCode } from '../../../../common/validation';
+import { listingTypes } from '../../../../common/constants';
 
-const listingTypes = [
-  { key: 'select', value:'', text:'Choose One' },
-  { key: 'one', value: 'apartment', text: 'Apartment' },
-  { key: 'two', value: 'condo', text: 'Condominium' },
-  { key: 'three', value: 'house', text: 'House'},
-  { key: 'four', value: 'townhouse', text: 'Town House'},
-  { key: 'five', value: 'other', text: 'Other'}
-]
-
-// TODO: Update validation with all required fields
 const validate = (values) => {
     let errors = {};
 
     const {
         name,
-        address,
         description,
-        location
+        province,
+        postalCode,
+        city,
+        street,
+        type,
+        price,
+        bedrooms,
+        bathrooms
     } = values;
 
     if (!name) {
@@ -39,16 +37,78 @@ const validate = (values) => {
         };
     }
 
-    if (!address) {
+    if (!province) {
         errors = {
-            address: 'Please enter the address of the listing.',
+            province: 'Please select a province.',
             ...errors
         };
     }
 
-    if (!location) {
+    if (!postalCode) {
         errors = {
-            location: 'Please enter the location of the listing.',
+            postalCode: 'Please enter a postal code.',
+            ...errors
+        };
+    } else if (!isPostalCode(postalCode)) {
+        errors = {
+            postalCode: 'Please enter a valid postal code.',
+            ...errors
+        };
+    }
+
+    if (!city) {
+        errors = {
+            city: 'Please enter the city of the listing.',
+            ...errors
+        };
+    }
+
+    if (!street) {
+        errors = {
+            street: 'Please enter the street address of the listing.',
+            ...errors
+        };
+    }
+
+    if (!type) {
+        errors = {
+            type: 'Please select the type of listing.',
+            ...errors
+        };
+    }
+
+    if (!price) {
+        errors = {
+            price: 'Please enter the price of the listing.',
+            ...errors
+        };
+    } else if(!isPrice(price)) {
+        errors = {
+            price: 'Must input a price.',
+            ...errors
+        };
+    }
+
+    if(!bedrooms) {
+        errors = {
+            bedrooms: 'Please enter number of bedrooms.',
+            ...errors
+        };
+    } else if(!isInteger(bedrooms)) {
+        errors = {
+            bedrooms: 'Must input number.',
+            ...errors
+        };
+    }
+
+    if(!bathrooms) {
+        errors = {
+            bathrooms: 'Please enter number of bathrooms.',
+            ...errors
+        };
+    } else if(!isFullOrHalfInt(bathrooms)) {
+        errors = {
+            bathrooms: 'Must input half of full number of bathrooms.',
             ...errors
         };
     }
@@ -61,13 +121,20 @@ const CreateListingForm = ({
     onSubmit,
     isProcessing,
     valid,
-    errorMessage
+    errorMessage,
+    provinceErrorMessage,
+    onImageDrop,
+    onImageRemove,
+    onProvinceSelect,
+    provinces,
+    cities,
+    formData
 }) => (
-    <Form onSubmit={onSubmit} error={!!errorMessage}>
+    <Form onSubmit={onSubmit(formData)} error={!!(errorMessage || provinceErrorMessage)}>
         <Message
             error
             header='Error'
-            content={errorMessage}
+            content={errorMessage ? errorMessage : provinceErrorMessage}
         />
         <Field
             name='name'
@@ -77,11 +144,51 @@ const CreateListingForm = ({
             placeholder='Listing Name'
         />
         <Field
-            name='address'
+            name='country'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='map pin' size='large' /> }}
+            label={{ content: <Icon color='blue' name='globe' size='large' /> }}
             labelPosition='left'
-            placeholder='Address'
+            placeholder='Canada'
+            readOnly
+            value='Canada'
+        />
+        <Field
+            name='province'
+            component={SelectField}
+            label='Province'
+            options={provinces}
+            placeholder='Select a province'
+            style={{marginTop: 0 + 'px'}}
+            onChange={onProvinceSelect}
+        />
+        <Field
+            name='city'
+            component={SelectField}
+            label='City'
+            options={cities}
+            placeholder='Select a city'
+            style={{marginTop: 0 + 'px'}}
+        />
+        <Field
+            name='postalCode'
+            component={LabelInputField}
+            label='Postal Code'
+            labelPosition='left'
+            placeholder='Postal Code'
+        />
+        <Field
+            name='street'
+            component={LabelInputField}
+            label='Street Address'
+            labelPosition='left'
+            placeholder='Street Address'
+        />
+        <Field
+            name='unit'
+            component={LabelInputField}
+            label='Unit Number (Optional)'
+            labelPosition='left'
+            placeholder='Unit Number'
         />
         <Field
             name='price'
@@ -101,7 +208,7 @@ const CreateListingForm = ({
             component={SelectField}
             label='Type of listing'
             options={listingTypes}
-            placeholder='Type of listing'
+            placeholder='Select type of listing'
             style={{marginTop: 0 + 'px'}}
         />
         <Field
@@ -144,13 +251,17 @@ const CreateListingForm = ({
             label='Laundry'
         />
         <Field
-            name='airconditioning'
+            name='airConditioning'
             component={Checkbox}
             label='Air Conditioning'
         />
         <Field
             name='images'
             component={RenderDropzone}
+            multiple
+            onImageDrop={onImageDrop}
+            onImageRemove={onImageRemove}
+            accept="image/*"
         />
         <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Create</Button>
     </Form>

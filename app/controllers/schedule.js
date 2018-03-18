@@ -45,7 +45,7 @@ export const getSchedules=({
         meetingResults = yield getUserMeetings({
             id: convertToObjectId(_id),
             meetingsCollection
-        }); 
+        });
     } catch(e){
         logger.error(e, 'Error finding meetings');
 
@@ -70,8 +70,10 @@ export const getSchedules=({
             id: id++,
             title: title,
             allDay: false,
-            start: new Date(2018, 2, 16, 0, 0, 0),
-            end: new Date(2018, 2, 16, 1, 0, 0)
+            // start: new Date(2018, 2, 16, 0, 0, 0),
+            // end: new Date(2018, 2, 16, 1, 0, 0)
+            start: item.start,
+            end: item.end
         }
     });
 
@@ -124,7 +126,7 @@ export const findAggregatedSchedules=({
             res,
             status: 400,
             message: 'user not found.'
-        }); 
+        });
     }
 
     //Get all the time blocks for each user
@@ -142,7 +144,7 @@ export const findAggregatedSchedules=({
             res,
             status: 400,
             message: 'Timeblocks not found.'
-        }); 
+        });
     }
 
     //Get all the meetings for each user
@@ -151,7 +153,7 @@ export const findAggregatedSchedules=({
         id: convertToObjectId(p._id),
         meetingsCollection
     }));
-    
+
     try {
         meetingsInSchedule = meetingsInSchedule.concat(yield Promise.all(getAllMeetings));
     } catch (e) {
@@ -160,7 +162,7 @@ export const findAggregatedSchedules=({
             res,
             status: 400,
             message: 'Meetings not found.'
-        }); 
+        });
     }
     //combine all results in a list of events
     let events = [];
@@ -372,10 +374,10 @@ export const postMeeting=({
             res,
             status: 400,
             message: 'user not found.'
-        }); 
+        });
     }
 
-    //TODO Check is userInMeeting is not an empty result    
+    //TODO Check is userInMeeting is not an empty result
 
     participantsAsUsers = usersInMeeting.map((p) => {
         if(convertToObjectId(p._id).equals(listingValidation.ownerId)) {
@@ -715,7 +717,7 @@ TODO:
 create delete route [done]
 create button for view listing to schedule [done]
 create aggregated schedule [done]
-set up meeting form (includes search componenet) 
+set up meeting form (includes search componenet)
 create meeting [done]
 create notification page
 handle delete for decline [done]

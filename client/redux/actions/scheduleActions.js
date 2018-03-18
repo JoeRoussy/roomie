@@ -1,14 +1,10 @@
 import axios from 'axios';
 
 
-export const getSchedules = (user) => {
-    const id = user._id;
-    const action = {
-        type: "GET_SCHEDULES",
-        payload: axios.get(`${process.env.API_ROOT}/api/schedule/`, user)
-    }
-    return action;
-}
+export const getSchedules = (user) => ({
+    type: "GET_SCHEDULES",
+    payload: axios.get(`${process.env.API_ROOT}/api/schedule/`, user)
+});
 
 export const createTimeblock = (options, user) => {
     const submissionData = {...options, ...user};

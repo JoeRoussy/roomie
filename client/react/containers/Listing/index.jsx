@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { Button, Item, Icon, Image, Label } from 'semantic-ui-react';
+import { Container, Button, Item, Icon, Image, Label } from 'semantic-ui-react';
+import { push } from 'react-router-redux'; // TODO: Should probably use nagivateTo in components but there was wierd transpiling issues
 
 import ListingForm from '../../components/ListingForm';
 import ListingDisplay from '../../components/ListingDisplay';
@@ -44,6 +45,7 @@ export default class Listing extends React.Component {
         this.editListing = this.editListing.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onEditCancelClicked = this.onEditCancelClicked.bind(this);
+        this.onBookMeetingClicked = this.onBookMeetingClicked.bind(this);
     }
 
     componentWillMount() {
@@ -60,6 +62,12 @@ export default class Listing extends React.Component {
 
     onEditCancelClicked() {
         this.props.dispatch(cancelEditListing());
+    }
+
+    onBookMeetingClicked() {
+        // TODO: dispatch action setting the listing and the landlord
+        // TODO: Should probably use navigateTo as mentioned above
+        this.props.dispatch(push('/schedule-meeting'));
     }
 
     render() {
@@ -103,9 +111,10 @@ export default class Listing extends React.Component {
         }
 
         return (
-            <div>
+            <Container>
                 {bodySection}
-            </div>
+                <Button onClick={this.onBookMeetingClicked}>Book a Meeting</Button>
+            </Container>
         )
     }
 }

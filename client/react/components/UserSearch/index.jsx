@@ -4,10 +4,10 @@ import { Search } from 'semantic-ui-react';
 import './styles.css';
 
 
-const Search = ({
+const UserSearch = ({
     value,
     results,
-    onResultSelected,
+    onResultSelect,
     onSearchChange,
     isLoading,
     ...rest
@@ -22,4 +22,4 @@ const Search = ({
     />
 );
 
-export default Search;
+export default UserSearch;

@@ -23,8 +23,8 @@ import ScheduleMeeting from '../ScheduleMeeting';
 import './styles.css';
 
 
-const style = {
-    marginTop: '3em'
+const mainInlineStyles = {
+    paddingTop: '90px'
 };
 
 const App = ({
@@ -34,7 +34,7 @@ const App = ({
         <header>
             <Navbar />
         </header>
-        <main style={style}>
+        <main style={mainInlineStyles}>
             <ToastContainer />
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />

@@ -4,6 +4,29 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import moment from 'moment';
 
+const ProcessBody = ({
+    message
+}) => {
+    const body = message.body;
+    if(body){
+        const parts = body.split(' ');
+        return parts.map((part)=>{
+            if(part){
+                if(part.startsWith("www.")){
+                    return ( <a href={'//'+part} target="_blank">{part}</a>)
+                }
+                else if(part.startsWith("http")){
+                    return ( <a href={part} target="_blank">{part}</a>)
+                }else {
+                    return part + ' ';
+                }
+            }
+            return "";
+        })
+    }
+    return "";
+}
+
 const ListComments = ({
     chatLog,
     users
@@ -15,7 +38,7 @@ const ListComments = ({
             <Comment.Metadata>
                 <div>{moment(message.createdAt).fromNow()}</div>
             </Comment.Metadata>
-            <Comment.Text>{message.body}</Comment.Text>
+            <Comment.Text>{ProcessBody({message})}</Comment.Text>
         </Comment.Content>
     </Comment>
 ));

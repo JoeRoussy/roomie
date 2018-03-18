@@ -9,6 +9,7 @@ import ChatView from '../../components/chat/ChatView'
 import ExtraInfoBar from '../../components/chat/ExtraInfoBar'
 import CreateChannelModal from '../../components/chat/createChannelModal'
 import AcceptInviteModal from '../../components/chat/acceptInviteModal'
+import LeaveChannelModal from '../../components/chat/leaveChannelModal'
 
 import {
     getChannels,
@@ -17,11 +18,13 @@ import {
     modifyPendingMessage,
     modifyNewChannelName,
     modifyDisplayNewChannelModal,
+    modifyDisplayLeaveChannelModal,
     postMessageToActiveChannel,
     createChannel,
     modifyDisplayInviteModal,
     acceptInviteToChannel,
-    declineInviteToChannel
+    declineInviteToChannel,
+    leaveChannel
 } from '../../../redux/actions/chatActions';
 
 import './styles.css';
@@ -35,7 +38,10 @@ import './styles.css';
     newChannelName: store.ChatReducer.newChannelName,
     displayNewChannelModal: store.ChatReducer.displayNewChannelModal,
     displayInviteModal: store.ChatReducer.displayInviteModal,
+    displayLeaveChannelModal: store.ChatReducer.displayLeaveChannelModal,
+    channelToLeave: store.ChatReducer.channelToLeave,
     user: store.userReducer.user
+
 }))
 class Chat extends React.Component{
     constructor(){
@@ -53,12 +59,17 @@ class Chat extends React.Component{
         this.getActiveChannelUsers = this.getActiveChannelUsers.bind(this);
         this.getNewChannelName = this.getNewChannelName.bind(this);
         this.setDisplayNewChannelModal = this.setDisplayNewChannelModal.bind(this);
+        this.getDisplayLeaveChannelModal = this.getDisplayLeaveChannelModal.bind(this);
+        this.getChannelToLeave = this.getChannelToLeave.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleNewChannelNameChange = this.handleNewChannelNameChange.bind(this);
         this.blankNewChannelName = this.blankNewChannelName.bind(this);
         this.checkForEnter = this.checkForEnter.bind(this);
         this.acceptInvite = this.acceptInvite.bind(this);
         this.declineInvite = this.declineInvite.bind(this);
+        this.displayLeaveChannelModal = this.displayLeaveChannelModal.bind(this)
+        this.acceptLeaveChannel = this.acceptLeaveChannel.bind(this);
+        this.declineLeaveChannel = this.declineLeaveChannel.bind(this);
     }
     getChannels(){
         return this.props.channels;
@@ -95,13 +106,23 @@ class Chat extends React.Component{
     getDisplayInviteModal(){
         return this.props.displayInviteModal;
     }
+
     setDisplayInviteModal(displayModal){
         this.props.dispatch(modifyDisplayInviteModal(displayModal));
+    }
+
+    getDisplayLeaveChannelModal(){
+        return this.props.displayLeaveChannelModal;
     }
 
     getActiveChannelUsers(){
         return this.props.activeChannelUsers;
     }
+
+    getChannelToLeave(){
+        return this.props.channelToLeave;
+    }
+
 
     acceptInvite(){
         this.props.dispatch(acceptInviteToChannel(this.getActiveChannel()));
@@ -163,7 +184,18 @@ class Chat extends React.Component{
         }
     }
 
-
+    displayLeaveChannelModal(channel){
+        this.props.dispatch(modifyDisplayLeaveChannelModal(true,channel));
+    }
+    acceptLeaveChannel(){
+        console.log('User left channel')
+        this.props.dispatch(leaveChannel(this.getChannelToLeave(),this.getUser()._id))
+        this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
+    }
+    declineLeaveChannel(){
+        console.log('User stayed in channel')
+        this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
+    }
 
     componentWillMount() {
         this.props.dispatch(getChannels());
@@ -180,6 +212,7 @@ class Chat extends React.Component{
                             activeChannel={this.getActiveChannel()}
                             toggleDisplayNewChannelModal={this.setDisplayNewChannelModal}
                             displayNewChannelModal={this.getDisplayNewChannelModal()}
+                            leaveChannel={this.displayLeaveChannelModal}
                         />
                         <CreateChannelModal
                             onChange={this.handleNewChannelNameChange}
@@ -193,6 +226,12 @@ class Chat extends React.Component{
                             onAccept={this.acceptInvite}
                             onDecline={this.declineInvite}
                             displayModal={this.getDisplayInviteModal()}
+                        />
+                        <LeaveChannelModal
+                            channel={this.getChannelToLeave()}
+                            onAccept={this.acceptLeaveChannel}
+                            onDecline={this.declineLeaveChannel}
+                            displayModal={this.getDisplayLeaveChannelModal()}
                         />
                     </Grid.Column>
                     <Grid.Column width={11}>

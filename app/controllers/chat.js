@@ -422,6 +422,15 @@ export const leaveChannel = ({
     channelsCollection = required('channelsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
+
+    if(!req.body.userId){
+        return sendError({
+            res,
+            status: 500,
+            message: 'Error Missing Parameter'
+        });
+    }
+
     //Get the channel to update from the database
     let channel;
     try {
@@ -443,7 +452,7 @@ export const leaveChannel = ({
         return convertToObjectId(user.userId).equals(req.body.userId);
     });
     if(!user){
-        logger.error(e, 'Error user is not a member of this channel' );
+        logger.error('Error user is not a member of this channel' );
         return sendError({
             res,
             status: 500,
@@ -456,7 +465,7 @@ export const leaveChannel = ({
     canLeave = isAdmin || convertToObjectId(user.userId).equals(req.user._id);
     //canLeave is true if the current user is the channel admin or is the user to remove
     if(!canLeave){
-        logger.error(e, 'Error user does not have authority to leave' );
+        logger.error('Error user does not have authority to leave' );
         return sendError({
             res,
             status: 500,
@@ -467,6 +476,7 @@ export const leaveChannel = ({
     const users = channel.users.map((channelUser)=>{
         if(channelUser.userId === user.userId){
             channelUser.isActive = false;
+            channelUser.acceptedInvite = false;
         }
         return channelUser;
     });

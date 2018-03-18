@@ -6,7 +6,9 @@ const config = {
     pendingMessages: {},
     newChannelName:'',
     displayNewChannelModal:false,
-    displayInviteModal:false
+    displayInviteModal:false,
+    displayLeaveChannelModal:false,
+    channelToLeave:{}
 };
 
 const ChatReducer = (state = config, actions) => {
@@ -86,6 +88,14 @@ const ChatReducer = (state = config, actions) => {
             break;
         }
 
+        case 'MODIFY_DISPLAY_LEAVE_MODAL':{
+            state = {
+                ...state,
+                displayLeaveChannelModal: actions.payload.displayModal,
+                channelToLeave: actions.payload.channel
+            }
+            break;
+        }
 
         case 'LOAD_ACTIVE_CHANNEL_FULFILLED': {
             //console.log(actions.payload.data.messages)
@@ -173,6 +183,47 @@ const ChatReducer = (state = config, actions) => {
         case 'DECLINE_CHANNEL_INVITE_REJECTED' : {
             break;
         }
+
+        case 'DECLINE_CHANNEL_INVITE_FULFILLED': {
+            const channels = state.channels.filter((channel)=>{
+                if(channel._id === actions.payload.data.channel._id){
+                    return false;
+                }
+                return true;
+            });
+            state = {
+                ...state,
+                channels: channels
+            }
+            break;
+        }
+        case 'DECLINE_CHANNEL_INVITE_PENDING': {
+            break;
+        }
+        case 'DECLINE_CHANNEL_INVITE_REJECTED' : {
+            break;
+        }
+
+        case 'LEAVE_CHANNEL_FULFILLED': {
+            const channels = state.channels.filter((channel)=>{
+                if(channel._id === actions.payload.data.channel._id){
+                    return false;
+                }
+                return true;
+            });
+            state = {
+                ...state,
+                channels: channels
+            }
+            break;
+        }
+        case 'LEAVE_CHANNEL_PENDING': {
+            break;
+        }
+        case 'LEAVE_CHANNEL_REJECTED' : {
+            break;
+        }
+
     }
     return state;
 }

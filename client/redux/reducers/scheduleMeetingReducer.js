@@ -48,9 +48,11 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 } = {}
             } = payload;
 
+            // Put things in the shape expected by the UserSearch component
             userSearchResults = users.map(user => ({
                 title: user.name,
-                image: `${process.env.ASSETS_ROOT}${user.profilePictureLink}`
+                image: `${process.env.ASSETS_ROOT}${user.profilePictureLink}`,
+                description: isLandlord ? 'Landlord' : 'Tenant'
             }));
 
             state = {

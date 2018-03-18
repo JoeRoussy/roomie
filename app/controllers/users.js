@@ -1,11 +1,18 @@
 import { wrap as coroutine } from 'co';
+import jwt from 'jsonwebtoken';
 
 import { required, print, isEmpty, extendIfPopulated, convertToObjectId } from '../components/custom-utils';
-import { getUserByEmail, getEmailConfirmationLink, removeUserById,getUsersById, getChannels,getMessagesByChannelId } from '../components/data';
 import { generateHash as generatePasswordHash, comparePasswords } from '../components/authentication';
 import { transformUserForOutput } from '../components/transformers';
 import { sendSignUpMessage } from '../components/mail-sender';
 import { sendError } from './utils';
+import {
+    getUserByEmail,
+    getEmailConfirmationLink,
+    removeUserById,
+    findRoommateSurveyResponse,
+    findRecommendedRoommates
+} from '../components/data';
 import {
     insert as insertInDb,
     getById,
@@ -25,13 +32,11 @@ export const createUser = ({
             password,
             userType
         } = {},
-        files: [
-            {
-                filename,
-                mimetype,
-                path
-            } = {}
-        ] = []
+        file: {
+            filename,
+            mimetype,
+            path
+        } = {}
     } = req;
 
     const {
@@ -210,13 +215,11 @@ export const editUser = ({
             password,
             oldPassword
         } = {},
-        files: [
-            {
-                filename,
-                mimetype,
-                path
-            } = {}
-        ] = []
+        file: {
+            filename,
+            mimetype,
+            path
+        } = {}
     } = req;
 
     const {
@@ -328,6 +331,7 @@ export const editUser = ({
         token
     });
 });
+
 export const deleteCurrentUser = ({
     usersCollection = required('usersCollection'),
     logger = required('logger', 'You need to pass in a logger for this function to use')
@@ -350,10 +354,87 @@ export const deleteCurrentUser = ({
             message: 'Could not delete user'
         });
     }
+
     return res.json({
         user: transformUserForOutput(req.user)
     });
 });
 
+export const fetchRecommenedRoommates = ({
+    roommateSurveysCollection = required('roommateSurveysCollection'),
+    logger = required('logger', 'You must pass in a logging instance')
+}) => coroutine(function* (req, res) {
+    const {
+        user: {
+            _id: userId
+        } = {}
+    } = req;
 
-// TODO: More api route handlers here
+    if (!userId) {
+        logger.error(req.user, 'Could not find id in currently logged in user. (User values included in this log)');
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'There was an error processing your request'
+        });
+    }
+
+    // See if this user has completed a survey
+    let userSurvey;
+
+    try {
+        userSurvey = yield findRoommateSurveyResponse({
+            roommateSurveysCollection,
+            userId: convertToObjectId(userId)
+        })
+    } catch (e) {
+        logger.error(e, `Error finding existing survey response for user with id: ${userId}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'There was an error processing your request'
+        });
+    }
+
+    if (!userSurvey) {
+        // This user cannot have recommended roommates if they have not completed the survey
+        return res.json({
+            recommendedRoommates: [],
+            message: 'Complete the roommate survey to get recommended roommates.'
+        });
+    }
+
+    // Find recommendedRoommates for this user
+    let recommendedRoommates = [];
+
+    try {
+        recommendedRoommates = yield findRecommendedRoommates({
+            roommateSurveysCollection,
+            userSurveyResponse: userSurvey
+        });
+    } catch (e) {
+        logger.error(e, `Error generating recommended roommates for user with id: ${userId}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Something went wrong processing your request'
+        });
+    }
+
+    if (!recommendedRoommates.length) {
+        logger.error(e, `No recommended roommates found for user with id: ${userId}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Something went wrong processing your request'
+        });
+    }
+
+    return res.json({
+        recommendedRoommates
+    });
+});

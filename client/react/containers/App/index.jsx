@@ -15,6 +15,7 @@ import Profile from '../Profile';
 import ChangePassword from '../ChangePassword';
 import ForgotPassword from '../ForgotPassword';
 import Chat from '../Chat';
+import RoommateSurvey from '../RoommateSurvey';
 import ForgotPasswordForm from '../ForgotPasswordForm';
 import Schedule from '../Schedule';
 
@@ -46,6 +47,7 @@ const App = ({
             <Route exact path="/forgot-password" component={ForgotPassword} />
             <Route exact path="/forgot-password-form" component={ForgotPasswordForm} />
             <Route exact path="/schedule" component={Schedule} />
+            <Route exact path="/roommate-survey" component={RoommateSurvey} />
         </main>
         <footer>
             Copyright © 2018 Roomie

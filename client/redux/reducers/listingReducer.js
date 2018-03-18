@@ -1,7 +1,8 @@
 const config = {
     listings: [],
     listing: {},
-    isEditing: false
+    isEditing: false,
+    isFormProcessing: false
 };
 
 const listingReducer = (state = config, actions) => {
@@ -72,6 +73,7 @@ const listingReducer = (state = config, actions) => {
                 isFormProcessing: true,
                 errorMessage: null
             };
+
             break;
         }
         case 'CREATE_LISTING_FULFILLED': {

@@ -122,6 +122,7 @@ db.reviews.createIndex( { comments: "text" } )
 ```
 The following collections have a text index:
 * Listings on location
+* Users on name
 
 
 ### Logging

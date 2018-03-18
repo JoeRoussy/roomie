@@ -74,7 +74,8 @@ export const findListings = async({
     aggregationOperator.push({
         $match: {
             $text: {
-                $search: location
+                $search: location,
+                $language: 'english'
             },
             ...filter
         }
@@ -100,6 +101,30 @@ export const getUserByEmail = async({
         });
     } catch (e) {
         throw new RethrownError(e, `Error getting a user with the email ${email}`);
+    }
+};
+
+// Seach
+export const findUsersByName = async({
+    usersCollection = required('usersCollection'),
+    name = required('name')
+}) => {
+    // NOTE: We enclose the name in double quotes because we want it to be treated as a phrase.
+    // Typing a first and last name should narrow results, not expand them.
+    // Or logic is default for tokens in text search: https://docs.mongodb.com/manual/text-search/
+    try {
+        return await usersCollection.aggregate([
+            {
+                $match: {
+                    $text: {
+                        $search: `"${name}"`,
+                        $language: 'english'
+                    }
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error search for users with the name ${name}`);
     }
 }
 

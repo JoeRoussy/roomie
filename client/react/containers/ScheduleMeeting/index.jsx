@@ -18,16 +18,20 @@ const ScheduleMeeting = ({
     isUserSearchLoading,
     step,
     isLoading,
-    searchResults,
+    userSearchResults,
     onUserSeachResultSelected,
     onUserSearchChange
 }) => {
+    console.log('User');
+    console.log(user);
+    const userRedirect = user ? '' : (<Redirect to='sign-in' />);
+
     let content;
     if(step === 1){
         content = (
             <div>
                 <UserSearch
-                    results={searchResults}
+                    results={userSearchResults}
                     isLoading={isUserSearchLoading}
                     onResultSelect={onUserSeachResultSelected}
                     onSearchChange={onUserSearchChange}
@@ -44,14 +48,15 @@ const ScheduleMeeting = ({
     }
 
     return (
-        <div>
+        <Container>
+            {userRedirect}
             {content}
-        </div>
+        </Container>
     )
 }
 
 const mapStateToProps = ({
-    userReducer:{
+    userReducer: {
         user
     } = {},
     scheduleMeetingReducer: {
@@ -60,12 +65,12 @@ const mapStateToProps = ({
         isLoading,
         isUserSearchLoading,
         step,
-        searchResults
+        userSearchResults
     } = {}
 }) => ({
     user,
     participants,
-    searchResults,
+    userSearchResults,
     aggregatedEvents,
     isUserSearchLoading,
     isLoading,

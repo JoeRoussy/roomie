@@ -3,7 +3,7 @@ const config = {
     aggregatedEvents: [],
     isLoading: false,
     isUserSearchLoading: false,
-    userSearchResults: []
+    userSearchResults: [],
     step: 1
 }
 
@@ -48,11 +48,12 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 } = {}
             } = payload;
 
-            // Put things in the shape expected by the UserSearch component
-            userSearchResults = users.map(user => ({
+            // Put things in the shape expected by the UserSearch component (keep id around so it can be used)
+            const userSearchResults = users.map(user => ({
+                id: user._id,
                 title: user.name,
                 image: `${process.env.ASSETS_ROOT}${user.profilePictureLink}`,
-                description: isLandlord ? 'Landlord' : 'Tenant'
+                description: user.isLandlord ? 'Landlord' : 'Tenant'
             }));
 
             state = {

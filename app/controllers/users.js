@@ -11,7 +11,8 @@ import {
     getEmailConfirmationLink,
     removeUserById,
     findRoommateSurveyResponse,
-    findRecommendedRoommates
+    findRecommendedRoommates,
+    findUsersByName
 } from '../components/data';
 import {
     insert as insertInDb,
@@ -19,6 +20,46 @@ import {
     findAndUpdate,
     deleteById
 } from '../components/db/service';
+
+export const userSearch = ({
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You must pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        query: {
+            name
+        } = {}
+    } = req;
+
+    if (!name) {
+        return sendError({
+            res,
+            status: 400,
+            message: 'You must search for users by name'
+        });
+    }
+
+    let users;
+
+    try {
+        users = yield findUsersByName({
+            usersCollection,
+            name
+        });
+    } catch (e) {
+        logger.error(e, `Error finding users for name: ${name}`);
+
+        return sendError({
+            res,
+            status: 400,
+            message: 'There was an error processing your request'
+        });
+    }
+
+    return res.json({
+        users: users.map(transformUserForOutput)
+    });
+});
 
 export const createUser = ({
     usersCollection = required('usersCollection'),

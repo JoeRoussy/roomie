@@ -40,7 +40,6 @@ export const loadActiveChannel = (channel) => (dispatch) =>{
              payload: res
          });
      }).catch(e => {
-         toast.error("Failed to load channel messages");
          console.log(e);
          dispatch({
              type: 'LOAD_ACTIVE_CHANNEL_REJECTED',
@@ -81,15 +80,16 @@ export const modifyDisplayInviteModal = (displayModal) => ({
 });
 
 export const postMessageToActiveChannel = (channel,message,user) => (dispatch) =>{
+    const msg = {
+        "channelId": channel._id,
+        "userId": user._id,
+        "body": message,
+        "createdAt": moment()
+    }
     dispatch({
         type: 'SEND_MESSAGE_PENDING',
         payload:{
-            message:{
-                "channelId": channel._id,
-                "userId": user._id,
-                "body": message,
-                "createdAt": moment()
-            }
+            message:msg
         }
     });
      axios.post(`${process.env.API_ROOT}/api/channels/${channel._id}/messages`,{
@@ -99,14 +99,15 @@ export const postMessageToActiveChannel = (channel,message,user) => (dispatch) =
      .then( res =>{
          dispatch({
              type: 'SEND_MESSAGE_FULFILLED',
-             payload: res
+             payload: {res,
+                 message:msg}
          });
      }).catch(e => {
          toast.error("Failed to send message");
          console.log(e);
          dispatch({
              type: 'SEND_MESSAGE_REJECTED',
-             payload: e
+             payload: {e,message:msg}
          });
      });
 }

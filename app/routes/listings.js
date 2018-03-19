@@ -1,8 +1,8 @@
 import express from 'express';
 import { getChildLogger } from '../components/log-factory';
-import { isAuthenticated, isLandlord } from '../controllers/utils';
+import { isAuthenticated, isLandlord, canModifyListing } from '../controllers/utils';
 import { required } from '../components/custom-utils';
-import { createListing, getListings, getListingById } from '../controllers/listings';
+import { createListing, getListings, getListingById, updateListing } from '../controllers/listings';
 import {
     singleFile as parseSingleFileUpload,
     error as handleImageUploadError,
@@ -45,6 +45,38 @@ export default ({
                 baseLogger,
                 additionalFields: {
                     module: 'api-listings-create-listing'
+                }
+            })
+        }),
+        handleImageUploadError({
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-create-image-upload-errors'
+                }
+            })
+        })
+    ]);
+
+    listingsRouter.put('/:id', [
+        isAuthenticated,
+        isLandlord,
+        parseSingleFileUpload('images'),
+        canModifyListing({
+            listingsCollection: db.collection('listings'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-listings-user-can-modify-listing'
+                }
+            })
+        }),
+        updateListing({
+            listingsCollection: db.collection('listings'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-listings-update-listing'
                 }
             })
         }),

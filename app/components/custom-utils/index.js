@@ -172,9 +172,12 @@ export const isEmpty = (data) => {
     }
 }
 
+// Generic function to conert a string of true or false to a boolean.
+export const convertToBoolean = (value) => (value == 'true')
+
 // if passed a truth value, will return an extended version of obj with value set under the provided key
 export const extendIfPopulated = (obj, key, value) => {
-    if (value) {
+    if (typeof value !== 'undefined' && value !== null) {
         return {
             ...obj,
             [key]: value

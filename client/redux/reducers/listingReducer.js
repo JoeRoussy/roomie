@@ -2,7 +2,8 @@ const config = {
     listings: [],
     listing: {},
     isEditing: false,
-    isFormProcessing: false
+    isFormProcessing: false,
+    ownsListing: false
 };
 
 const listingReducer = (state = config, actions) => {
@@ -113,7 +114,7 @@ const listingReducer = (state = config, actions) => {
                 errorMessage = errorMessages[errorKey];
             } else {
                 // We did not get an error key back so use a generic error
-                errorMessage = 'Your request could not be processed'
+                errorMessage = 'Your request could not be processed';
             }
 
             state = {
@@ -125,6 +126,66 @@ const listingReducer = (state = config, actions) => {
             break;
         }
         /* END CREATE_LISTING */
+
+        /* UPDATE_LISTING */
+        case 'UPDATE_LISTING_SUBMIT': {
+            state = {
+                ...state,
+                isFormProcessing: true,
+                errorMessage: null
+            };
+
+            break;
+        }
+        case 'UPDATE_LISTING_FULFILLED': {
+            const {
+                data: {
+                    listing
+                } = {}
+            } = payload;
+            state = {
+                ...state,
+                isFormProcessing: false,
+                isEditing: false,
+                listing
+            };
+
+            break;
+        }
+        case 'UPDATE_LISTING_REJECTED': {
+            const {
+                response: {
+                    data: {
+                        errorKey
+                    } = {}
+                } = {}
+            } = payload;
+
+            let errorMessage;
+
+            if (errorKey) {
+                // We got an error key back so use an error message that relates to it
+                const errorMessages = {
+                    [process.env.LISTING_ERRORS_GENERIC]: 'Your request could not be processed',
+                    [process.env.USER_ERROR_NOT_LOGGED_IN]: 'You must be a logged in user',
+                    [process.env.USER_ERROR_NOT_LANDLORD]: 'You must be a landlord user'
+                };
+
+                errorMessage = errorMessages[errorKey];
+            } else {
+                // We did not get an error key back so use a generic error
+                errorMessage = 'Your request could not be processed';
+            }
+
+            state = {
+                ...state,
+                isFormProcessing: false,
+                errorMessage
+            }
+
+            break;
+        }
+        /* END UPDATE_LISTING */
 
         /* EDIT_LISTING */
         case 'EDIT_LISTING': {

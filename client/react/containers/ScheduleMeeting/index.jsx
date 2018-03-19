@@ -147,8 +147,8 @@ const ScheduleMeeting = ({
         );
     } else if (step === 2) {
         content = (
-            <div>
-                this is the calendar view + meeting panel
+            <div id='stepTwoWrapper'>
+
             </div>
         );
     } else if (step === 3) {
@@ -201,6 +201,10 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+    onNavigateToStepTwo: () => {
+        dispatch(getAggregateSchedules());
+        dispatch(nextStep());
+    },
     onNextStep: () => dispatch(nextStep()),
     onPreviousStep: () => dispatch(previousStep()),
     onUserSearchChange: (e, data) => {

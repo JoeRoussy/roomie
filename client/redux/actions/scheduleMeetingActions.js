@@ -3,6 +3,11 @@ import { toast } from 'react-toastify';
 
 import { userTypes } from '../../../common/constants';
 
+// export const getAggregateSchedules = (participants) => ({
+//     type: 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES',
+//     payload: axios.get()
+// })
+
 export const nextStep = () => ({
     type: 'SCHEDULE_MEETING_NEXT_STEP'
 });

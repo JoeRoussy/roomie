@@ -121,7 +121,8 @@ export const updateListing = ({
             parking,
             internet,
             laundry,
-            airConditioning
+            airConditioning,
+            images = []
         } = {},
         files: [
             {
@@ -194,12 +195,12 @@ export const updateListing = ({
         });
     }
 
-    let images = req.body.images;
+    let newImages = images;
 
     if(req.files) {
         req.files.forEach((file) => {
             if (file.filename && file.mimetype && file.path) {
-                images.push(`${UPLOADS_RELATIVE_PATH}${file.filename}`);
+                newImages.push(`${UPLOADS_RELATIVE_PATH}${file.filename}`);
             }
         })
     }
@@ -227,7 +228,7 @@ export const updateListing = ({
     update = extendIfPopulated(update, 'internet', internetBool);
     update = extendIfPopulated(update, 'laundry', airConditioningBool);
     update = extendIfPopulated(update, 'airConditioning', airConditioningBool);
-    update = extendIfPopulated(update, 'images', images);
+    update = extendIfPopulated(update, 'images', newImages);
 
     let newListing;
 

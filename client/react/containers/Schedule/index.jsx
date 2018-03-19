@@ -36,7 +36,7 @@ class Schedule extends Component{
 
     componentDidMount(){
         const user = this.props.userInfo;
-        if(user) this.props.dispatch(getSchedules(user));
+        if(user) this.props.dispatch(getSchedules());
     }
 
     dateChange(date){
@@ -60,9 +60,11 @@ class Schedule extends Component{
 
     submitTimeblock(){
         this.toggleForm();
+
         const {
             values
         } = this.props.formInfo;
+
         const user= this.props.userInfo;
         this.props.dispatch(createTimeblock(values, user));
     }
@@ -72,8 +74,8 @@ class Schedule extends Component{
         const availabilityOptions = [{text:'Unavailable' , value:'Unavailable'}];
         const repeatingOptions = [{text:'None' , value:'None'}, {text:'Daily' , value:'Daily' }, {text:'Weekly' , value:'Weekly' }];
 
-        const timeblock = this.state.isEditingTimeblock ? 
-            <TimeblockForm 
+        const timeblock = this.state.isEditingTimeblock ?
+            <TimeblockForm
                 submitTimeblock={this.submitTimeblock}
                 dateChange={this.dateChange}
                 selectedDate={this.state.selectedDate}
@@ -99,7 +101,7 @@ class Schedule extends Component{
 
         let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
 
-        const schedule = this.props.scheduleInfo.loading ? 
+        const schedule = this.props.scheduleInfo.loading ?
             <Dimmer active>
                 <Loader>Loading</Loader>
             </Dimmer>
@@ -113,8 +115,8 @@ class Schedule extends Component{
                     defaultDate={new Date()}
                     selectable
                 />
-            </div>  
-            
+            </div>
+
         return (
 
             <div id='scheduleWrapper'>

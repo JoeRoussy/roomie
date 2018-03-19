@@ -17,13 +17,15 @@ import {
     addLandlord,
     listingSearch,
     setListing,
-    clearListing
+    clearListing,
+    getAggregateSchedules,
 } from '../../../redux/actions/scheduleMeetingActions';
 
 import './styles.css';
 
 
 const ScheduleMeeting = ({
+    onNavigateToStepTwo,
     onNextStep,
     onPreviousStep,
     user,
@@ -142,7 +144,7 @@ const ScheduleMeeting = ({
                 {landlordUserSection}
                 {listingSection}
                 {userSection}
-                <Button id='scheduleMeetingStepOneAdvanceButton' color='green' onClick={onNextStep} disabled={!listing || !invitedLandlord}>Choose A Time</Button>
+                <Button id='scheduleMeetingStepOneAdvanceButton' color='green' onClick={onNavigateToStepTwo} disabled={!listing || !invitedLandlord}>Choose A Time</Button>
             </div>
         );
     } else if (step === 2) {

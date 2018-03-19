@@ -11,7 +11,55 @@ import {
     deleteById
 } from '../components/db/service';
 
-export const getSchedules=({
+// Returns a new array of events including repreated events extended 1 year out
+const applyRepeating = (events) => {
+    let newEvents = events;
+
+    events.forEach(event => {
+        const eventStartMoment = moment(event.start);
+        const eventEndMoment = moment(event.end);
+
+        switch (event.repeating) {
+            case 'Daily': {
+                for (let i = 0; i < 365; i++) {
+                    // NOTE: Moments are changed as add function executes
+                    const newEventStartMoment = eventStartMoment.add(1, 'days');
+                    const newEventEndMoment = eventEndMoment.add(1, 'days');
+
+                    newEvents.push({
+                        type: event.type,
+                        participants: event.participants,
+                        start: newEventStartMoment.toDate(),
+                        end: newEventEndMoment.toDate()
+                    });
+                }
+
+                break;
+            }
+
+            case 'Weekly': {
+                for (let i = 0; i < 52; i++) {
+                    // NOTE: Moments are changed as add function executes
+                    const newEventStartMoment = eventStartMoment.add(1, 'weeks');
+                    const newEventEndMoment = eventEndMoment.add(1, 'weeks');
+
+                    newEvents.push({
+                        type: event.type,
+                        participants: event.participants,
+                        start: newEventStartMoment.toDate(),
+                        end: newEventEndMoment.toDate()
+                    });
+                }
+
+                break;
+            }
+        }
+    });
+
+    return newEvents;
+}
+
+export const getSchedules = ({
     meetingsCollection = required('meetingsCollection'),
     timeblocksCollection = required('timeblocksCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
@@ -58,6 +106,9 @@ export const getSchedules=({
 
     let eventResults = [].concat(timeblockResults).concat(meetingResults);
     let id = 0;
+
+    eventResults = applyRepeating(eventResults);
+
     eventResults = eventResults.map((item)=>{
         let title;
         if(item.type === 'Unavailable'){
@@ -70,8 +121,6 @@ export const getSchedules=({
             id: id++,
             title: title,
             allDay: false,
-            // start: new Date(2018, 2, 16, 0, 0, 0),
-            // end: new Date(2018, 2, 16, 1, 0, 0)
             start: item.start,
             end: item.end
         }
@@ -85,11 +134,10 @@ export const getSchedules=({
     });
 });
 
-export const findAggregatedSchedules=({
+export const findAggregatedSchedules = ({
     meetingsCollection = required('meetingsCollection'),
     timeblocksCollection = required('timeblocksCollection'),
     usersCollection = required('usersCollection'),
-    listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res){
     //Extract values
@@ -99,7 +147,7 @@ export const findAggregatedSchedules=({
 
     const {
         participants
-    } = req.body;
+    } = req.query;
 
     const participantsInSchedule = participants.concat(userId);
 
@@ -200,10 +248,38 @@ export const findAggregatedSchedules=({
         }
     });
 
+    // TODO: Mutate the results based on repeating
+
     //Return result
     return res.json({
         aggregatedEvents: events
     });
+});
+
+export const findSchedulesDispatcher = ({
+    meetingsCollection = required('meetingsCollection'),
+    timeblocksCollection = required('timeblocksCollection'),
+    usersCollection = required('usersCollection'),
+    logger = required('logger', 'You must pass a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        userIds = []
+    } = req.query;
+
+    if (userIds.length) {
+        return findAggregatedSchedules({
+            meetingsCollection,
+            timeblocksCollection,
+            usersCollection,
+            logger
+        })(req, res);
+    } else {
+        return getSchedules({
+            meetingsCollection,
+            timeblocksCollection,
+            logger
+        })(req, res);
+    }
 });
 
 export const postMeeting=({
@@ -498,6 +574,15 @@ export const postTimeblock=({
     const endMoment = moment(end);
     const dateMoment = moment(date);
 
+    // Make sure the start and end moments have the correct date
+    startMoment.date(dateMoment.date());
+    startMoment.month(dateMoment.month());
+    startMoment.year(dateMoment.year());
+
+    endMoment.date(dateMoment.date());
+    endMoment.month(dateMoment.month());
+    endMoment.year(dateMoment.year());
+
     if (endMoment.isBefore(startMoment)) {
         logger.error("Error: Start time > End Time");
 
@@ -524,9 +609,9 @@ export const postTimeblock=({
     const timeblocks = {
         userId: convertToObjectId(user._id),
         type: availability,
-        date,
-        start,
-        end,
+        date: new Date(dateMoment.startOf('day').toISOString()),
+        start: new Date(startMoment.toISOString()),
+        end: new Date(endMoment.toISOString()),
         repeating
     }
     try{
@@ -544,9 +629,10 @@ export const postTimeblock=({
             message: 'Error creating timeblocks'
         });
     }
+
     //Return result
     return res.json({
-        timeblock: [result]
+        timeblocks: [result]
     });
 });
 

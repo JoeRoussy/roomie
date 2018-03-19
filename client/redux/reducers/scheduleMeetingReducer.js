@@ -11,7 +11,7 @@ const config = {
     isListingSearchLoading: false,
     listingSearchResults: [],
     step: 1
-}
+};
 
 // NOTE: islandlord needs to be lowercase because it is not a normal dom element
 const mapUserForSearchResults = (user) => ({
@@ -244,6 +244,26 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 ...state,
                 listing: null
             };
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES_PENDING': {
+            console.log('Get Aggregate schedules is pending');
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES_FULFILLED': {
+            console.log('Get Aggregate schedules fulfilled');
+            console.log(payload);
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES_REJECTED': {
+            console.log('Get Aggregate schedules is rejected');
+            console.log(payload);
 
             break;
         }

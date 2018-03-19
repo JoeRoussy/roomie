@@ -1,18 +1,28 @@
 import axios from 'axios';
 
 
-export const getSchedules = (user) => ({
+export const getSchedules = () => ({
     type: "GET_SCHEDULES",
-    payload: axios.get(`${process.env.API_ROOT}/api/schedule/`, user)
+    payload: axios.get(`${process.env.API_ROOT}/api/schedule/`)
 });
 
-export const createTimeblock = (options, user) => {
+export const createTimeblock = (options, user) => (dispatch) => {
     const submissionData = {...options, ...user};
-    const action = {
+
+    dispatch({
         type: "POST_TIMEBLOCK",
         payload: axios.post(`${process.env.API_ROOT}/api/schedule/timeblock/`, submissionData)
-    }
-    return action;
+            .then(res => {
+                // Refresh the events since we just added one
+                // TODO: Our reducer should really do this but it is hard with the repeating stuff
+                dispatch({
+                    type: 'GET_SCHEDULES',
+                    payload: axios.get(`${process.env.API_ROOT}/api/schedule/`)
+                });
+
+                return res;
+            })
+    });
 }
 
 export const createMeeting = (options, user) => {
@@ -35,12 +45,12 @@ export const deleteTimeblock = (options, user) => {
     return action;
 }
 
-export const deleteMeeting = (options, user) => {
-    const userId = user._id;
-    const meetingId = options._id;
-    const action = {
-        type: "DELETE_MEETING",
-        payload: axios.delete(`${process.env.API_ROOT}/api/schedule/meeting/${meetingId}`, user)
-    }
-    return action;
-}
+// export const deleteMeeting = (options, user) => {
+//     const userId = user._id;
+//     const meetingId = options._id;
+//     const action = {
+//         type: "DELETE_MEETING",
+//         payload: axios.delete(`${process.env.API_ROOT}/api/schedule/meeting/${meetingId}`, user)
+//     }
+//     return action;
+// }

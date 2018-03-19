@@ -89,7 +89,7 @@ export const getListingById = ({
     if (!req.params.id) {
         // Something weird has happened...
         logger.error('No id in parameters for get listing by id');
-        
+
         return res.status(500).json({
             error: true,
             message: `Could not get listing with id ${req.params.id}`
@@ -97,10 +97,6 @@ export const getListingById = ({
     }
 
     try {
-        // result = yield getById({
-        //     collection: listingsCollection,
-        //     id: req.params.id
-        // });
         result = yield getListingByIdWithOwnerPopulated({
             listingsCollection,
             id: convertToObjectId(req.params.id)

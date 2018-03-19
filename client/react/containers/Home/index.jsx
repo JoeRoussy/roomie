@@ -110,7 +110,7 @@ class Home extends Component {
             roommateSection = (
                 <Container>
                     <h2>Roommates Recommened For You</h2>
-                    <Card.Group id='roommateCards'>
+                    <Card.Group id='roommateCards' className='centered'>
                         {roommateCards}
                     </Card.Group>
                     <div id='retakeSurvey'>

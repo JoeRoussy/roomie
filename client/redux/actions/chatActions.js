@@ -103,7 +103,6 @@ export const postMessageToActiveChannel = (channel,message,user) => (dispatch) =
                  message:msg}
          });
      }).catch(e => {
-         toast.error("Failed to send message");
          console.log(e);
          dispatch({
              type: 'SEND_MESSAGE_REJECTED',

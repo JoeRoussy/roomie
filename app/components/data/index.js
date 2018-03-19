@@ -12,7 +12,7 @@ import {
 import { insert as insertInDb } from '../db/service';
 import { findAndUpdate } from '../db/service';
 import { generateHash as hashPassword } from '../authentication';
-import { roommateSurvey as surveyContants } from '../../../common/constants';
+import { roommateSurvey as surveyContants, userTypes } from '../../../common/constants';
 
 // Get listings based on an optional query
 export const findListings = async({
@@ -26,7 +26,8 @@ export const findListings = async({
         keywords,
         maxPrice,
         minPrice,
-        location = ''
+        location = '',
+        ownerId
     } = query;
 
     //Generate query
@@ -71,6 +72,10 @@ export const findListings = async({
         filter.furnished = furnished
     }
 
+    if (ownerId) {
+        filter.ownerId = convertToObjectId(ownerId)
+    }
+
     aggregationOperator.push({
         $match: {
             $text: {
@@ -104,22 +109,35 @@ export const getUserByEmail = async({
     }
 };
 
-// Seach
+
 export const findUsersByName = async({
     usersCollection = required('usersCollection'),
-    name = required('name')
+    name = required('name'),
+    type
 }) => {
     // NOTE: We enclose the name in double quotes because we want it to be treated as a phrase.
     // Typing a first and last name should narrow results, not expand them.
     // Or logic is default for tokens in text search: https://docs.mongodb.com/manual/text-search/
+    let matchQuery = {
+        $text: {
+            $search: `"${name}"`,
+            $language: 'english'
+        }
+    };
+
+    if (type === userTypes.tenant) {
+        matchQuery.isLandlord = {
+            $ne: true
+        };
+    } else if (type === userTypes.landlord) {
+        matchQuery.isLandlord = true;
+    }
+
     try {
         return await usersCollection.aggregate([
             {
                 $match: {
-                    $text: {
-                        $search: `"${name}"`,
-                        $language: 'english'
-                    }
+                    ...matchQuery
                 }
             }
         ]).toArray();

@@ -27,7 +27,8 @@ export const userSearch = ({
 }) => coroutine(function* (req, res) {
     const {
         query: {
-            name
+            name,
+            type
         } = {}
     } = req;
 
@@ -35,7 +36,7 @@ export const userSearch = ({
         return sendError({
             res,
             status: 400,
-            message: 'You must search for users by name'
+            message: 'Name must be included in a users search'
         });
     }
 
@@ -44,7 +45,8 @@ export const userSearch = ({
     try {
         users = yield findUsersByName({
             usersCollection,
-            name
+            name,
+            type
         });
     } catch (e) {
         logger.error(e, `Error finding users for name: ${name}`);

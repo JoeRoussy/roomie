@@ -2,7 +2,7 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
-import { required } from '../components/custom-utils';
+import { required, convertToObjectId } from '../components/custom-utils';
 import { findListings } from '../components/data';
 import { sendError } from './utils';
 import { isPrice, isInteger, isFullOrHalfInt, isPostalCode } from '../../common/validation';
@@ -25,7 +25,8 @@ export const getListings = ({
         keywords,
         maxPrice,
         minPrice,
-        location = ''
+        location = '',
+        ownerId
     } = req.query;
 
     // Perform validation
@@ -316,7 +317,7 @@ export const createListing = ({
                 airConditioning,
                 location: formattedAddress,
                 images,
-                ownerId: req.user._id,
+                ownerId: convertToObjectId(req.user._id),
                 keywords: [],
                 lat,
                 lng

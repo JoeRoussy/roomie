@@ -18,9 +18,9 @@ const scheduleReducer = (state = config, actions) => {
     } = actions;
 
     // TODO: Remove at some point...
-    console.log('timeblocks', timeblocks);
-    console.log('meetings', meetings);
-    console.log('events', events);
+    // console.log('timeblocks', timeblocks);
+    // console.log('meetings', meetings);
+    // console.log('events', events);
 
     switch(actions.type){
         /* GET Timeblocks and Schedules */

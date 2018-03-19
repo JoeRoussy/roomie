@@ -81,7 +81,12 @@ export const listingTypes = [
     { key: 'hse', value: 'house', text: 'House'},
     { key: 'ths', value: 'townhouse', text: 'Town House'},
     { key: 'oth', value: 'other', text: 'Other'}
-]
+];
+
+export const userTypes = {
+    tenant: 'tenant',
+    landlord: 'landlord'
+};
 
 // TODO: Remove the provinces that do not have cities in the list
 export const provinces = [
@@ -98,7 +103,7 @@ export const provinces = [
     { key: 'NT', value: 'Northwest Territories', text: 'Northwest Territories' },
     { key: 'YT', value: 'Yukon', text: 'Yukon' },
     { key: 'NU', value: 'Nunavut', text: 'Nunavut' },
-]
+];
 
 export const cities = [
     {

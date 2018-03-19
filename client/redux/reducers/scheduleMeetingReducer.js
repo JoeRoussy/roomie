@@ -21,6 +21,14 @@ const mapUserForSearchResults = (user) => ({
     api_response: user
 });
 
+const mapListingForSearchResults = (listing) => ({
+    title: listing.name,
+    image: `${process.env.ASSETS_ROOT}${listing.images[0]}`,
+    description: listing.description,
+    price: `$${listing.price}`,
+    api_response: listing
+});
+
 const scheduleMeetingReducer = (state = config, actions) => {
     const {
         payload,
@@ -99,13 +107,20 @@ const scheduleMeetingReducer = (state = config, actions) => {
         }
 
         case 'SCHEDULE_MEETING_ADD_LANDLORD': {
+            let landlordToAdd = payload;
+
+            if (!landlordToAdd.api_response) {
+                // Handle case of adding landlord for outside
+                landlordToAdd = mapUserForSearchResults(landlordToAdd);
+            }
+
             const newParticipants = state.participants;
-            newParticipants.push(payload);
+            newParticipants.push(landlordToAdd);
 
             state = {
                 ...state,
                 participants: [ ...newParticipants ],
-                invitedLandlord: payload
+                invitedLandlord: landlordToAdd
             };
 
             break;
@@ -192,13 +207,7 @@ const scheduleMeetingReducer = (state = config, actions) => {
             state = {
                 ...state,
                 isListingSearchLoading: false,
-                listingSearchResults: listings.map(listing => ({
-                    title: listing.name,
-                    image: `${process.env.ASSETS_ROOT}${listing.images[0]}`,
-                    description: listing.description,
-                    price: `$${listing.price}`,
-                    api_response: listing
-                }))
+                listingSearchResults: listings.map(mapListingForSearchResults)
             };
 
             break;
@@ -215,9 +224,16 @@ const scheduleMeetingReducer = (state = config, actions) => {
         }
 
         case 'SCHEDULE_MEETING_SET_LISTING': {
+            let listing = payload;
+
+            if (!listing.api_response) {
+                // Handle setting listing from another container
+                listing = mapListingForSearchResults(listing);
+            }
+
             state = {
                 ...state,
-                listing: payload
+                listing
             };
 
             break;

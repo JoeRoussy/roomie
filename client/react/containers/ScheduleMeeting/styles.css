@@ -1,19 +1,23 @@
-#landlordSectionWrapper {
+#scheduleMeetingContainer #landlordSectionWrapper {
     margin-top: 30px;
 }
 
-#listingSectionWrapper {
+#scheduleMeetingContainer #listingSectionWrapper {
     margin-top: 30px;
 }
 
-#userSearchWrapper {
+#scheduleMeetingContainer #userSearchWrapper {
     margin-top: 30px;
 }
 
-#scheduleMeetingStepOneAdvanceButton {
+#scheduleMeetingContainer #userSearchWrapper .ui.cards {
+    margin-top: 15px;
+}
+
+#scheduleMeetingContainer #scheduleMeetingStepOneAdvanceButton {
     margin-top: 60px;
 }
 
-#scheduleMeetingChooseDifferentListingButton {
+#scheduleMeetingContainer #scheduleMeetingChooseDifferentListingButton {
     margin-top: 30px;
 }

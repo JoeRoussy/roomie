@@ -93,6 +93,56 @@ export const findListings = async({
     }
 };
 
+export const getListingByIdWithOwnerPopulated = async({
+    listingsCollection = required('listingsCollection'),
+    id = required('id')
+}) => {
+    let results;
+
+    try {
+        results = await listingsCollection.aggregate([
+            {
+                $match: {
+                    _id: id
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'ownerId',
+                    foreignField: '_id',
+                    as: 'owners'
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding listing for id: ${id}`);
+    }
+
+    // Get the single owner out of the owners array and get the single listing from the results
+    const [
+        listing
+    ] = results.map(x => {
+        const {
+            owners,
+            ...rest
+        } = x;
+
+        const owner = owners[0];
+
+        return {
+            owner,
+            ...rest
+        };
+    });
+
+    if (!listing) {
+        throw new Error(`No listing exists for id: ${id}`);
+    }
+
+    return listing;
+}
+
 export const getUserByEmail = async({
     usersCollection = required('usersCollection'),
     email = required('email')

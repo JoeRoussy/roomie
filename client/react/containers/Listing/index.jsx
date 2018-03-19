@@ -6,6 +6,7 @@ import { push } from 'react-router-redux'; // TODO: Should probably use nagivate
 import ListingForm from '../../components/ListingForm';
 import ListingDisplay from '../../components/ListingDisplay';
 
+import { addLandlord, setListing } from '../../../redux/actions/scheduleMeetingActions';
 import {
     getListingById,
     editListing,
@@ -64,10 +65,16 @@ export default class Listing extends React.Component {
         this.props.dispatch(cancelEditListing());
     }
 
-    onBookMeetingClicked() {
-        // TODO: dispatch action setting the listing and the landlord
-        // TODO: Should probably use navigateTo as mentioned above
-        this.props.dispatch(push('/schedule-meeting'));
+    onBookMeetingClicked(listing) {
+        if (listing) {
+            return () => {
+                this.props.dispatch(addLandlord(listing.owner));
+                this.props.dispatch(setListing(listing));
+                this.props.dispatch(push('/schedule-meeting'));
+            }
+        } else {
+            return () => this.props.dispatch(push('/schedule-meeting'));
+        }
     }
 
     render() {
@@ -113,7 +120,7 @@ export default class Listing extends React.Component {
         return (
             <Container>
                 {bodySection}
-                <Button onClick={this.onBookMeetingClicked}>Book a Meeting</Button>
+                <Button onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
             </Container>
         )
     }

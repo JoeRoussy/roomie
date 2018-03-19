@@ -16,7 +16,7 @@ const ListingDisplay = ({
 
     if (singleImage) {
         imagePortion = (
-            <Image id='listingDisplaySingleImage' size='huge' src={singleImage} />
+            <Image id='listingDisplaySingleImage' size='large' src={singleImage} />
         );
     } else {
         imagePortion = (

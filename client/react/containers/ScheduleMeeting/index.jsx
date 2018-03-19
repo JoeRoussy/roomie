@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { Container, Search, Card, Button } from 'semantic-ui-react';
+import { Container, Search, Card, Button, Divider } from 'semantic-ui-react';
 
 import ProfileCard from '../../components/ProfileCard';
 import ListingDisplay from '../../components/ListingDisplay';
@@ -71,6 +71,7 @@ const ScheduleMeeting = ({
             ));
 
     let content;
+
     if (step === 1) {
         // NOTE: Skirt issues about changin state after mount by using classes
         const landlordUserSection = (
@@ -84,9 +85,9 @@ const ScheduleMeeting = ({
                         onSearchChange={onLandlordSearchChange}
                     />
                 </div>
-                <div id='landlordDisplayWrapper' className={invitedLandlord ? '' : 'hidden'}>
+                <div id='landlordDisplayWrapper' className={`centered${invitedLandlord ? '' : ' hidden'}`}>
                     <h2>Landlord</h2>
-                    <ProfileCard
+                    <ProfileCard className='centered'
                         user={invitedLandlord ? invitedLandlord.api_response : undefined}
                         bottomExtras={(
                             <Card.Content className='centered'>
@@ -100,6 +101,7 @@ const ScheduleMeeting = ({
 
         const listingSection = (
             <div id='listingSectionWrapper' className={invitedLandlord ? '' : 'hidden'}>
+                <Divider />
                 <div id='chooseListingWrapper' className={listing ? 'hidden' : ''}>
                     <h2>Choose a Listing</h2>
                     <Search
@@ -114,8 +116,9 @@ const ScheduleMeeting = ({
                         listing={listing ? listing.api_response : {}}
                         singleImage={listing ? listing.image : null}
                     />
-                    <Button className='primaryColour' onClick={onClearListing}>Choose A Different Listing</Button>
+                    <Button id='scheduleMeetingChooseDifferentListingButton' className='primaryColour' onClick={onClearListing}>Choose A Different Listing</Button>
                 </div>
+                <Divider />
             </div>
         );
 
@@ -139,7 +142,7 @@ const ScheduleMeeting = ({
                 {landlordUserSection}
                 {listingSection}
                 {userSection}
-                <Button color='green' onClick={onNextStep} disabled={!listing || !invitedLandlord}>Choose A Time</Button>
+                <Button id='scheduleMeetingStepOneAdvanceButton' color='green' onClick={onNextStep} disabled={!listing || !invitedLandlord}>Choose A Time</Button>
             </div>
         );
     } else if (step === 2) {

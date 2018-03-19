@@ -62,10 +62,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 } = {}
             } = payload;
 
+            // Filter out the current participants from the search result
+            const searchResults = users
+                    .filter((user) => !state.participants.some(x => x.api_response._id === user._id))
+                    .map(mapUserForSearchResults)
+
             state = {
                 ...state,
                 isUserSearchLoading: false,
-                userSearchResults: users.map(mapUserForSearchResults)
+                userSearchResults: searchResults
             };
 
             break;

@@ -10,13 +10,13 @@ const ProcessBody = ({
     const body = message.body;
     if(body){
         const parts = body.split(' ');
-        return parts.map((part)=>{
+        return parts.map((part, i)=>{
             if(part){
                 if(part.startsWith("www.")){
-                    return ( <a href={'//'+part} target="_blank">{part}</a>)
+                    return ( <a href={'//'+part} target="_blank" key={`${message._id}${i}`}>{part}</a>)
                 }
                 else if(part.startsWith("http")){
-                    return ( <a href={part} target="_blank">{part}</a>)
+                    return ( <a href={part} target="_blank" key={`${message._id}${i}`}>{part}</a>)
                 }else {
                     return part + ' ';
                 }

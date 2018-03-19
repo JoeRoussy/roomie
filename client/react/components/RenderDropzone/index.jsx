@@ -39,7 +39,7 @@ const RenderDropzone = ({
                     {
                         files.map((file, i) =>
                             <Card key={i}>
-                            <Image src={`${file.preview}`} />
+                            <Image src={ file.preview ? `${file.preview}` : `${process.env.ASSETS_ROOT}${file}` } />
                             <Card.Content>
                               <Card.Header>
                                 {file.name}

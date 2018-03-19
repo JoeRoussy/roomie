@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { arrayPush, arrayRemove } from 'redux-form';
 import { Redirect } from 'react-router';
+import { Container } from 'semantic-ui-react';
 
 import CreateListingForm from '../../components/CreateListingForm';
 import { submitCreateForm } from '../../../redux/actions/listingActions';
@@ -81,7 +82,7 @@ export default class CreateListing extends React.Component {
         const redirectSection = !user.isLandlord ? (<Redirect to='/' />) : '';
 
         return (
-            <div>
+            <Container>
                 {redirectSection}
                 <h1>Create Listing</h1>
                 <CreateListingForm
@@ -96,7 +97,7 @@ export default class CreateListing extends React.Component {
                     cities={cities}
                     formData={formData}
                 />
-            </div>
+        </Container>
         )
     }
 }

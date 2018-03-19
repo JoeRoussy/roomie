@@ -11,6 +11,7 @@ import {
     previousStep,
     userSearch,
     addParticipant,
+    removeParticipant,
     clearLandlord,
     landlordSearch,
     addLandlord,
@@ -34,7 +35,7 @@ const ScheduleMeeting = ({
     step,
     isLoading,
     userSearchResults,
-    onUserSeachResultSelected,
+    onUserSearchResultSelected,
     onUserSearchChange,
     onLandlordClear,
     landlordSearchResults,
@@ -46,9 +47,28 @@ const ScheduleMeeting = ({
     isListingSearchLoading,
     onListingSeachResultSelected,
     onListingSearchChange,
-    onClearListing
+    onClearListing,
+    onUserRemove
 }) => {
     const userRedirect = user ? '' : (<Redirect to='sign-in' />);
+
+    // Format roommates as the api responses for continutity with other card displays
+    const roommateParticipants = participants
+            .filter(x => x.islandlord === 'false') // Recall islandlord needs to be a string
+            .map(x => ({
+                ...x.api_response
+            }))
+            .map(roommate => (
+                <ProfileCard
+                    bottomExtras={(
+                        <Card.Content>
+                            <Button color='red' onClick={onUserRemove(roommate)} basic>Remove</Button>
+                        </Card.Content>
+                    )}
+                    user={roommate}
+                    key={roommate._id}
+                />
+            ));
 
     let content;
     if (step === 1) {
@@ -99,21 +119,26 @@ const ScheduleMeeting = ({
             </div>
         );
 
-
+        const userSection = (
+            <div id='userSearchWrapper'>
+                <h2>Invite Your Roommates</h2>
+                <Search
+                    results={userSearchResults}
+                    loading={isUserSearchLoading}
+                    onResultSelect={onUserSearchResultSelected}
+                    onSearchChange={onUserSearchChange}
+                />
+                <Card.Group className='centered'>
+                    {roommateParticipants}
+                </Card.Group>
+            </div>
+        );
 
         content = (
             <div id='stepOneWrapper'>
                 {landlordUserSection}
                 {listingSection}
-                <div id='userSearchWrapper'>
-                    <h2>Invite Your Roommates</h2>
-                    <Search
-                        results={userSearchResults}
-                        loading={isUserSearchLoading}
-                        onResultSelect={onUserSeachResultSelected}
-                        onSearchChange={onUserSearchChange}
-                    />
-                </div>
+                {userSection}
                 <Button color='green' onClick={onNextStep} disabled={!listing || !invitedLandlord}>Choose A Time</Button>
             </div>
         );
@@ -185,7 +210,7 @@ const mapDispatchToProps = (dispatch) => ({
         }
 
     },
-    onUserSeachResultSelected: (e, data) => {
+    onUserSearchResultSelected: (e, data) => {
         const {
             result: selectedUser
         } = data;
@@ -228,7 +253,8 @@ const mapDispatchToProps = (dispatch) => ({
 
         dispatch(setListing(selectedListing));
     },
-    onClearListing: () => dispatch(clearListing())
+    onClearListing: () => dispatch(clearListing()),
+    onUserRemove: (user) => () => dispatch(removeParticipant(user))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScheduleMeeting);

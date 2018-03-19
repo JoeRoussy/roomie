@@ -46,3 +46,7 @@ h1 {
 .hidden {
     display: none;
 }
+
+.centered {
+    text-align: center;
+}

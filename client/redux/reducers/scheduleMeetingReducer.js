@@ -108,10 +108,10 @@ const scheduleMeetingReducer = (state = config, actions) => {
 
         case 'SCHEDULE_MEETING_REMOVE_PARTICIPANT': {
             const {
-                id
+                _id
             } = payload;
 
-            const newParticipants = state.participants.filter(x => x.api_response._id !== id);
+            const newParticipants = state.participants.filter(x => x.api_response._id !== _id);
 
             state = {
                 ...state,

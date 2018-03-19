@@ -98,7 +98,7 @@ class Home extends Component {
                 <ProfileCard
                     topExtras={(<Label color='green' floating>{Math.floor(roommate.percentMatch)}%</Label>)}
                     bottomExtras={(
-                        <Card.Content className='centered'>
+                        <Card.Content>
                             <Button color='green'>Message</Button>
                         </Card.Content>
                     )}
@@ -110,7 +110,7 @@ class Home extends Component {
             roommateSection = (
                 <Container>
                     <h2>Roommates Recommened For You</h2>
-                    <Card.Group id='roommateCards' className='centered'>
+                    <Card.Group id='roommateCards'>
                         {roommateCards}
                     </Card.Group>
                     <div id='retakeSurvey'>

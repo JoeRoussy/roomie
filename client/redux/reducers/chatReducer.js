@@ -11,6 +11,7 @@ const config = {
     chatTimer:null,
     isUserSearchLoading: false,
     userSearchResults: [],
+    userToInvite:{},
     displayLeaveChannelModal:false,
     channelToLeave:{},
     chatTimer:null
@@ -100,13 +101,6 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
-        case 'MODIFY_DISPLAY_INVITE_USER_MODAL':{
-            state = {
-                ...state,
-                displayInviteUserModal: actions.payload.displayModal
-            }
-            break;
-        }
 
         case 'MODIFY_DISPLAY_LEAVE_MODAL':{
             state = {
@@ -143,6 +137,7 @@ const ChatReducer = (state = config, actions) => {
             }};
             break;
         }
+
 
         case 'SEND_MESSAGE_FULFILLED': {
             break;
@@ -319,6 +314,13 @@ const ChatReducer = (state = config, actions) => {
                 userSearchResults: []
             };
 
+            break;
+        }
+        case 'MODIFY_USER_TO_INVITE': {
+            state = {
+                ...state,
+                userToInvite: actions.payload.user
+            };
             break;
         }
     }

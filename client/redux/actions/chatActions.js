@@ -66,6 +66,12 @@ export const modifyNewChannelName = (channelName) => ({
         channelName
     }
 });
+export const modifyDisplayInviteModal = (displayModal) => ({
+    type: 'MODIFY_DISPLAY_INVITE_MODAL',
+    payload: {
+        displayModal
+    }
+});
 
 export const modifyDisplayNewChannelModal = (displayModal) => ({
     type: 'MODIFY_DISPLAY_NEW_CHANNEL_MODAL',

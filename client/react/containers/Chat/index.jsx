@@ -49,6 +49,7 @@ import './styles.css';
     userSearchResults: store.ChatReducer.userSearchResults,
     displayLeaveChannelModal: store.ChatReducer.displayLeaveChannelModal,
     channelToLeave: store.ChatReducer.channelToLeave,
+    userToInvite: store.ChatReducer.userToInvite,
     user: store.userReducer.user
 }))
 class Chat extends React.Component{
@@ -71,6 +72,8 @@ class Chat extends React.Component{
         this.getUserSearchResults = this.getUserSearchResults.bind(this);
         this.getDisplayLeaveChannelModal = this.getDisplayLeaveChannelModal.bind(this);
         this.getChannelToLeave = this.getChannelToLeave.bind(this);
+        this.setUserToInvite = this.setUserToInvite.bind(this);
+        this.getUserToInvite = this.getUserToInvite.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleNewChannelNameChange = this.handleNewChannelNameChange.bind(this);
         this.blankNewChannelName = this.blankNewChannelName.bind(this);
@@ -81,6 +84,7 @@ class Chat extends React.Component{
         this.acceptLeaveChannel = this.acceptLeaveChannel.bind(this);
         this.declineLeaveChannel = this.declineLeaveChannel.bind(this);
         this.isUserAdmin = this.isUserAdmin.bind(this);
+        this.inviteUserToChannel = this.inviteUserToChannel.bind(this);
         this.updateChat = this.updateChat.bind(this);
         this.onUserSearchChange = this.onUserSearchChange.bind(this);
         this.onUserSearchResultSelected = this.onUserSearchResultSelected.bind(this);
@@ -142,6 +146,12 @@ class Chat extends React.Component{
     }
     getChannelToLeave(){
         return this.props.channelToLeave;
+    }
+    setUserToInvite(user){
+        this.props.dispatch(modifyUserToInvite(user));
+    }
+    getUserToInvite(){
+        return this.props.userToInvite;
     }
     acceptInvite(){
         this.props.dispatch(acceptInviteToChannel(this.getActiveChannel()));
@@ -215,7 +225,7 @@ class Chat extends React.Component{
         const {
             result: selectedUser
         } = data;
-        console.log(selectedUser);
+        this.setUserToInvite(selectedUser);
     }
     displayLeaveChannelModal(channel){
         this.props.dispatch(modifyDisplayLeaveChannelModal(true,channel));
@@ -230,7 +240,13 @@ class Chat extends React.Component{
     isUserAdmin(){
         return this.getActiveChannel().admin === this.getUser()._id;
     }
-
+    inviteUserToChannel(){
+        const user = this.getUserToInvite();
+        const channel = this.getActiveChannel();
+        if(user.api_response._id && channel._id){
+            this.props.dispatch(sendChannelInvite(channel,user.api_response._id));
+        }
+    }
     updateChat(){
         this.props.dispatch(getChannels());
         const channel = this.getActiveChannel();
@@ -303,6 +319,7 @@ class Chat extends React.Component{
                             searchLoading={this.getIsUserSearchLoading()}
                             searchOnSelect={this.onUserSearchResultSelected}
                             searchOnChange={this.onUserSearchChange}
+                            inviteUser={this.inviteUserToChannel}
                         />
                     </Grid.Column>
                 </Grid>

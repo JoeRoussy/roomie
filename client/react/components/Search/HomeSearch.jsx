@@ -8,21 +8,26 @@ import './styles.css';
 
 const HomeSearch = ({
     submitSearch,
-    createListing,
+    navigateToCreateListing,
     inputProps,
-    renderLocationBar
+    renderLocationBar,
+    isLandlord
 }) => {
-    return (
-        <div id='searchWrapper' className='search' >
-            <PlacesAutoComplete inputProps={{...inputProps, placeholder: "Enter a destination..."}}/>
-            <div>
-                <p> OR </p>
-            </div>
+    const postListingButton = isLandlord ? (
+        <div>
+            <p> OR </p>
             <Button
                 className='listingsButton primaryColour'
                 content='Post new listing'
-                onClick={createListing}
+                onClick={navigateToCreateListing}
             />
+        </div>
+    ) : ('');
+
+    return (
+        <div id='searchWrapper' className='search' >
+            <PlacesAutoComplete inputProps={{...inputProps, placeholder: "Enter a destination..."}}/>
+            {postListingButton}
         </div>
     )
 }

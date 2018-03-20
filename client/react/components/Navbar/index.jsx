@@ -48,11 +48,9 @@ const NavBar = ({
     }
 
     let createListing;
-    let viewListings;
 
     if (user && user.isLandlord) {
         createListing = <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add'/>Create Listing</Menu.Item>
-        viewListings = <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='home'/>Listings</Menu.Item>
     }
 
     return (
@@ -62,7 +60,6 @@ const NavBar = ({
                 <Menu.Item onClick={() => navigateTo('/search')}><Icon name='search'/>Search </Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
                 <Menu.Item onClick={() => navigateTo('/groups')}><Icon name='group'/> Groups</Menu.Item>
-                {viewListings}
                 {createListing}
                 {schedule}
 

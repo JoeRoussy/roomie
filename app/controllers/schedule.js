@@ -149,15 +149,15 @@ export const findAggregatedSchedules = ({
         participants
     } = req.query;
 
-    const participantsInSchedule = participants.concat(userId);
+    let participantsInSchedule;
 
-    if(!participantsInSchedule || !Array.isArray(participantsInSchedule) || participantsInSchedule.length < 1){
-        return sendError({
-            res,
-            status: 400,
-            message: "Invalid participantsInSchedule list"
-        });
+    if (!Array.isArray(participants)) {
+        participantsInSchedule = [ participants ]
+    } else {
+        participantsInSchedule = participants;
     }
+
+    participantsInSchedule.push(userId);
 
     //Check that participantsInSchedule are real users
     let usersInSchedule;
@@ -229,26 +229,25 @@ export const findAggregatedSchedules = ({
         return false;
     })
 
-    console.log(events);
+    events = applyRepeating(events);
+
     let id = 0;
     events = events.map((item)=>{
         let title;
         if(item.type === 'Unavailable'){
             title = item.type
-        }
-        else{
+        } else {
             title = `Meeting with: ${item.participants.map((person)=>person.name).toString()}`
         }
+        
         return {
             id: id++,
             title: title,
             allDay: false,
-            start: new Date(2018, 2, 16, 0, 0, 0),
-            end: new Date(2018, 2, 16, 1, 0, 0)
+            start: item.start,
+            end: item.end
         }
     });
-
-    // TODO: Mutate the results based on repeating
 
     //Return result
     return res.json({
@@ -263,10 +262,10 @@ export const findSchedulesDispatcher = ({
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
     const {
-        userIds = []
+        participants
     } = req.query;
 
-    if (userIds.length) {
+    if (participants) {
         return findAggregatedSchedules({
             meetingsCollection,
             timeblocksCollection,

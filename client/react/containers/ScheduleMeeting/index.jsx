@@ -144,7 +144,7 @@ const ScheduleMeeting = ({
                 {landlordUserSection}
                 {listingSection}
                 {userSection}
-                <Button id='scheduleMeetingStepOneAdvanceButton' color='green' onClick={onNavigateToStepTwo} disabled={!listing || !invitedLandlord}>Choose A Time</Button>
+                <Button id='scheduleMeetingStepOneAdvanceButton' color='green' onClick={onNavigateToStepTwo(participants)} disabled={!listing || !invitedLandlord}>Choose A Time</Button>
             </div>
         );
     } else if (step === 2) {
@@ -203,8 +203,8 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onNavigateToStepTwo: () => {
-        dispatch(getAggregateSchedules());
+    onNavigateToStepTwo: (participants) => () => {
+        dispatch(getAggregateSchedules(participants));
         dispatch(nextStep());
     },
     onNextStep: () => dispatch(nextStep()),

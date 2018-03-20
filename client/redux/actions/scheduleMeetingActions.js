@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 import { toast } from 'react-toastify';
 
 import { userTypes } from '../../../common/constants';
@@ -7,8 +8,9 @@ export const getAggregateSchedules = (participants) => ({
     type: 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES',
     payload: axios.get(`${process.env.API_ROOT}/api/schedule`, {
         params: {
-            participants
-        }
+            participants: participants.map(x => x.api_response._id)
+        },
+        paramsSerializer: (params) => qs.stringify(params, {arrayFormat: 'repeat'})
     })
 });
 

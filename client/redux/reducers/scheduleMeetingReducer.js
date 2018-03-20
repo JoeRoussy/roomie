@@ -256,7 +256,14 @@ const scheduleMeetingReducer = (state = config, actions) => {
 
         case 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES_FULFILLED': {
             console.log('Get Aggregate schedules fulfilled');
-            console.log(payload);
+
+            const {
+                data: {
+                    aggregatedEvents
+                } = {}
+            } = payload;
+
+            console.log(aggregatedEvents);
 
             break;
         }

@@ -100,6 +100,13 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+        case 'MODIFY_DISPLAY_INVITE_USER_MODAL':{
+            state = {
+                ...state,
+                displayInviteUserModal: actions.payload.displayModal
+            }
+            break;
+        }
 
         case 'MODIFY_DISPLAY_LEAVE_MODAL':{
             state = {
@@ -291,11 +298,9 @@ const ChatReducer = (state = config, actions) => {
         }
 
         case 'CHAT_USER_SEARCH_BY_NAME_FULFILLED': {
-            console.log(actions.payload)
-
             // Filter out the current participants from the search result
             const searchResults = actions.payload.data.users
-                    .filter((user) => !Object.values(state.activeChannelUsers).some(x => x.api_response._id === user._id))
+                    .filter((user) => !Object.values(state.activeChannelUsers).some(x => x._id === user._id))
                     .map(mapUserForSearchResults)
 
             state = {

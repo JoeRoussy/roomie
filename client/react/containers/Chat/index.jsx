@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {Divider,Grid,Search} from 'semantic-ui-react'
+import {Button,Divider,Grid,Search} from 'semantic-ui-react'
 import {push} from 'react-router-redux';
 import React, {Component}  from 'react';
 
@@ -27,7 +27,10 @@ import {
     leaveChannel,
     startTimer,
     stopTimer,
+    modifyUserToInvite,
+    sendChannelInvite,
     userSearch
+
 } from '../../../redux/actions/chatActions';
 
 import './styles.css';
@@ -77,6 +80,7 @@ class Chat extends React.Component{
         this.displayLeaveChannelModal = this.displayLeaveChannelModal.bind(this)
         this.acceptLeaveChannel = this.acceptLeaveChannel.bind(this);
         this.declineLeaveChannel = this.declineLeaveChannel.bind(this);
+        this.isUserAdmin = this.isUserAdmin.bind(this);
         this.updateChat = this.updateChat.bind(this);
         this.onUserSearchChange = this.onUserSearchChange.bind(this);
         this.onUserSearchResultSelected = this.onUserSearchResultSelected.bind(this);
@@ -223,6 +227,10 @@ class Chat extends React.Component{
     declineLeaveChannel(){
         this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
     }
+    isUserAdmin(){
+        return this.getActiveChannel().admin === this.getUser()._id;
+    }
+
     updateChat(){
         this.props.dispatch(getChannels());
         const channel = this.getActiveChannel();
@@ -290,12 +298,11 @@ class Chat extends React.Component{
                     <Grid.Column width={3}>
                         <ExtraInfoBar
                             users={this.getActiveChannelUsers()}
-                        />
-                        <Search
-                            results={this.getUserSearchResults()}
-                            loading={this.getIsUserSearchLoading()}
-                            onResultSelect={this.onUserSearchResultSelected}
-                            onSearchChange={this.onUserSearchChange}
+                            isAdmin={this.isUserAdmin()}
+                            searchResults={this.getUserSearchResults()}
+                            searchLoading={this.getIsUserSearchLoading()}
+                            searchOnSelect={this.onUserSearchResultSelected}
+                            searchOnChange={this.onUserSearchChange}
                         />
                     </Grid.Column>
                 </Grid>

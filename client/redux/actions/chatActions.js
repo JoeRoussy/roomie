@@ -199,6 +199,13 @@ export const stopTimer = (tick) => ({
     type: 'STOP_TIMER'
 })
 
+export const modifyUserToInvite = (user) => ({
+    type: 'MODIFY_USER_TO_INVITE',
+    payload: {
+        user
+    }
+});
+
 export const sendChannelInvite = (channel,userId) => (dispatch) =>{
     dispatch({
         type: 'SEND_CHANNEL_INVITE_PENDING'

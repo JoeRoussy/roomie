@@ -1,3 +1,4 @@
+import moment from 'moment';
 const config = {
     channels: [],
     activeChannel: {},
@@ -126,7 +127,11 @@ const ChatReducer = (state = config, actions) => {
         }
 
         case 'SEND_MESSAGE_FULFILLED': {
-            const messages  = state.chatLog.concat(actions.payload.data.message);
+            break;
+        }
+
+        case 'SEND_MESSAGE_PENDING': {
+            const messages  = state.chatLog.concat(actions.payload.message);
             state = {
                 ...state,
                 chatLog: messages
@@ -134,13 +139,18 @@ const ChatReducer = (state = config, actions) => {
             break;
         }
 
-        case 'SEND_MESSAGE_PENDING': {
-            //console.log('Get channels is pending');
-            break;
-        }
-
         case 'SEND_MESSAGE_REJECTED' : {
-            //console.log('Get channels was rejected');
+            //error sending message
+            const messages = state.chatLog.map((message)=>{
+                if(moment(message.createdAt).isSame(actions.payload.message.createdAt)){
+                    message.failed = true;
+                }
+                return message;
+            });
+            state = {
+                ...state,
+                chatLog: messages
+            }
             break;
         }
 

@@ -179,7 +179,7 @@ class Chat extends React.Component{
             if(this.getActiveChannel()._id){
                 //check if the message is not null or empty
                 if(event.target.value){
-                    this.props.dispatch(postMessageToActiveChannel(this.getActiveChannel(),event.target.value));
+                    this.props.dispatch(postMessageToActiveChannel(this.getActiveChannel(),event.target.value,this.getUser()));
                     //clear the pending message.
                     this.props.dispatch(modifyPendingMessage(this.getActiveChannel(),''));
                 }

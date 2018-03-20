@@ -24,7 +24,9 @@ import {
     modifyDisplayInviteModal,
     acceptInviteToChannel,
     declineInviteToChannel,
-    leaveChannel
+    leaveChannel,
+    startTimer,
+    stopTimer
 } from '../../../redux/actions/chatActions';
 
 import './styles.css';
@@ -70,6 +72,7 @@ class Chat extends React.Component{
         this.displayLeaveChannelModal = this.displayLeaveChannelModal.bind(this)
         this.acceptLeaveChannel = this.acceptLeaveChannel.bind(this);
         this.declineLeaveChannel = this.declineLeaveChannel.bind(this);
+        this.updateChat = this.updateChat.bind(this);
     }
     getChannels(){
         return this.props.channels;
@@ -194,9 +197,22 @@ class Chat extends React.Component{
     declineLeaveChannel(){
         this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
     }
-
+    updateChat(){
+        this.props.dispatch(getChannels());
+        const channel = this.getActiveChannel();
+        if(channel._id){
+            this.props.dispatch(loadActiveChannel(channel));
+        }
+    }
     componentWillMount() {
         this.props.dispatch(getChannels());
+        //Start timer to update chat
+        this.props.dispatch(startTimer(this.updateChat))
+    }
+
+    componentWillUnmount() {
+        //Stop the timer that updates chat
+        this.props.dispatch(stopTimer())
     }
 
     render(){

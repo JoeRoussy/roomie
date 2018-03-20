@@ -8,7 +8,8 @@ const config = {
     displayNewChannelModal:false,
     displayInviteModal:false,
     displayLeaveChannelModal:false,
-    channelToLeave:{}
+    channelToLeave:{},
+    chatTimer:null
 };
 
 const ChatReducer = (state = config, actions) => {
@@ -222,7 +223,22 @@ const ChatReducer = (state = config, actions) => {
         case 'LEAVE_CHANNEL_REJECTED' : {
             break;
         }
-
+        case 'START_TIMER': {
+            const tmr = setInterval(actions.payload.tick,actions.payload.interval);
+            state = {
+                ...state,
+                chatTimer:tmr
+            }
+            break;
+        }
+        case 'STOP_TIMER' : {
+            const tmr = clearInterval(state.chatTimer);
+            state = {
+                ...state,
+                chatTimer:tmr
+            }
+            break;
+        }
     }
     return state;
 }

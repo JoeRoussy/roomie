@@ -92,3 +92,13 @@ export const leaveChannel = (channel,userId) => ({
         userId
     })
 });
+export const startTimer = (tick) => ({
+    type: 'START_TIMER',
+    payload: {
+        tick,
+        interval:`${process.env.CHAT_UPDATE_INTERVAL}`
+    }
+})
+export const stopTimer = (tick) => ({
+    type: 'STOP_TIMER'
+})

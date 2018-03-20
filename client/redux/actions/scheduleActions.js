@@ -44,13 +44,3 @@ export const deleteTimeblock = (options, user) => {
     }
     return action;
 }
-
-// export const deleteMeeting = (options, user) => {
-//     const userId = user._id;
-//     const meetingId = options._id;
-//     const action = {
-//         type: "DELETE_MEETING",
-//         payload: axios.delete(`${process.env.API_ROOT}/api/schedule/meeting/${meetingId}`, user)
-//     }
-//     return action;
-// }

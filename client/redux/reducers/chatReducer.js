@@ -7,7 +7,8 @@ const config = {
     pendingMessages: {},
     newChannelName:'',
     displayNewChannelModal:false,
-    displayInviteModal:false
+    displayInviteModal:false,
+    chatTimer:null,
 };
 
 const ChatReducer = (state = config, actions) => {
@@ -183,6 +184,23 @@ const ChatReducer = (state = config, actions) => {
         case 'DECLINE_CHANNEL_INVITE_REJECTED' : {
             break;
         }
+        case 'START_TIMER': {
+            const tmr = setInterval(actions.payload.tick,actions.payload.interval);
+            state = {
+                ...state,
+                chatTimer:tmr
+            }
+            break;
+        }
+        case 'STOP_TIMER' : {
+            const tmr = clearInterval(state.chatTimer);
+            state = {
+                ...state,
+                chatTimer:tmr
+            }
+            break;
+        }
+
     }
     return state;
 }

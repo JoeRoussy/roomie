@@ -158,7 +158,6 @@ const CreateListingForm = ({
             label='Province'
             options={provinces}
             placeholder='Select a province'
-            style={{marginTop: 0 + 'px'}}
             onChange={onProvinceSelect}
         />
         <Field
@@ -167,7 +166,6 @@ const CreateListingForm = ({
             label='City'
             options={cities}
             placeholder='Select a city'
-            style={{marginTop: 0 + 'px'}}
         />
         <Field
             name='postalCode'
@@ -209,7 +207,6 @@ const CreateListingForm = ({
             label='Type of listing'
             options={listingTypes}
             placeholder='Select type of listing'
-            style={{marginTop: 0 + 'px'}}
         />
         <Field
             name='bedrooms'

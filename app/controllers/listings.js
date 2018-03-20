@@ -2,7 +2,7 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
-import { required } from '../components/custom-utils';
+import { required, extendIfPopulated, convertToBoolean } from '../components/custom-utils';
 import { findListings } from '../components/data';
 import { sendError } from './utils';
 import { isPrice, isInteger, isFullOrHalfInt, isPostalCode } from '../../common/validation';
@@ -103,6 +103,158 @@ export const getListingById = ({
     });
 });
 
+export const updateListing = ({
+    listingsCollection = required('listingsCollection'),
+    logger = required('logger', 'You must pass in a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    const {
+        body: {
+            name,
+            description,
+            type,
+            price,
+            bedrooms,
+            bathrooms,
+            unit,
+            utilities,
+            furnished,
+            parking,
+            internet,
+            laundry,
+            airConditioning,
+            images = []
+        } = {},
+        files: [
+            {
+                filename,
+                mimetype,
+                path
+            } = {}
+        ] = []
+    } = req;
+
+    const {
+        LISTING_ERRORS_GENERIC = required('LISTING_ERRORS_GENERIC'),
+        UPLOADS_RELATIVE_PATH = required('UPLOADS_RELATIVE_PATH')
+    } = process.env;
+
+    /* Perform field validation. */
+
+    // Enforce required fields
+    if (!name || !description || !type || !price || !bedrooms || !bathrooms) {
+        logger.warn(req.body, 'Malformed body for listing creation, empty fields.');
+
+        return sendError({
+            res,
+            status: 400,
+            message: 'Fill out all required fields.'
+        });
+    }
+
+    // If listing type is not in the array of accepted listing types.
+    if (!listingTypes.find((element) => (element.value === type))) {
+        logger.warn(req.body, 'Malformed body for listing creation, invalid listing type.');
+
+        return sendError({
+            res,
+            status: 400,
+            message: 'Invalid values given.'
+        });
+    }
+
+    // Check if price is valid.
+    if (!isPrice(price)) {
+        logger.warn(req.body, 'Malformed body for listing creation, invalid price.');
+
+        return sendError({
+            res,
+            status: 400,
+            message: 'Invalid values given.'
+        });
+    }
+
+    // Check if number of bedrooms is an integer.
+    if (!isInteger(bedrooms)) {
+        logger.warn(req.body, 'Malformed body for listing creation, invalid bedrooms.');
+
+        return sendError({
+            res,
+            status: 400,
+            message: 'Invalid values given.'
+        });
+    }
+
+    // Check if number of bathrooms is either an integer or integer and half.
+    if (!isFullOrHalfInt(bathrooms)) {
+        logger.warn(req.body, 'Malformed body for listing creation, invalid bathrooms.');
+
+        return sendError({
+            res,
+            status: 400,
+            message: 'Invalid values given.'
+        });
+    }
+
+    let newImages = images;
+
+    if(req.files) {
+        req.files.forEach((file) => {
+            if (file.filename && file.mimetype && file.path) {
+                newImages.push(`${UPLOADS_RELATIVE_PATH}${file.filename}`);
+            }
+        })
+    }
+
+    // Convert all the checkboxed strings to boolean values.
+    const utilitiesBool = convertToBoolean(utilities);
+    const furnishedBool = convertToBoolean(furnished);
+    const parkingBool = convertToBoolean(parking);
+    const internetBool = convertToBoolean(internet);
+    const laundryBool = convertToBoolean(laundry);
+    const airConditioningBool = convertToBoolean(airConditioning);
+
+    // Make sure the update does not contain any null values.
+    let update = {};
+    update = extendIfPopulated(update, 'name', name);
+    update = extendIfPopulated(update, 'description', description);
+    update = extendIfPopulated(update, 'type', type);
+    update = extendIfPopulated(update, 'price', price);
+    update = extendIfPopulated(update, 'bedrooms', bedrooms);
+    update = extendIfPopulated(update, 'bathrooms', bathrooms);
+    update = extendIfPopulated(update, 'unit', unit);
+    update = extendIfPopulated(update, 'utilities', utilitiesBool);
+    update = extendIfPopulated(update, 'furnished', furnishedBool);
+    update = extendIfPopulated(update, 'parking', parkingBool);
+    update = extendIfPopulated(update, 'internet', internetBool);
+    update = extendIfPopulated(update, 'laundry', airConditioningBool);
+    update = extendIfPopulated(update, 'airConditioning', airConditioningBool);
+    update = extendIfPopulated(update, 'images', newImages);
+
+    let newListing;
+
+    try {
+        newListing = yield findAndUpdate({
+            collection: listingsCollection,
+            query: { _id: req.params.id },
+            update
+        });
+    } catch (e) {
+        logger.error(e, `Error updating listing with id: ${req.params.id}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Could not update listing',
+            errorKey: LISTING_ERRORS_GENERIC
+        });
+    }
+
+    return res.json({
+        listing: newListing
+    });
+
+});
+
 export const createListing = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass in a logger for this function to use')
@@ -121,12 +273,12 @@ export const createListing = ({
             bedrooms,
             bathrooms,
             unit,
-            utilities='false',
-            furnished='false',
-            parking='false',
-            internet='false',
-            laundry='false',
-            airConditioning='false'
+            utilities,
+            furnished,
+            parking,
+            internet,
+            laundry,
+            airConditioning
         } = {},
         files: [
             {
@@ -240,11 +392,18 @@ export const createListing = ({
     if(req.files) {
         req.files.forEach((file) => {
             if (file.filename && file.mimetype && file.path) {
-                // User has updated their profile image
                 images.push(`${UPLOADS_RELATIVE_PATH}${file.filename}`);
             }
         })
     }
+
+    // Convert all the checkboxed strings to boolean values.
+    const utilitiesBool = convertToBoolean(utilities);
+    const furnishedBool = convertToBoolean(furnished);
+    const parkingBool = convertToBoolean(parking);
+    const internetBool = convertToBoolean(internet);
+    const laundryBool = convertToBoolean(laundry);
+    const airConditioningBool = convertToBoolean(airConditioning);
 
     // Combine address to store as location.
     const query = `address=${street} ${city},${province} ${postalCode},${country}`;
@@ -308,12 +467,12 @@ export const createListing = ({
                 bedrooms,
                 bathrooms,
                 unit,
-                utilities,
-                furnished,
-                parking,
-                internet,
-                laundry,
-                airConditioning,
+                utilities: utilitiesBool,
+                furnished: furnishedBool,
+                parking: parkingBool,
+                internet: internetBool,
+                laundry: laundryBool,
+                airConditioning: airConditioningBool,
                 location: formattedAddress,
                 images,
                 ownerId: req.user._id,

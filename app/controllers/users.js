@@ -21,6 +21,8 @@ import {
     deleteById
 } from '../components/db/service';
 
+
+
 export const userSearch = ({
     usersCollection = required('usersCollection'),
     logger = required('logger', 'You must pass in a logger for this function to use')

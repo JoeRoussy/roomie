@@ -188,12 +188,10 @@ class Chat extends React.Component{
         this.props.dispatch(modifyDisplayLeaveChannelModal(true,channel));
     }
     acceptLeaveChannel(){
-        console.log('User left channel')
         this.props.dispatch(leaveChannel(this.getChannelToLeave(),this.getUser()._id))
         this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
     }
     declineLeaveChannel(){
-        console.log('User stayed in channel')
         this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
     }
 

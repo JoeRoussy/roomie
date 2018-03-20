@@ -485,7 +485,6 @@ export const leaveChannel = ({
         //transfer admin to first user
         //find the first active user
         const activeUser = channel.users.find((channelUser)=>{
-            console.log(channelUser);
             return !convertToObjectId(channelUser.userId).equals(req.body.userId) && channelUser.isActive;
         });
         //if there is an acive user make them the admin, otherwise leave the admin id blank

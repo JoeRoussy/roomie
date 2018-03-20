@@ -98,7 +98,6 @@ const ChatReducer = (state = config, actions) => {
         }
 
         case 'LOAD_ACTIVE_CHANNEL_FULFILLED': {
-            //console.log(actions.payload.data.messages)
             state = {
                 ...state,
                 chatLog:actions.payload.data.messages

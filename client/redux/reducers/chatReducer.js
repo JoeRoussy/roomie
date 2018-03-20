@@ -8,10 +8,22 @@ const config = {
     newChannelName:'',
     displayNewChannelModal:false,
     displayInviteModal:false,
+    chatTimer:null,
+    isUserSearchLoading: false,
+    userSearchResults: [],
+    userToInvite:{},
     displayLeaveChannelModal:false,
     channelToLeave:{},
     chatTimer:null
 };
+
+// NOTE: islandlord needs to be lowercase because it is not a normal dom element
+const mapUserForSearchResults = (user) => ({
+    title: user.name,
+    image: `${process.env.ASSETS_ROOT}${user.profilePictureLink}`,
+    islandlord: user.isLandlord ? 'true' : 'false',
+    api_response: user
+});
 
 const ChatReducer = (state = config, actions) => {
     switch(actions.type) {
@@ -125,6 +137,7 @@ const ChatReducer = (state = config, actions) => {
             }};
             break;
         }
+
 
         case 'SEND_MESSAGE_FULFILLED': {
             break;
@@ -247,6 +260,67 @@ const ChatReducer = (state = config, actions) => {
                 ...state,
                 chatTimer:tmr
             }
+            break;
+        }
+        case 'SEND_CHANNEL_INVITE_FULFILLED': {
+            const channels = state.channels.map((channel)=>{
+                if(channel._id === actions.payload.data.channel._id){
+                    return actions.payload.data.channel;
+                }
+                return channel;
+            });
+            state = {
+                ...state,
+                channels: channels
+            }
+            break;
+        }
+        case 'SEND_CHANNEL_INVITE_PENDING': {
+            break;
+        }
+        case 'SEND_CHANNEL_INVITE_REJECTED' : {
+            break;
+        }
+
+        case 'CHAT_USER_SEARCH_BY_NAME_PENDING': {
+            state = {
+                ...state,
+                isUserSearchLoading: true,
+                userSearchResults: []
+            };
+
+            break;
+        }
+
+        case 'CHAT_USER_SEARCH_BY_NAME_FULFILLED': {
+            // Filter out the current participants from the search result
+            const searchResults = actions.payload.data.users
+                    .filter((user) => !Object.values(state.activeChannelUsers).some(x => x._id === user._id))
+                    .map(mapUserForSearchResults)
+
+            state = {
+                ...state,
+                isUserSearchLoading: false,
+                userSearchResults: searchResults
+            };
+
+            break;
+        }
+
+        case 'CHAT_USER_SEARCH_BY_NAME_REJECTED': {
+            state = {
+                ...state,
+                isUserSearchLoading: false,
+                userSearchResults: []
+            };
+
+            break;
+        }
+        case 'MODIFY_USER_TO_INVITE': {
+            state = {
+                ...state,
+                userToInvite: actions.payload.user
+            };
             break;
         }
     }

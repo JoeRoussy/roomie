@@ -9,6 +9,6 @@
 #chatView {
     width: 100%;
     max-width: none;
-    max-height: 73vh;
+    height: 73vh;
     overflow: auto;
 }

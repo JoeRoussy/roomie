@@ -88,6 +88,7 @@ export const userTypes = {
     landlord: 'landlord'
 };
 
+
 // TODO: Remove the provinces that do not have cities in the list
 export const provinces = [
     { key: 'ON', value: 'Ontario', text: 'Ontario' },

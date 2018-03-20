@@ -16,6 +16,7 @@ export default ({
 }) => {
     const userRouter = express.Router();
 
+
     userRouter.get('/', [
         isAuthenticated,
         userSearch({

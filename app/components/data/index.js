@@ -14,6 +14,19 @@ import { findAndUpdate } from '../db/service';
 import { generateHash as hashPassword } from '../authentication';
 import { roommateSurvey as surveyContants, userTypes } from '../../../common/constants';
 
+export const getListingsByOwner = async({
+    listingsCollection = required('listingsCollection'),
+    ownerId = required('ownerId')
+}) => {
+    try {
+        return await listingsCollection.find({
+            ownerId: convertToObjectId(ownerId)
+        }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting a listing with owner ${ownerId}`);
+    }
+}
+
 // Get listings based on an optional query
 export const findListings = async({
     listingsCollection = required('listingsCollection'),
@@ -69,7 +82,7 @@ export const findListings = async({
     }
 
     if(furnished){
-        filter.furnished = furnished
+        filter.furnished = furnished;
     }
 
     if (ownerId) {

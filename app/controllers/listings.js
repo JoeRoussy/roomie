@@ -238,7 +238,7 @@ export const updateListing = ({
     update = extendIfPopulated(update, 'furnished', furnishedBool);
     update = extendIfPopulated(update, 'parking', parkingBool);
     update = extendIfPopulated(update, 'internet', internetBool);
-    update = extendIfPopulated(update, 'laundry', airConditioningBool);
+    update = extendIfPopulated(update, 'laundry', laundryBool);
     update = extendIfPopulated(update, 'airConditioning', airConditioningBool);
     update = extendIfPopulated(update, 'images', newImages);
 

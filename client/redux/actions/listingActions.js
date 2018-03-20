@@ -23,6 +23,16 @@ export const getListingById = (id) => ({
     payload: axios.get(`${process.env.API_ROOT}/api/listings/${id}`)
 });
 
+export const getMyListings = () => ({
+    type: 'GET_MY_LISTINGS',
+    payload: axios.get(`${process.env.API_ROOT}/api/myListings`)
+        .catch((e) => {
+            toast.error('Error retrieving your listings.');
+
+            return e;
+        })
+});
+
 // Create listing
 export const submitCreateForm = (formValues) => (dispatch) => {
     dispatch({

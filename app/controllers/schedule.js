@@ -405,6 +405,15 @@ export const postMeeting = ({
         });
     }
 
+    // Make sure the start and end moments have the correct date
+    startMoment.date(dateMoment.date());
+    startMoment.month(dateMoment.month());
+    startMoment.year(dateMoment.year());
+
+    endMoment.date(dateMoment.date());
+    endMoment.month(dateMoment.month());
+    endMoment.year(dateMoment.year());
+
     if(!Array.isArray(participants)){
         logger.warn({ participants }, 'Error: Participants is not an array');
 
@@ -501,9 +510,9 @@ export const postMeeting = ({
     let result;
     const newMeeting = {
         participants: participantsAsUsers.concat({id:convertToObjectId(userId), acceptedInvite: true, name:name}),
-        start,
-        end,
-        date,
+        start: new Date(startMoment.toISOString()),
+        end: new Date(endMoment.toISOString()),
+        date: new Date(dateMoment.toISOString()),
         owners: [convertToObjectId(userId), convertToObjectId(listingValidation.ownerId)],
         listing: convertToObjectId(listing)
     }

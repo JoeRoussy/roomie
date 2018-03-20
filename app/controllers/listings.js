@@ -26,6 +26,12 @@ export const getListings = ({
         maxPrice,
         minPrice,
         location = '',
+        type,
+        utilities,
+        parking,
+        internet,
+        laundry,
+        ac,
         ownerId
     } = req.query;
 

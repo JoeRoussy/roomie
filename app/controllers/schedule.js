@@ -111,18 +111,21 @@ export const getSchedules = ({
 
     eventResults = eventResults.map((item)=>{
         let title;
+        let location;
         if(item.type === 'Unavailable'){
-            title = item.type
+            title = item.type;
         }
         else{
-            title = `Meeting with: ${item.participants.map((person)=>person.name).toString()}`
+            title = `Meeting with: ${item.participants.map((person)=>person.name).toString()}`;
+            location = item.listing.location;
         }
         return {
             id: id++,
             title: title,
             allDay: false,
             start: item.start,
-            end: item.end
+            end: item.end,
+            location
         }
     });
 
@@ -245,7 +248,8 @@ export const findAggregatedSchedules = ({
             title: title,
             allDay: false,
             start: item.start,
-            end: item.end
+            end: item.end,
+            randomInfo: 'please show me'
         }
     });
 

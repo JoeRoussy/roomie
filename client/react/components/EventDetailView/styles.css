@@ -12,6 +12,11 @@
     font-size: 1.3em;
 }
 
+#eventDetailView .content .subTitle {
+    text-align: center;
+    font-weight: bold;
+}
+
 #eventDetailView .content p .rowTitle {
     font-weight: bold;
 }

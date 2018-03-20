@@ -11,12 +11,18 @@ const EventDetailView = ({
     const {
         title = '',
         start,
-        end
+        end,
+        location
     } = event || {};
 
     const titleDisplay = title.replace(/,/g , ', ');
     const startMoment = moment(start);
     const endMoment = moment(end);
+    const locationSection = location ? (
+        <p className='subTitle'>{location}</p>
+    ) : (
+        ''
+    );
 
     return (
         <Transition visible={!!event} animation='fly down' duration={500}>
@@ -29,6 +35,7 @@ const EventDetailView = ({
                 <Modal.Header>Event Details</Modal.Header>
                 <Modal.Content>
                     <p className='title'>{titleDisplay}</p>
+                    {locationSection}
                     <p>
                         <span className='rowTitle'>Date:&nbsp;</span>
                         <span>{startMoment.format('MMMM Do YYYY')}</span>

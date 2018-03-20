@@ -4,15 +4,13 @@ import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-const WrappedDatePicker = ({  
-    input, 
+const WrappedDatePicker = ({
     dateChange,
-    selectedDate,
+    selectedDate
 }) => (
     <DatePicker
         selected={selectedDate}
         onChange={dateChange}
-        
     />
 )
 

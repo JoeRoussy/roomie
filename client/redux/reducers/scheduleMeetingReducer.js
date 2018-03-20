@@ -2,15 +2,18 @@ const config = {
     listing: null,
     participants: [],
     aggregatedEvents: [],
-    isLoading: false,
+    isMeetingFormLoading: false,
     isUserSearchLoading: false,
+    isCalendarViewLoading: false,
+    events: [],
     userSearchResults: [],
     landlordSearchResults: [],
     landlordSearchValue: '',
     isLandlordSearchLoading: false,
     isListingSearchLoading: false,
     listingSearchResults: [],
-    step: 1
+    step: 1,
+    meetingFormErrorMessage: null
 };
 
 // NOTE: islandlord needs to be lowercase because it is not a normal dom element
@@ -249,28 +252,66 @@ const scheduleMeetingReducer = (state = config, actions) => {
         }
 
         case 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES_PENDING': {
-            console.log('Get Aggregate schedules is pending');
+            state = {
+                ...state,
+                isCalendarViewLoading: true,
+                events: []
+            };
 
             break;
         }
 
         case 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES_FULFILLED': {
-            console.log('Get Aggregate schedules fulfilled');
-
             const {
                 data: {
                     aggregatedEvents
                 } = {}
             } = payload;
 
-            console.log(aggregatedEvents);
+            state = {
+                ...state,
+                isCalendarViewLoading: false,
+                events: aggregatedEvents
+            };
 
             break;
         }
 
         case 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES_REJECTED': {
-            console.log('Get Aggregate schedules is rejected');
-            console.log(payload);
+            state = {
+                ...state,
+                isCalendarViewLoading: false,
+                events: []
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_FORM_SUBMITTED': {
+            state = {
+                ...state,
+                isMeetingFormLoading: true,
+                meetingFormErrorMessage: null
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_FORM_SUBMITTED_SUCCESS': {
+            state = {
+                ...state,
+                isMeetingFormLoading: false
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_FORM_SUBMITTED_REJECTED': {
+            state = {
+                ...state,
+                isMeetingFormLoading: false,
+                meetingFormErrorMessage: 'Could not create meeting, please try again later.'
+            };
 
             break;
         }

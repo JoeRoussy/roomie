@@ -88,8 +88,8 @@ class Schedule extends Component{
                 cancel={this.toggleForm}
                 initialValues={{
                     date: moment(),
-                    start: moment(),
-                    end: moment().add(1,'hour'),
+                    start: moment().startOf('hour'),
+                    end: moment().startOf('hour').add(1,'hour'),
                     availability: availabilityOptions[0].value,
                     repeating: repeatingOptions[0].value
                 }}
@@ -109,7 +109,7 @@ class Schedule extends Component{
             <div id='scheudleCalendarView'>
                 <BigCalendar
                     events={events}
-                    views={['month', 'agenda']}
+                    views={['month']}
                     step={60}
                     showMultiDayTimes
                     defaultDate={new Date()}

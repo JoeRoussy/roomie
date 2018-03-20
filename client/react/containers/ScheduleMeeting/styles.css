@@ -1,3 +1,4 @@
+/* --- Step One --- */
 #scheduleMeetingContainer #landlordSectionWrapper {
     margin-top: 30px;
 }
@@ -20,4 +21,12 @@
 
 #scheduleMeetingContainer #scheduleMeetingChooseDifferentListingButton {
     margin-top: 30px;
+}
+
+
+/* --- Step Two --- */
+#stepTwoWrapper #scheudleCalendarView {
+    height: 90vh;
+    min-height: 500px;
+    margin-top: 25px;
 }

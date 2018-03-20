@@ -3,6 +3,7 @@ import qs from 'qs';
 import { toast } from 'react-toastify';
 
 import { userTypes } from '../../../common/constants';
+import { navigateTo as getNavigateTo } from '../../components';
 
 export const getAggregateSchedules = (participants) => ({
     type: 'SCHEDULE_MEETING_GET_AGGREGATE_SCHEDULES',
@@ -87,3 +88,36 @@ export const setListing = (listing) => ({
 export const clearListing = () => ({
     type: 'SCHEDULE_MEETING_CLEAR_LISTING'
 });
+
+export const submitMeetingForm = (formData) => (dispatch) => {
+    dispatch({
+        type: 'SCHEDULE_MEETING_FORM_SUBMITTED'
+    });
+
+    const {
+        participants,
+        listing,
+        ...rest
+    } = formData;
+
+    axios.post(`${process.env.API_ROOT}/api/schedule/meeting`, {
+        participants: participants.map(x => x.api_response._id),
+        listing: listing.api_response._id,
+        ...rest
+    })
+        .then((res) => {
+            toast.success('Your meeting has been created!');
+            getNavigateTo(dispatch)('/');
+
+            dispatch({
+                type: 'SCHEDULE_MEETING_FORM_SUBMITTED_SUCCESS',
+                payload: res
+            });
+        })
+        .catch((e) => {
+            dispatch({
+                type: 'SCHEDULE_MEETING_FORM_SUBMITTED_REJECTED',
+                payload: e
+            });
+        });
+};

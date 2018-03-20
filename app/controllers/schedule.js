@@ -239,7 +239,7 @@ export const findAggregatedSchedules = ({
         } else {
             title = `Meeting with: ${item.participants.map((person)=>person.name).toString()}`
         }
-        
+
         return {
             id: id++,
             title: title,
@@ -281,12 +281,12 @@ export const findSchedulesDispatcher = ({
     }
 });
 
-export const postMeeting=({
+export const postMeeting = ({
     meetingsCollection = required('meetingsCollection'),
     usersCollection = required('usersCollection'),
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
-}) => coroutine(function* (req, res){
+}) => coroutine(function* (req, res) {
     //Extract values
     const {
         date,
@@ -301,9 +301,20 @@ export const postMeeting=({
         name
     } = req.user;
 
+    const {
+        SCHEDULE_DATE_UNDEFINED = required('SCHEDULE_DATE_UNDEFINED'),
+        SCHEDULE_START_UNDEFINED = required('SCHEDULE_START_UNDEFINED'),
+        SCHEDULE_END_UNDEFINED = required('SCHEDULE_END_UNDEFINED'),
+        SCHEDULE_PARTICIPANTS_UNDEFINED = required('SCHEDULE_PARTICIPANTS_UNDEFINED'),
+        SCHEDULE_LISTING_UNDEFINED = required('SCHEDULE_LISTING_UNDEFINED'),
+        SCHEDULE_START_END_MISMATCH = required('SCHEDULE_START_END_MISMATCH'),
+        SCHEDULE_DATE_MISMATCH = required('SCHEDULE_DATE_MISMATCH')
+    } = process.env;
+
     //Perform Validation
     if(!date){
-        logger.error("Error: Date not defined")
+        logger.warn("Error: Date not defined");
+
         return sendError({
             res,
             status: 400,
@@ -313,7 +324,8 @@ export const postMeeting=({
     }
 
     if(!start){
-        logger.error("Error: Start not defined")
+        logger.warn("Error: Start not defined");
+
         return sendError({
             res,
             status: 400,
@@ -323,7 +335,8 @@ export const postMeeting=({
     }
 
     if(!end){
-        logger.error("Error: End not defined")
+        logger.warn("Error: End not defined");
+
         return sendError({
             res,
             status: 400,
@@ -333,7 +346,8 @@ export const postMeeting=({
     }
 
     if(!participants){
-        logger.error("Error: Participant list not defined")
+        logger.warn("Error: Participant list not defined");
+
         return sendError({
             res,
             status: 400,
@@ -343,7 +357,8 @@ export const postMeeting=({
     }
 
     if(!userId){
-        logger.error("Error: User not defined")
+        logger.error("Error: User not defined");
+
         return sendError({
             res,
             status: 400,
@@ -353,7 +368,8 @@ export const postMeeting=({
     }
 
     if(!listing){
-        logger.error("Error: Listing not included.")
+        logger.warn("Error: Listing not included.");
+
         return sendError({
             res,
             status: 400,
@@ -368,7 +384,7 @@ export const postMeeting=({
     const dateMoment = moment(date);
 
     if (endMoment.isBefore(startMoment)) {
-        logger.error("Error: Start time > End Time");
+        logger.warn("Error: Start time > End Time");
 
         return sendError({
             res,
@@ -379,7 +395,8 @@ export const postMeeting=({
     }
 
     if(dateMoment.isBefore(now, 'day')){
-        logger.error("Error: Date < Now")
+        logger.warn('Error: Date < Now');
+
         return sendError({
             res,
             status: 400,
@@ -389,7 +406,8 @@ export const postMeeting=({
     }
 
     if(!Array.isArray(participants)){
-        logger.error("Error: Participants is not an array")
+        logger.warn({ participants }, 'Error: Participants is not an array');
+
         return sendError({
             res,
             status: 400,
@@ -399,7 +417,8 @@ export const postMeeting=({
     }
 
     if(participants.length < 1){
-        logger.error("Error: Participants array is empty")
+        logger.warn({ participants }, 'Error: Participants array is empty');
+
         return sendError({
             res,
             status: 400,
@@ -439,12 +458,11 @@ export const postMeeting=({
         id: convertToObjectId(p)
     }));
 
-
-
     try {
         usersInMeeting = yield Promise.all(getAllUsers);
     } catch (e) {
-        logger.error(e, 'Sorry boss, you have an invalid user')
+        logger.error({ err: e, participants }, 'Error getting users for participants ids');
+
         return sendError({
             res,
             status: 400,
@@ -452,7 +470,16 @@ export const postMeeting=({
         });
     }
 
-    //TODO Check is userInMeeting is not an empty result
+    // Make sure there are no empty results in usersInMeeting
+    if (usersInMeeting.some(x => !x)) {
+        logger.warn({ usersInMeeting }, 'Found invalid users in participants');
+
+        return sendError({
+            res,
+            status: 400,
+            message: 'user not found.'
+        });
+    }
 
     participantsAsUsers = usersInMeeting.map((p) => {
         if(convertToObjectId(p._id).equals(listingValidation.ownerId)) {
@@ -495,6 +522,7 @@ export const postMeeting=({
             message: 'Error creating meetings'
         });
     }
+
     //Return result
     return res.json({
         meeting: result
@@ -502,7 +530,7 @@ export const postMeeting=({
 });
 
 
-export const postTimeblock=({
+export const postTimeblock = ({
     timeblocksCollection = required('timeblocksCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res){
@@ -515,6 +543,16 @@ export const postTimeblock=({
         repeating,
         user
     } = req.body;
+
+    const {
+        SCHEDULE_DATE_UNDEFINED = required('SCHEDULE_DATE_UNDEFINED'),
+        SCHEDULE_START_UNDEFINED = required('SCHEDULE_START_UNDEFINED'),
+        SCHEDULE_END_UNDEFINED = required('SCHEDULE_END_UNDEFINED'),
+        SCHEDULE_REPEATING_UNDEFINED = required('SCHEDULE_REPEATING_UNDEFINED'),
+        SCHEDULE_AVAILABILITY_UNDEFINED = required('SCHEDULE_AVAILABILITY_UNDEFINED'),
+        SCHEDULE_START_END_MISMATCH = required('SCHEDULE_START_END_MISMATCH'),
+        SCHEDULE_DATE_MISMATCH = required('SCHEDULE_DATE_MISMATCH')
+    } = process.env;
 
     //Perform Validation
     if(!date){

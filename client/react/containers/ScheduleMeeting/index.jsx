@@ -1,10 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { Container, Search, Card, Button, Divider } from 'semantic-ui-react';
+import { Container, Search, Card, Button, Divider, Dimmer, Loader } from 'semantic-ui-react';
+import BigCalendar from 'react-big-calendar';
+import moment from 'moment';
+import { change } from 'redux-form';
 
 import ProfileCard from '../../components/ProfileCard';
 import ListingDisplay from '../../components/ListingDisplay';
+import ScheduleMeetingForm from '../../components/ScheduleMeetingForm';
 
 import {
     nextStep,
@@ -19,6 +23,7 @@ import {
     setListing,
     clearListing,
     getAggregateSchedules,
+    submitMeetingForm
 } from '../../../redux/actions/scheduleMeetingActions';
 
 import './styles.css';
@@ -34,8 +39,10 @@ const ScheduleMeeting = ({
     invitedLandlord,
     aggregatedEvents,
     isUserSearchLoading,
+    isCalendarViewLoading,
+    events,
     step,
-    isLoading,
+    isMeetingFormLoading,
     userSearchResults,
     onUserSearchResultSelected,
     onUserSearchChange,
@@ -50,9 +57,20 @@ const ScheduleMeeting = ({
     onListingSeachResultSelected,
     onListingSearchChange,
     onClearListing,
-    onUserRemove
+    onUserRemove,
+    onMeetingSubmit,
+    formValues,
+    meetingFormErrorMessage,
+    onDateChange,
+    onStartTimeChange,
+    onEndTimeChange,
+    selectedDate,
+    startTime,
+    endTime
 }) => {
     const userRedirect = user ? '' : (<Redirect to='sign-in' />);
+
+    BigCalendar.momentLocalizer(moment);
 
     // Format roommates as the api responses for continutity with other card displays
     const roommateParticipants = participants
@@ -148,9 +166,47 @@ const ScheduleMeeting = ({
             </div>
         );
     } else if (step === 2) {
+        const calendarSection = isCalendarViewLoading ? (
+            <Dimmer active>
+                <Loader>Loading</Loader>
+            </Dimmer>
+        ) : (
+            <div id='scheudleCalendarView'>
+                <BigCalendar
+                    events={events}
+                    views={['month']}
+                    step={60}
+                    showMultiDayTimes
+                    defaultDate={new Date()}
+                    selectable
+                />
+            </div>
+        );
+
+
+
         content = (
             <div id='stepTwoWrapper'>
-
+                <Button id='scheduleMeetingBackToStepOneButton' onClick={onPreviousStep} className='primaryColour'>Back</Button>
+                {calendarSection}
+                <h2>Set Up Meeting</h2>
+                <ScheduleMeetingForm
+                    onSubmit={onMeetingSubmit(participants, listing)}
+                    formValues={formValues}
+                    errorMessage={meetingFormErrorMessage}
+                    dateChange={onDateChange}
+                    selectedDate={selectedDate}
+                    startTime={startTime}
+                    endTime={endTime}
+                    startTimeChange={onStartTimeChange}
+                    endTimeChange={onEndTimeChange}
+                    isLoading={isMeetingFormLoading}
+                    initialValues={{
+                        date: moment(),
+                        start: moment().startOf('hour'),
+                        end: moment().startOf('hour').add(1,'hour'),
+                    }}
+                />
             </div>
         );
     } else if (step === 3) {
@@ -175,7 +231,9 @@ const mapStateToProps = ({
         participants,
         invitedLandlord,
         aggregatedEvents,
-        isLoading,
+        isMeetingFormLoading,
+        isCalendarViewLoading,
+        events,
         isUserSearchLoading,
         step,
         userSearchResults,
@@ -183,7 +241,13 @@ const mapStateToProps = ({
         landlordSearchValue,
         isLandlordSearchLoading,
         listingSearchResults,
-        isListingSearchLoading
+        isListingSearchLoading,
+        meetingFormErrorMessage
+    } = {},
+    form: {
+        scheduleMeetingForm: {
+            values: formValues
+        } = {}
     } = {}
 }) => ({
     user,
@@ -193,13 +257,20 @@ const mapStateToProps = ({
     userSearchResults,
     aggregatedEvents,
     isUserSearchLoading,
-    isLoading,
+    isMeetingFormLoading,
+    isCalendarViewLoading,
+    events,
     step,
     landlordSearchResults,
     landlordSearchValue,
     isLandlordSearchLoading,
     listingSearchResults,
-    isListingSearchLoading
+    isListingSearchLoading,
+    formValues,
+    meetingFormErrorMessage,
+    selectedDate: formValues ? formValues.date : null,
+    startTime: formValues ? formValues.start : null,
+    endTime: formValues ? formValues.end : null
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -263,7 +334,17 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(setListing(selectedListing));
     },
     onClearListing: () => dispatch(clearListing()),
-    onUserRemove: (user) => () => dispatch(removeParticipant(user))
+    onUserRemove: (user) => () => dispatch(removeParticipant(user)),
+    onMeetingSubmit: (participants, listing) => (formData) => () => {
+        dispatch(submitMeetingForm({
+            participants,
+            listing,
+            ...formData
+        }));
+    },
+    onDateChange: (date) => dispatch(change('scheduleMeetingForm', 'date', date)),
+    onStartTimeChange: (time) => dispatch(change('timeblockForm', 'start', time)),
+    onEndTimeChange: (time) => dispatch(change('timeblockForm', 'end', time)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScheduleMeeting);

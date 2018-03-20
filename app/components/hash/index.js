@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 
+import { required } from '../custom-utils';
+
 export const get = ({
     type = 'sha256',
     input = required('input')

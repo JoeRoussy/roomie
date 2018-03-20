@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import {Map, Marker, InfoWindow, GoogleApiWrapper} from 'google-maps-react';
 
-export class MapComponent extends Component {
+class MapComponent extends Component {
     constructor(props){
         super(props)
+        this.fetchPlaces = this.fetchPlaces.bind(this);
     }
+
+    fetchPlaces() {
+        this.props.google.initialCenter = this.props.position;
+    }
+
     render(){
         const style = {
             width: '60%',
@@ -14,11 +20,11 @@ export class MapComponent extends Component {
         const zoom = 15;
 
         const {
-            position = {lat: 37.762, lng: -122.439}
+            position
         } = this.props
+        console.log(position)
 
         const marker = <Marker 
-            name = {"Test"}
             position = {position}
         />
 
@@ -28,6 +34,7 @@ export class MapComponent extends Component {
                     style = {style}
                     zoom = {zoom}
                     initialCenter={position}
+                    onReady = {this.fetchPlaces}
             >
                 {marker}
             </Map>

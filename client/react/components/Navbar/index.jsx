@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { Container, Menu, Icon } from 'semantic-ui-react';
+import { Container, Menu, Icon, Image } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 
 import { navigateTo as getNavigateTo, setJwt } from '../../../components';
@@ -41,19 +41,32 @@ const NavBar = ({
         ];
     }
 
+    //Schedule
+    let schedule;
+    let chat;
+    if(user){
+        schedule = <Menu.Item onClick={() => navigateTo('/schedule')}><Icon name='calendar'/> Schedule </Menu.Item>
+        chat = <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
+    }
+
+    let createListing;
+
+    if (user && user.isLandlord) {
+        createListing = <Menu.Item onClick={() => navigateTo('/create-listing')}><Icon name='add'/>Create Listing</Menu.Item>
+    }
+
     return (
-        <Menu fixed='top' inverted>
+        <Menu fixed='top'>
             <Container>
-                //left side
-                <Menu.Item header onClick={() => navigateTo('/')}>Roomie</Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/search')}>Search </Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/groups')}><Icon name='group'/> Groups</Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='user'/> Listings</Menu.Item>
-                //right side
+                <Menu.Item header onClick={() => navigateTo('/')}><Image src='/images/logo.svg' size='small' /></Menu.Item>
+                <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='search'/>Search </Menu.Item>
+                {chat}
+                {schedule}
+                {createListing}
+
                 <Menu.Menu position='right'>
-        			{rightSection}
-        		</Menu.Menu>
+                    {rightSection}
+                </Menu.Menu>
             </Container>
         </Menu>
     )

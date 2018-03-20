@@ -1,13 +1,31 @@
+import faker from 'faker';
+import moment from 'moment';
+
 import {
     required,
     print,
     convertToObjectId,
-    RethrownError
+    RethrownError,
+    getUniqueHash
 } from '../custom-utils';
-import { get as getHash } from '../hash';
+//import { get as getHash } from '../hash';
 import { insert as insertInDb } from '../db/service';
-
 import { findAndUpdate } from '../db/service';
+import { generateHash as hashPassword } from '../authentication';
+import { roommateSurvey as surveyContants, userTypes } from '../../../common/constants';
+
+export const getListingsByOwner = async({
+    listingsCollection = required('listingsCollection'),
+    ownerId = required('ownerId')
+}) => {
+    try {
+        return await listingsCollection.find({
+            ownerId: convertToObjectId(ownerId)
+        }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting a listing with owner ${ownerId}`);
+    }
+}
 
 // Get listings based on an optional query
 export const findListings = async({
@@ -21,7 +39,8 @@ export const findListings = async({
         keywords,
         maxPrice,
         minPrice,
-        location = ''
+        location = '',
+        ownerId
     } = query;
 
     //Generate query
@@ -63,13 +82,18 @@ export const findListings = async({
     }
 
     if(furnished){
-        filter.furnished = furnished
+        filter.furnished = furnished;
+    }
+
+    if (ownerId) {
+        filter.ownerId = convertToObjectId(ownerId)
     }
 
     aggregationOperator.push({
         $match: {
             $text: {
-                $search: location
+                $search: location,
+                $language: 'english'
             },
             ...filter
         }
@@ -81,6 +105,56 @@ export const findListings = async({
         throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
     }
 };
+
+export const getListingByIdWithOwnerPopulated = async({
+    listingsCollection = required('listingsCollection'),
+    id = required('id')
+}) => {
+    let results;
+
+    try {
+        results = await listingsCollection.aggregate([
+            {
+                $match: {
+                    _id: id
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'ownerId',
+                    foreignField: '_id',
+                    as: 'owners'
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding listing for id: ${id}`);
+    }
+
+    // Get the single owner out of the owners array and get the single listing from the results
+    const [
+        listing
+    ] = results.map(x => {
+        const {
+            owners,
+            ...rest
+        } = x;
+
+        const owner = owners[0];
+
+        return {
+            owner,
+            ...rest
+        };
+    });
+
+    if (!listing) {
+        throw new Error(`No listing exists for id: ${id}`);
+    }
+
+    return listing;
+}
 
 export const getUserByEmail = async({
     usersCollection = required('usersCollection'),
@@ -95,6 +169,55 @@ export const getUserByEmail = async({
         });
     } catch (e) {
         throw new RethrownError(e, `Error getting a user with the email ${email}`);
+    }
+};
+
+
+export const findUsersByName = async({
+    usersCollection = required('usersCollection'),
+    name = required('name'),
+    type,
+    currentUserId,
+    excludeSelf
+}) => {
+    // NOTE: We enclose the name in double quotes because we want it to be treated as a phrase.
+    // Typing a first and last name should narrow results, not expand them.
+    // Or logic is default for tokens in text search: https://docs.mongodb.com/manual/text-search/
+    if (excludeSelf && !currentUserId) {
+        throw new Error('You need to pass a currentUserId if you want to exclude the current user ');
+    }
+
+    let matchQuery = {
+        $text: {
+            $search: `"${name}"`,
+            $language: 'english'
+        }
+    };
+
+    if (excludeSelf) {
+        matchQuery._id = {
+            $ne: currentUserId
+        };
+    }
+
+    if (type === userTypes.tenant) {
+        matchQuery.isLandlord = {
+            $ne: true
+        };
+    } else if (type === userTypes.landlord) {
+        matchQuery.isLandlord = true;
+    }
+
+    try {
+        return await usersCollection.aggregate([
+            {
+                $match: {
+                    ...matchQuery
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error search for users with the name ${name}`);
     }
 }
 
@@ -112,11 +235,7 @@ export const getEmailConfirmationLink = async({
         VERIFICATION_TYPES_EMAIL = required('VERIFICATION_TYPES_EMAIL')
     } = process.env;
 
-    const now = +new Date();
-    const userHash = await getHash({ input: user });
-
-    // Append current timestamp to hash to guard against collisions
-    const urlIdentifyer = `${userHash}${now}`;
+    const urlIdentifyer = await getUniqueHash(user);
 
     // Now save the verification document
     try {
@@ -170,4 +289,326 @@ export const removeUserById = async({
     } catch (e) {
         throw new RethrownError(e, `Error removing user with id ${id}`);
     }
+};
+
+// Finds an existing roommate survey response by user id
+export const findRoommateSurveyResponse = async({
+    roommateSurveysCollection = required('roommateSurveysCollection'),
+    userId = required('userId')
+}) => {
+    try {
+        return await roommateSurveysCollection.findOne({
+            userId
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error finding roommateSurveys collection using userId set to: ${userId}`);
+    }
+};
+
+// Helper for function above that takes the user out of a survey response
+function transformRoommateResponseForOutput(response) {
+    const {
+        user,
+        distance,
+        ...rest
+    } = response;
+
+    return {
+        ...user,
+        distance
+    };
+}
+
+// Uses minimum Euclidean distance with respect to question responses to find recommended roommates (who are also looking in the same city)
+export const findRecommendedRoommates = async({
+    roommateSurveysCollection = required('roommateSurveysCollection'),
+    userSurveyResponse = required('userSurveyResponse')
+}) => {
+    const {
+        maxRecommendedRoommates,
+        minResponse,
+        maxResponse
+    } = surveyContants;
+
+    // First get all the roommate survey responses that are looking for the same city as our user
+    let roommateSurveyResponses = [];
+
+    try {
+        roommateSurveyResponses = await roommateSurveysCollection.aggregate([
+            {
+                $match: {
+                    city: userSurveyResponse.city,
+                    userId: {
+                        $ne: userSurveyResponse.userId
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            }
+        ]).toArray();
+
+        // NOTE: Cheesey map to take 1 user out of the users because we don't have time to deal with the db upgrade to 3.4
+        roommateSurveyResponses = roommateSurveyResponses.map(({
+            users,
+            userId,
+            ...rest
+        }) => ({
+            user: users[0],
+            ...rest
+        }));
+    } catch (e) {
+        throw new RethrownError(e, 'Error getting roommate survey responses');
+    }
+
+    // If we have a small amount of people looking in the same city, just return them as we don't have any to sort through
+    if (roommateSurveyResponses.length <= maxRecommendedRoommates) {
+        return roommateSurveyResponses.map(transformRoommateResponseForOutput);
+    }
+
+    const {
+        userId: submittedUserId,
+        createdAt,
+        ...submittedUserQuestionResponses
+    } = userSurveyResponse;
+
+    // Compute the distance from our current user to each survey response.
+    const roommateDistances = roommateSurveyResponses.map((response) => {
+        const {
+            _id,
+            city,
+            user,
+            userId,
+            createdAt,
+            ...questionResponses
+        } = response;
+
+        // Compute the Euclidean distance between the current response and our user
+        const squaredDistance = Object.keys(questionResponses)
+            .reduce((accumulator, responseKey) => {
+                const componentDistance = Math.pow(submittedUserQuestionResponses[responseKey] - questionResponses[responseKey], 2);
+
+                return accumulator + componentDistance;
+            }, 0);
+
+        const distance = Math.sqrt(squaredDistance);
+        const maxDistance = Object.keys(questionResponses).length * Math.pow(maxResponse - minResponse, 2);
+        const percentMatch = 100 - distance / maxDistance;
+
+        return {
+            user: {
+                ...user,
+                percentMatch
+            },
+            distance
+        };
+    });
+
+    // Sort the roommates by distance from low to high
+    roommateDistances.sort((a, b) => a.distance - b.distance);
+
+    let recommendedRoommates = [];
+
+    // Pick out the recommendedRoommates based on the number of recommended rommates in the config
+    for (let i = 0; i < surveyContants.maxRecommendedRoommates; i++) {
+        recommendedRoommates.push(roommateDistances[i]);
+    }
+
+    return recommendedRoommates.map(transformRoommateResponseForOutput);
+};
+
+// Returns a user wrapped in an envalope: { user }
+export const getUserForPasswordReset = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    urlIdentifyer = required('urlIdentifyer')
+}) => {
+    const {
+        PASSWORD_RESET_DURATION_DAYS = required('PASSWORD_RESET_DURATION_DAYS')
+    } = process.env;
+
+    const maxRequestDuration = +PASSWORD_RESET_DURATION_DAYS;
+    const maxPossibleDateString = moment().add(maxRequestDuration, 'days').endOf('day').toISOString();
+
+    try {
+        return await passwordResetsCollection.aggregate([
+            {
+                $match: {
+                    urlIdentifyer,
+                    createdAt: {
+                        $lte: new Date(maxPossibleDateString) // Need to pass a Date to mongo (not a moment)
+                    },
+                    expired: {
+                        $ne: true
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    passwordResetId: '$_id',
+                    user: { $arrayElemAt: [ '$users', 0 ] }
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(`Could not find user for password reset with urlIdentifyer: ${urlIdentifyer}`);
+    }
+};
+
+// Generates some fake users and some roomate responses. All users are from Toronto.
+export const generateRoommateResponses = async({
+    usersCollection = required('usersCollection'),
+    roommateSurveysCollection = required('roommateSurveysCollection'),
+    logger = required('logger', 'You must pass in a logging instance for this module to use')
+}) => {
+    let usersToMake = 5000;
+
+    while (usersToMake > 0) {
+        // Make a fake user
+        const name = faker.name.findName();
+        const email = faker.internet.email();
+        const password = await hashPassword(faker.internet.password());
+
+        let savedUser;
+
+        try {
+            savedUser = await insertInDb({
+                collection: usersCollection,
+                document: {
+                    name,
+                    email,
+                    password,
+                    isLandlord: false, // All these fake users are tenants,
+                    emailConfirmed: true, // Makes things easier in case we implement email verification checks,
+                    profilePictureLink: process.env.DEFAULT_PROFILE_PICTURE_RELATIVE_PATH
+                },
+                returnInsertedDocument: true
+            });
+        } catch (e) {
+            logger.error(e, `Error saving fake user with email: ${email}`);
+        }
+
+        // Now make a fake survey response for this user
+        let randomAnswers = {};
+
+        for (let i = 0; i < surveyContants.questions.length; i++) {
+            // Random value between 0 and 10
+            randomAnswers[`question${i}`] = Math.floor(Math.random() * (10 + 1));
+        }
+
+        try {
+            await insertInDb({
+                collection: roommateSurveysCollection,
+                document: {
+                    userId: savedUser._id,
+                    city: 'Toronto',
+                    ...randomAnswers
+                }
+            });
+        } catch (e) {
+            logger.error(e, `Error saving roommate survey for user with id: ${savedUser._id}`);
+        }
+
+        --usersToMake;
+    }
+};
+
+export const getUserTimeblocks = async({
+    id = required('id'),
+    timeblocksCollection = required('timeblocksCollection')
+}) => {
+    try{
+        return await timeblocksCollection.find({ userId: id }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
+    }
+}
+
+export const getUserMeetings = async({
+    id = required('id'),
+    meetingsCollection = required('meetingsCollection')
+}) => {
+    try{
+        return await meetingsCollection.find({ participants: {$elemMatch: { id: id} } }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
+    }
+}
+
+export const getUsersById = async({
+    usersCollection = required('usersCollection'),
+    ids = required('ids')
+}) => {
+    try {
+        return await usersCollection.find({"_id":{$in:ids}}).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error could not find users by ids: ${ids}`);
+    }
+};
+
+export const getChannels = async({
+    channelsCollection = required('channelsCollection'),
+    query
+}) => {
+    try {
+        return await channelsCollection.find(query).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
+    }
+};
+
+export const getMessagesByChannelId = async({
+    messagesCollection = required('messagesCollection'),
+    query
+}) => {
+    try {
+        return await messagesCollection.find(query).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
+    }
+};
+
+// Makes a password reset document and returns a link a user can use to reset their password
+export const getPasswordResetLink = async({
+    passwordResetsCollection = required('passwordResetsCollection'),
+    user = required('user')
+}) => {
+    const {
+        _id: userId
+    } = user;
+
+    const {
+        FRONT_END_ROOT = required('FRONT_END_ROOT')
+    } = process.env;
+
+    const urlIdentifyer = await getUniqueHash(user);
+
+    try {
+        await insertInDb({
+            collection: passwordResetsCollection,
+            document: {
+                userId: userId,
+                urlIdentifyer,
+                expired: false
+            }
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error inserting password reset document for user with id: ${userId}`);
+    }
+
+    // Now make a link to reset the email
+    return `${FRONT_END_ROOT}/?passwordResetToken=${urlIdentifyer}`;
 };

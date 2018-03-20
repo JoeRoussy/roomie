@@ -2,7 +2,7 @@ import express from 'express';
 
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { createUser, editUser, deleteCurrentUser } from '../controllers/api';
+import { createUser, editUser, deleteCurrentUser, fetchRecommenedRoommates, userSearch } from '../controllers/users';
 import { canModifyUser, isAuthenticated } from '../controllers/utils';
 import {
     singleFile as parseSingleFileUpload,
@@ -15,6 +15,20 @@ export default ({
     baseLogger = required('baseLogger')
 }) => {
     const userRouter = express.Router();
+
+
+    userRouter.get('/', [
+        isAuthenticated,
+        userSearch({
+            usersCollection: db.collection('users'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-search'
+                }
+            })
+        })
+    ])
 
     userRouter.post('/', [
         parseSingleFileUpload('profilePic'),
@@ -74,7 +88,21 @@ export default ({
                 }
             })
         })
-    ])
+    ]);
+
+    userRouter.get('/:id/recommendedRoommates', [
+        isAuthenticated,
+        fetchRecommenedRoommates({
+            roommateSurveysCollection: db.collection('roommateSurveys'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-users-get-roommate-recommendations'
+                }
+            })
+        })
+    ]);
+
 
     return userRouter;
 }

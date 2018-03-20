@@ -11,3 +11,42 @@ h1 {
 .ui.label>.icon {
     margin: auto;
 }
+
+.primaryColour {
+    color: #60b0f4;
+}
+
+.primaryColourSection {
+    background-color: #60b0f4;
+    color: white;
+}
+
+.ui.button.primaryColour {
+    background-color: #60b0f4;
+    color: white;
+}
+
+.ui.button.primaryColour:hover {
+    background-color: #4a92ce;
+}
+
+.ui.button.primaryColourAlt {
+    background-color: white;
+    color: #60b0f4;
+}
+
+.ui.button.primaryColourAlt:hover {
+    background-color: #eee;
+}
+
+.section {
+    padding: 50px 30px;
+}
+
+.hidden {
+    display: none;
+}
+
+.centered {
+    text-align: center;
+}

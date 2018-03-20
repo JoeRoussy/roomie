@@ -5,6 +5,7 @@ import { config as enviornmentVariableConfig } from 'dotenv';
 import cors from 'cors';
 import jwtParser from 'express-jwt'
 
+import { generateRoommateResponses } from './components/data';
 import { getLogger, getChildLogger } from './components/log-factory';
 import requiredFolderConfig from './components/required-folder-config';
 import dbConfig from './components/db/config';
@@ -92,7 +93,25 @@ const dbLogger = getChildLogger({
         baseLogger: Logger
     });
 
-    // TODO: Other kind of route configs here (like auth for example)
+    if (process.env.GENERATE_SURVEY_RESPONSES) {
+        const logger = getChildLogger({
+            baseLogger: Logger,
+            additionalFields: {
+                module: 'random-survey-responses-generator'
+            }
+        });
+
+        logger.info('Generating roommate survey responses and associated users');
+
+        generateRoommateResponses({
+            usersCollection: db.collection('users'),
+            roommateSurveysCollection: db.collection('roommateSurveys'),
+            logger
+        })
+            .then(() => {
+                logger.info('Done generating roommate survey responses.');
+            });
+    }
 
     app.listen(3000, () => Logger.info('App listening on port 3000'));
 })();

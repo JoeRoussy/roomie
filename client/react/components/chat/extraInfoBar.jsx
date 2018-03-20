@@ -1,36 +1,66 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { Container, Menu, Icon } from 'semantic-ui-react';
+import {Button, Container, Menu, Icon,Search } from 'semantic-ui-react';
+
+const InviteSearch = ({
+    isAdmin,
+    searchResults,
+    searchLoading,
+    searchOnSelect,
+    searchOnChange,
+    inviteUser
+})=>{
+    if(isAdmin){
+        return(
+            <div>
+                Invite User:
+                <Search
+                    fluid
+                    results={searchResults}
+                    loading={searchLoading}
+                    onResultSelect={searchOnSelect}
+                    onSearchChange={searchOnChange}
+                />
+                <Button onClick={inviteUser}>Invite</Button>
+            </div>
+        )
+    }
+    return;
+}
+
+const listUsers = ({
+    users
+}) => {
+    if(users){
+        return Object.values(users).map((element,i) => {
+            if(element.isActive){
+                return (
+                    <Menu.Item key={i} >{element.name}</Menu.Item>
+                )
+            }
+            return ;
+        });
+    }
+}
 
 const ExtraInfoBar = ({
-    navigateTo,
-    user
+    users,
+    isAdmin,
+    searchResults,
+    searchLoading,
+    searchOnSelect,
+    searchOnChange,
+    inviteUser
 }) => (
     <Container>
         <Menu float='right' vertical inverted fluid>
             <Menu.Item header>User Information</Menu.Item>
-            <Menu.Item>Channel 1</Menu.Item>
-            <Menu.Item>Channel 2</Menu.Item>
-            <Menu.Item>Channel 3</Menu.Item>
+            {listUsers({users})}
+            <Menu.Item key={users.size}>{InviteSearch({isAdmin,searchResults,searchLoading,searchOnSelect,searchOnChange,inviteUser})}</Menu.Item>
+
         </Menu>
     </Container>
-
 );
 
-// A stateless component has no referece to the store's dispatch function. This function
-// gives us a chance to add props in the context of the store dispatch function.
-const mapDispatchToProps = (dispatch) => ({
-    navigateTo: (path) => dispatch(push(path))
-});
-
-// Similarly, this function takes the state of the app and maps it to props for this component
-const mapStateToProps = ({
-    userReducer
-}) => ({
-    user: userReducer.user
-});
-
-// We use the connect function to return a new component with props defined by the
-// original props of the component and the props added by mapStateToProps and mapDispatchToProps
-export default connect(mapStateToProps, mapDispatchToProps)(ExtraInfoBar);
+export default ExtraInfoBar;

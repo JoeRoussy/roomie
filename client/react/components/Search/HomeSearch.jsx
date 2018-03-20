@@ -2,6 +2,7 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { Form, Input, Button, Icon } from 'semantic-ui-react';
 import PlacesAutoComplete from 'react-places-autocomplete';
+
 import './styles.css';
 
 
@@ -12,13 +13,13 @@ const HomeSearch = ({
     renderLocationBar
 }) => {
     return (
-        <div className='search' >
+        <div id='searchWrapper' className='search' >
             <PlacesAutoComplete inputProps={{...inputProps, placeholder: "Enter a destination..."}}/>
-            <div> 
-                <p> OR </p> 
+            <div>
+                <p> OR </p>
             </div>
-            <Button 
-                className='listingsButton' 
+            <Button
+                className='listingsButton primaryColour'
                 content='Post new listing'
                 onClick={createListing}
             />

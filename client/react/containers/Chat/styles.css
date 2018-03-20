@@ -5,6 +5,10 @@
 #chatSideBar {
     min-height: 90vh;
 }
-#chatView{
-    min-height: 83vh;
+
+#chatView {
+    width: 100%;
+    max-width: none;
+    height: 73vh;
+    overflow: auto;
 }

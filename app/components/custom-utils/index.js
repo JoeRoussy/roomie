@@ -1,4 +1,6 @@
 import { ObjectId } from 'mongodb';
+import { randomBytes } from 'crypto';
+import { get as getHash } from '../hash';
 
 export const required = (param, customMessage) => {
     if (typeof customMessage === 'string') {
@@ -170,9 +172,12 @@ export const isEmpty = (data) => {
     }
 }
 
+// Generic function to conert a string of true or false to a boolean.
+export const convertToBoolean = (value) => (value == 'true')
+
 // if passed a truth value, will return an extended version of obj with value set under the provided key
 export const extendIfPopulated = (obj, key, value) => {
-    if (value) {
+    if (typeof value !== 'undefined' && value !== null) {
         return {
             ...obj,
             [key]: value
@@ -181,3 +186,16 @@ export const extendIfPopulated = (obj, key, value) => {
 
     return obj;
 }
+
+// Returns a hash of an object that includes a random value and appends the date on the end to protect against collisions
+export const getUniqueHash = async (obj) => {
+    const objToHash = {
+        ...obj,
+        randomValue: randomBytes(16).toString('hex')
+    };
+
+    const now = +new Date();
+    const hash = await getHash({ input: objToHash });
+
+    return hash + now;
+};

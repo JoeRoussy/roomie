@@ -43,8 +43,10 @@ const NavBar = ({
 
     //Schedule
     let schedule;
+    let chat;
     if(user){
         schedule = <Menu.Item onClick={() => navigateTo('/schedule')}><Icon name='calendar'/> Schedule </Menu.Item>
+        chat = <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
     }
 
     let createListing;
@@ -59,9 +61,8 @@ const NavBar = ({
         <Menu fixed='top'>
             <Container>
                 <Menu.Item header onClick={() => navigateTo('/')}><Image src='/images/logo.svg' size='small' /></Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/search')}><Icon name='search'/>Search </Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/chat')}><Icon name='chat'/> Chat</Menu.Item>
-                <Menu.Item onClick={() => navigateTo('/groups')}><Icon name='group'/> Groups</Menu.Item>
+                <Menu.Item onClick={() => navigateTo('/listings')}><Icon name='search'/>Search </Menu.Item>
+                {chat}
                 {viewListings}
                 {createListing}
                 {schedule}

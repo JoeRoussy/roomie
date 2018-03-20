@@ -25,7 +25,13 @@ export const previousStep = () => ({
 
 export const userSearch = (name) => ({
     type: 'SCHEDULE_MEETING_USER_SEARCH_BY_NAME',
-    payload: axios.get(`${process.env.API_ROOT}/api/users?name=${name}&type=${userTypes.tenant}`)
+    payload: axios.get(`${process.env.API_ROOT}/api/users`, {
+        params: {
+            name,
+            type: userTypes.tenant,
+            excludeSelf: true
+        }
+    })
         .catch((e) => {
             toast.error('Something went wrong with the user search, please try again later');
 

@@ -163,17 +163,29 @@ export const getUserByEmail = async({
 export const findUsersByName = async({
     usersCollection = required('usersCollection'),
     name = required('name'),
-    type
+    type,
+    currentUserId,
+    excludeSelf
 }) => {
     // NOTE: We enclose the name in double quotes because we want it to be treated as a phrase.
     // Typing a first and last name should narrow results, not expand them.
     // Or logic is default for tokens in text search: https://docs.mongodb.com/manual/text-search/
+    if (excludeSelf && !currentUserId) {
+        throw new Error('You need to pass a currentUserId if you want to exclude the current user ');
+    }
+
     let matchQuery = {
         $text: {
             $search: `"${name}"`,
             $language: 'english'
         }
     };
+
+    if (excludeSelf) {
+        matchQuery._id = {
+            $ne: currentUserId
+        };
+    }
 
     if (type === userTypes.tenant) {
         matchQuery.isLandlord = {

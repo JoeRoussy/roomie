@@ -28,7 +28,8 @@ export const userSearch = ({
     const {
         query: {
             name,
-            type
+            type,
+            excludeSelf = false
         } = {}
     } = req;
 
@@ -46,7 +47,9 @@ export const userSearch = ({
         users = yield findUsersByName({
             usersCollection,
             name,
-            type
+            type,
+            currentUserId: convertToObjectId(req.user._id),
+            excludeSelf
         });
     } catch (e) {
         logger.error(e, `Error finding users for name: ${name}`);

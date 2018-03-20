@@ -26,7 +26,8 @@ export const findListings = async({
         keywords,
         maxPrice,
         minPrice,
-        location = ''
+        location = '',
+        ownerId
     } = query;
 
     //Generate query
@@ -71,10 +72,15 @@ export const findListings = async({
         filter.furnished = furnished
     }
 
+    if (ownerId) {
+        filter.ownerId = convertToObjectId(ownerId)
+    }
+
     aggregationOperator.push({
         $match: {
             $text: {
-                $search: location
+                $search: location,
+                $language: 'english'
             },
             ...filter
         }
@@ -86,6 +92,56 @@ export const findListings = async({
         throw new RethrownError(e, `Error getting listings for query: ${JSON.stringify(query)}`);
     }
 };
+
+export const getListingByIdWithOwnerPopulated = async({
+    listingsCollection = required('listingsCollection'),
+    id = required('id')
+}) => {
+    let results;
+
+    try {
+        results = await listingsCollection.aggregate([
+            {
+                $match: {
+                    _id: id
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'ownerId',
+                    foreignField: '_id',
+                    as: 'owners'
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding listing for id: ${id}`);
+    }
+
+    // Get the single owner out of the owners array and get the single listing from the results
+    const [
+        listing
+    ] = results.map(x => {
+        const {
+            owners,
+            ...rest
+        } = x;
+
+        const owner = owners[0];
+
+        return {
+            owner,
+            ...rest
+        };
+    });
+
+    if (!listing) {
+        throw new Error(`No listing exists for id: ${id}`);
+    }
+
+    return listing;
+}
 
 export const getUserByEmail = async({
     usersCollection = required('usersCollection'),
@@ -100,6 +156,55 @@ export const getUserByEmail = async({
         });
     } catch (e) {
         throw new RethrownError(e, `Error getting a user with the email ${email}`);
+    }
+};
+
+
+export const findUsersByName = async({
+    usersCollection = required('usersCollection'),
+    name = required('name'),
+    type,
+    currentUserId,
+    excludeSelf
+}) => {
+    // NOTE: We enclose the name in double quotes because we want it to be treated as a phrase.
+    // Typing a first and last name should narrow results, not expand them.
+    // Or logic is default for tokens in text search: https://docs.mongodb.com/manual/text-search/
+    if (excludeSelf && !currentUserId) {
+        throw new Error('You need to pass a currentUserId if you want to exclude the current user ');
+    }
+
+    let matchQuery = {
+        $text: {
+            $search: `"${name}"`,
+            $language: 'english'
+        }
+    };
+
+    if (excludeSelf) {
+        matchQuery._id = {
+            $ne: currentUserId
+        };
+    }
+
+    if (type === userTypes.tenant) {
+        matchQuery.isLandlord = {
+            $ne: true
+        };
+    } else if (type === userTypes.landlord) {
+        matchQuery.isLandlord = true;
+    }
+
+    try {
+        return await usersCollection.aggregate([
+            {
+                $match: {
+                    ...matchQuery
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error search for users with the name ${name}`);
     }
 }
 
@@ -450,6 +555,17 @@ export const getUserTimeblocks = async({
 }) => {
     try{
         return await timeblocksCollection.find({ userId: id }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
+    }
+}
+
+export const getUserMeetings = async({
+    id = required('id'),
+    meetingsCollection = required('meetingsCollection')
+}) => {
+    try{
+        return await meetingsCollection.find({ participants: {$elemMatch: { id: id} } }).toArray();
     } catch (e) {
         throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
     }

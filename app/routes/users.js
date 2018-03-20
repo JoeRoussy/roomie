@@ -2,7 +2,7 @@ import express from 'express';
 
 import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
-import { createUser, editUser, deleteCurrentUser, fetchRecommenedRoommates,userSearch } from '../controllers/users';
+import { createUser, editUser, deleteCurrentUser, fetchRecommenedRoommates, userSearch } from '../controllers/users';
 import { canModifyUser, isAuthenticated } from '../controllers/utils';
 import {
     singleFile as parseSingleFileUpload,

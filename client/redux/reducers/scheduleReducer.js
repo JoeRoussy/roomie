@@ -1,17 +1,21 @@
 const config = {
     timeblocks: [],
+    meetings: [],
+    events: [],
     loading: false
 }
 
 const scheduleReducer = (state = config, actions) => {
     const {
-        response: {
+        payload: {
             data: {
                 errorKey,
                 timeblocks,
-            }
+                meetings,
+                events
+            } = {}
         } = {}
-    } = actions.payload;
+    } = actions;
 
     switch(actions.type){
         /* GET Timeblocks and Schedules */
@@ -19,6 +23,8 @@ const scheduleReducer = (state = config, actions) => {
             state = {
                 ...state,
                 timeblocks: timeblocks,
+                meetings: meetings,
+                events: events,
                 loading: false
             };
             break;
@@ -31,6 +37,8 @@ const scheduleReducer = (state = config, actions) => {
             break;
         }
         case 'GET_SCHEDULES_REJECTED': {
+            let errorMessage;
+
             state = {
                 ...state,
                 loading: false,
@@ -41,6 +49,9 @@ const scheduleReducer = (state = config, actions) => {
 
         /* CREATE TIMEBLOCK */
         case 'POST_TIMEBLOCK_FULFILLED': {
+            let newTimeblocks = state.timeblocks;
+            newTimeblocks.concat(timeblocks);
+
             state = {
                 ...state,
                 timeblocks: state.timeblocks.concat(timeblocks),

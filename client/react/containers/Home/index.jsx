@@ -12,6 +12,7 @@ import { search, handleLocationChange } from '../../../redux/actions/searchActio
 import { getRoommateSuggestionsForUser } from '../../../redux/actions/homeActions';
 import { navigateTo } from '../../../components';
 import { setPasswordResetToken } from '../../../redux/actions/forgotPasswordFormActions';
+import ProfileCard from '../../components/ProfileCard';
 
 import './styles.css';
 
@@ -94,24 +95,16 @@ class Home extends Component {
 
         if (this.props.recommendedRoommates.length) {
             const roommateCards = this.props.recommendedRoommates.map((roommate) => (
-                <Card key={roommate._id} raised>
-                    <Label color='green' floating>{Math.floor(roommate.percentMatch)}%</Label>
-                    <Card.Content>
-                        <Image size='tiny' floated='right' src={`${process.env.ASSETS_ROOT}${roommate.profilePictureLink}`} />
-                        <Card.Header>
-                            {roommate.name}
-                        </Card.Header>
-                        <Card.Meta>
-                            <span>Joined:</span>
-                        </Card.Meta>
-                        <Card.Meta>
-                            <span>{moment(roommate.createdAt).format('MMMM Do YYYY')}</span>
-                        </Card.Meta>
-                    </Card.Content>
-                    <Card.Content className='centered'>
-                        <Button color='green'>Message</Button>
-                    </Card.Content>
-                </Card>
+                <ProfileCard
+                    topExtras={(<Label color='green' floating>{Math.floor(roommate.percentMatch)}%</Label>)}
+                    bottomExtras={(
+                        <Card.Content>
+                            <Button color='green'>Message</Button>
+                        </Card.Content>
+                    )}
+                    user={roommate}
+                    key={roommate._id}
+                />
             ));
 
             roommateSection = (

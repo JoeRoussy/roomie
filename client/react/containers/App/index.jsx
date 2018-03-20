@@ -18,12 +18,13 @@ import Chat from '../Chat';
 import RoommateSurvey from '../RoommateSurvey';
 import ForgotPasswordForm from '../ForgotPasswordForm';
 import Schedule from '../Schedule';
+import ScheduleMeeting from '../ScheduleMeeting';
 
 import './styles.css';
 
 
-const style = {
-    marginTop: '3em'
+const mainInlineStyles = {
+    paddingTop: '90px'
 };
 
 const App = ({
@@ -33,7 +34,7 @@ const App = ({
         <header>
             <Navbar />
         </header>
-        <main style={style}>
+        <main style={mainInlineStyles}>
             <ToastContainer />
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />
@@ -47,6 +48,7 @@ const App = ({
             <Route exact path="/forgot-password" component={ForgotPassword} />
             <Route exact path="/forgot-password-form" component={ForgotPasswordForm} />
             <Route exact path="/schedule" component={Schedule} />
+            <Route exact path="/schedule-meeting" component={ScheduleMeeting} />
             <Route exact path="/roommate-survey" component={RoommateSurvey} />
         </main>
         <footer>

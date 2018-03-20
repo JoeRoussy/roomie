@@ -9,6 +9,8 @@ import sampleReducer from './sampleReducer';
 import searchReducer from './searchReducer';
 import userReducer from './userReducer';
 import ChatReducer from './chatReducer';
+import scheduleReducer from './scheduleReducer';
+import scheduleMeetingReducer from './scheduleMeetingReducer';
 import signUpReducer from './signUpReducer';
 import signInReducer from './signInReducer';
 import profileReducer from './profileReducer';
@@ -26,6 +28,8 @@ const reducers = combineReducers({
     userReducer,
     ChatReducer,
     form: formReducer,
+    scheduleReducer,
+    scheduleMeetingReducer,
     signUpReducer,
     signInReducer,
     profileReducer,

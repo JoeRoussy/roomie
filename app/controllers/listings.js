@@ -2,8 +2,8 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
-import { required, extendIfPopulated, convertToBoolean, convertToObjectId } from '../components/custom-utils';
-import { findListings } from '../components/data';
+import { required, convertToObjectId, extendIfPopulated, convertToBoolean } from '../components/custom-utils';
+import { findListings, getListingByIdWithOwnerPopulated } from '../components/data';
 import { sendError } from './utils';
 import { isPrice, isInteger, isFullOrHalfInt, isPostalCode } from '../../common/validation';
 import { listingTypes, provinces, cities } from '../../common/constants';
@@ -25,7 +25,8 @@ export const getListings = ({
         keywords,
         maxPrice,
         minPrice,
-        location = ''
+        location = '',
+        ownerId
     } = req.query;
 
     // Perform validation
@@ -85,13 +86,24 @@ export const getListingById = ({
 
     let result;
 
+    if (!req.params.id) {
+        // Something weird has happened...
+        logger.error('No id in parameters for get listing by id');
+
+        return res.status(500).json({
+            error: true,
+            message: `Could not get listing with id ${req.params.id}`
+        });
+    }
+
     try {
-        result = yield getById({
-            collection: listingsCollection,
-            id: req.params.id
+        result = yield getListingByIdWithOwnerPopulated({
+            listingsCollection,
+            id: convertToObjectId(req.params.id)
         });
     } catch (e) {
-        logger.error(e.err, e.msg);
+        logger.error(e, `Error finding listing with id: ${req.params.id}`);
+
         return res.status(500).json({
             error: true,
             message: `Could not get listing with id ${req.params.id}`

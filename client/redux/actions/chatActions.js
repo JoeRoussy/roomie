@@ -1,9 +1,26 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import moment from 'moment';
 
-export const getChannels = () => ({
-    type: 'GET_CHANNELS',
-    payload: axios.get(`${process.env.API_ROOT}/api/channels`)
-});
+export const getChannels = () => (dispatch) =>{
+    dispatch({
+        type: 'GET_CHANNELS_PENDING'
+    });
+     axios.get(`${process.env.API_ROOT}/api/channels`)
+     .then( res =>{
+         dispatch({
+             type: 'GET_CHANNELS_FULFILLED',
+             payload: res
+         });
+     }).catch(e => {
+         toast.error("Failed to retireve channels");
+         console.log(e);
+         dispatch({
+             type: 'CREATE_LISTING_REJECTED',
+             payload: e
+         });
+     });
+}
 
 export const setActiveChannel= (channel) =>({
     type: 'SET_ACTIVE_CHANNEL',
@@ -12,10 +29,24 @@ export const setActiveChannel= (channel) =>({
     }
 });
 
-export const loadActiveChannel = (channel) => ({
-    type: 'LOAD_ACTIVE_CHANNEL',
-    payload: axios.get(`${process.env.API_ROOT}/api/channels/${channel._id}`)
-});
+export const loadActiveChannel = (channel) => (dispatch) =>{
+    dispatch({
+        type: 'LOAD_ACTIVE_CHANNEL_PENDING'
+    });
+     axios.get(`${process.env.API_ROOT}/api/channels/${channel._id}`)
+     .then( res =>{
+         dispatch({
+             type: 'LOAD_ACTIVE_CHANNEL_FULFILLED',
+             payload: res
+         });
+     }).catch(e => {
+         console.log(e);
+         dispatch({
+             type: 'LOAD_ACTIVE_CHANNEL_REJECTED',
+             payload: e
+         });
+     });
+}
 
 export const modifyPendingMessage = (channelName,message) => ({
     type: 'MODIFY_PENDING_MESSAGE',
@@ -41,43 +72,120 @@ export const modifyDisplayNewChannelModal = (displayModal) => ({
     }
 });
 
-export const modifyDisplayInviteModal = (displayModal) => ({
-    type: 'MODIFY_DISPLAY_INVITE_MODAL',
+export const modifyDisplayLeaveChannelModal = (displayModal,channel) => ({
+    type: 'MODIFY_DISPLAY_LEAVE_MODAL',
     payload: {
-        displayModal
+        displayModal,
+        channel
     }
 });
 
-export const postMessageToActiveChannel = (channel,message) => ({
-    type: 'SEND_MESSAGE',
-    payload: axios.post(`${process.env.API_ROOT}/api/channels/${channel._id}/messages`,{
-        channelId: channel._id,
-        message:message
-    })
-});
+export const postMessageToActiveChannel = (channel,message,user) => (dispatch) =>{
+    const msg = {
+        "channelId": channel._id,
+        "userId": user._id,
+        "body": message,
+        "createdAt": moment()
+    }
+    dispatch({
+        type: 'SEND_MESSAGE_PENDING',
+        payload:{
+            message:msg
+        }
+    });
+     axios.post(`${process.env.API_ROOT}/api/channels/${channel._id}/messages`,{
+         channelId: channel._id,
+         message:message
+     })
+     .then( res =>{
+         dispatch({
+             type: 'SEND_MESSAGE_FULFILLED',
+             payload: {res,
+                 message:msg}
+         });
+     }).catch(e => {
+         console.log(e);
+         dispatch({
+             type: 'SEND_MESSAGE_REJECTED',
+             payload: {e,message:msg}
+         });
+     });
+}
 
-export const createChannel  = (channelName) =>({
-    type: 'CREATE_CHANNEL',
-    payload: axios.post(`${process.env.API_ROOT}/api/channels/`,{
+export const createChannel  = (channelName) => (dispatch) =>{
+    dispatch({
+        type: 'CREATE_CHANNEL_PENDING'
+    });
+    axios.post(`${process.env.API_ROOT}/api/channels/`,{
         channelName
     })
-});
+     .then( res =>{
+         dispatch({
+             type: 'CREATE_CHANNEL_FULFILLED',
+             payload: res
+         });
+     }).catch(e => {
+         toast.error("Failed to create channel");
+         console.log(e);
+         dispatch({
+             type: 'CREATE_CHANNEL_REJECTED',
+             payload: e
+         });
+     });
+}
 
-export const acceptInviteToChannel = (channel) => ({
-    type: 'ACCEPT_CHANNEL_INVITE',
-    payload: axios.put(`${process.env.API_ROOT}/api/channels/${channel._id}/invites`,{
+export const acceptInviteToChannel = (channel) => (dispatch) =>{
+    dispatch({
+        type: 'ACCEPT_CHANNEL_INVITE_PENDING'
+    });
+    axios.put(`${process.env.API_ROOT}/api/channels/${channel._id}/invites`,{
         channelId: channel._id,
         accepted:true
     })
-});
-export const declineInviteToChannel = (channel) => ({
-    type: 'DECLINE_CHANNEL_INVITE',
-    payload: axios.put(`${process.env.API_ROOT}/api/channels/${channel._id}/invites`,{
+     .then( res =>{
+         dispatch({
+             type: 'ACCEPT_CHANNEL_INVITE_FULFILLED',
+             payload: res
+         });
+     }).catch(e => {
+         toast.error("Failed to accept channel invite");
+         console.log(e);
+         dispatch({
+             type: 'ACCEPT_CHANNEL_INVITE_REJECTED',
+             payload: e
+         });
+     });
+}
+
+export const declineInviteToChannel = (channel) => (dispatch) =>{
+    dispatch({
+        type: 'DECLINE_CHANNEL_INVITE_PENDING'
+    });
+    axios.put(`${process.env.API_ROOT}/api/channels/${channel._id}/invites`,{
         channelId: channel._id,
         accepted:false
     })
-});
+     .then( res =>{
+         dispatch({
+             type: 'DECLINE_CHANNEL_INVITE_FULFILLED',
+             payload: res
+         });
+     }).catch(e => {
+         toast.error("Failed to decine channel invite");
+         console.log(e);
+         dispatch({
+             type: 'DECLINE_CHANNEL_INVITE_REJECTED',
+             payload: e
+         });
+     });
+}
 
+export const leaveChannel = (channel,userId) => ({
+    type: 'LEAVE_CHANNEL',
+    payload: axios.put(`${process.env.API_ROOT}/api/channels/${channel._id}/leave`,{
+        userId
+    })
+});
 export const startTimer = (tick) => ({
     type: 'START_TIMER',
     payload: {

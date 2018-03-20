@@ -6,14 +6,13 @@ import 'rc-time-picker/assets/index.css';
 
 const format = 'h:mm a';
 
-const WrappedTimePicker = ({   
+const WrappedTimePicker = ({
     time,
     timeChange
 }) => (
     <TimePicker
         showSecond={false}
         defaultValue={time}
-        className="xxx"
         onChange={timeChange}
         format={format}
         use12Hours
@@ -22,5 +21,3 @@ const WrappedTimePicker = ({
 )
 
 export default WrappedTimePicker;
-
-

@@ -1,0 +1,40 @@
+/* --- Step One --- */
+#scheduleMeetingContainer #landlordSectionWrapper {
+    margin-top: 30px;
+}
+
+#scheduleMeetingContainer #listingSectionWrapper {
+    margin-top: 30px;
+}
+
+#scheduleMeetingContainer #userSearchWrapper {
+    margin-top: 30px;
+}
+
+#scheduleMeetingContainer #userSearchWrapper .ui.cards {
+    margin-top: 15px;
+}
+
+#scheduleMeetingContainer #scheduleMeetingStepOneAdvanceButton {
+    margin-top: 60px;
+}
+
+#scheduleMeetingContainer #scheduleMeetingChooseDifferentListingButton {
+    margin-top: 30px;
+}
+
+
+/* --- Step Two --- */
+#stepTwoWrapper #scheduleCalendarView {
+    height: 90vh;
+    min-height: 500px;
+    margin-top: 25px;
+}
+
+#stepTwoWrapper .react-datepicker-popper {
+    z-index: 4;
+}
+
+#stepTwoWrapper .react-datepicker-popper .react-datepicker__navigation {
+    z-index: 6;
+}

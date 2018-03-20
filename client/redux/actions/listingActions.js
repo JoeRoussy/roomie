@@ -61,7 +61,6 @@ export const submitCreateForm = (formValues) => (dispatch) => {
             dispatch(push(path));
         })
         .catch(e => {
-            console.log(e);
             dispatch({
                 type: 'CREATE_LISTING_REJECTED',
                 payload: e

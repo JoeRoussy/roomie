@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { arrayPush, arrayRemove } from 'redux-form';
 import { Container, Button, Item, Icon, Image, Label } from 'semantic-ui-react';
+import { push } from 'react-router-redux'; // TODO: Should probably use nagivateTo in components but there was wierd transpiling issues
+import { arrayPush, arrayRemove } from 'redux-form';
 
 import ListingForm from '../../components/ListingForm';
 import ListingDisplay from '../../components/ListingDisplay';
 
+import { addLandlord, setListing } from '../../../redux/actions/scheduleMeetingActions';
 import {
     getListingById,
     editListing,
@@ -47,6 +49,7 @@ export default class Listing extends React.Component {
         this.onImageDrop = this.onImageDrop.bind(this);
         this.onImageRemove = this.onImageRemove.bind(this);
         this.onEditCancelClicked = this.onEditCancelClicked.bind(this);
+        this.onBookMeetingClicked = this.onBookMeetingClicked.bind(this);
     }
 
     componentWillMount() {
@@ -63,6 +66,18 @@ export default class Listing extends React.Component {
 
     onEditCancelClicked() {
         this.props.dispatch(cancelEditListing());
+    }
+
+    onBookMeetingClicked(listing) {
+        if (listing) {
+            return () => {
+                this.props.dispatch(addLandlord(listing.owner));
+                this.props.dispatch(setListing(listing));
+                this.props.dispatch(push('/schedule-meeting'));
+            }
+        } else {
+            return () => this.props.dispatch(push('/schedule-meeting'));
+        }
     }
 
     onImageDrop(images) {
@@ -126,6 +141,7 @@ export default class Listing extends React.Component {
         return (
             <Container>
                 {bodySection}
+                <Button className='primaryColour' onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
             </Container>
         )
     }

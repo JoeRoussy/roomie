@@ -42,3 +42,11 @@ h1 {
 .section {
     padding: 50px 30px;
 }
+
+.hidden {
+    display: none;
+}
+
+.centered {
+    text-align: center;
+}

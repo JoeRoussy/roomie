@@ -1,3 +1,4 @@
+import moment from 'moment';
 const config = {
     channels: [],
     activeChannel: {},
@@ -7,7 +8,9 @@ const config = {
     newChannelName:'',
     displayNewChannelModal:false,
     displayInviteModal:false,
-    chatTimer:null,
+    displayLeaveChannelModal:false,
+    channelToLeave:{},
+    chatTimer:null
 };
 
 const ChatReducer = (state = config, actions) => {
@@ -87,9 +90,16 @@ const ChatReducer = (state = config, actions) => {
             break;
         }
 
+        case 'MODIFY_DISPLAY_LEAVE_MODAL':{
+            state = {
+                ...state,
+                displayLeaveChannelModal: actions.payload.displayModal,
+                channelToLeave: actions.payload.channel
+            }
+            break;
+        }
 
         case 'LOAD_ACTIVE_CHANNEL_FULFILLED': {
-            //console.log(actions.payload.data.messages)
             state = {
                 ...state,
                 chatLog:actions.payload.data.messages
@@ -117,7 +127,11 @@ const ChatReducer = (state = config, actions) => {
         }
 
         case 'SEND_MESSAGE_FULFILLED': {
-            const messages  = state.chatLog.concat(actions.payload.data.message);
+            break;
+        }
+
+        case 'SEND_MESSAGE_PENDING': {
+            const messages  = state.chatLog.concat(actions.payload.message);
             state = {
                 ...state,
                 chatLog: messages
@@ -125,13 +139,18 @@ const ChatReducer = (state = config, actions) => {
             break;
         }
 
-        case 'SEND_MESSAGE_PENDING': {
-            //console.log('Get channels is pending');
-            break;
-        }
-
         case 'SEND_MESSAGE_REJECTED' : {
-            //console.log('Get channels was rejected');
+            //error sending message
+            const messages = state.chatLog.map((message)=>{
+                if(moment(message.createdAt).isSame(actions.payload.message.createdAt)){
+                    message.failed = true;
+                }
+                return message;
+            });
+            state = {
+                ...state,
+                chatLog: messages
+            }
             break;
         }
 
@@ -174,6 +193,46 @@ const ChatReducer = (state = config, actions) => {
         case 'DECLINE_CHANNEL_INVITE_REJECTED' : {
             break;
         }
+
+        case 'DECLINE_CHANNEL_INVITE_FULFILLED': {
+            const channels = state.channels.filter((channel)=>{
+                if(channel._id === actions.payload.data.channel._id){
+                    return false;
+                }
+                return true;
+            });
+            state = {
+                ...state,
+                channels: channels
+            }
+            break;
+        }
+        case 'DECLINE_CHANNEL_INVITE_PENDING': {
+            break;
+        }
+        case 'DECLINE_CHANNEL_INVITE_REJECTED' : {
+            break;
+        }
+
+        case 'LEAVE_CHANNEL_FULFILLED': {
+            const channels = state.channels.filter((channel)=>{
+                if(channel._id === actions.payload.data.channel._id){
+                    return false;
+                }
+                return true;
+            });
+            state = {
+                ...state,
+                channels: channels
+            }
+            break;
+        }
+        case 'LEAVE_CHANNEL_PENDING': {
+            break;
+        }
+        case 'LEAVE_CHANNEL_REJECTED' : {
+            break;
+        }
         case 'START_TIMER': {
             const tmr = setInterval(actions.payload.tick,actions.payload.interval);
             state = {
@@ -190,7 +249,6 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
-
     }
     return state;
 }

@@ -118,10 +118,11 @@ To make a text index on a field, use the following command (in the mongo shell f
 db.<collection>.createIndex( { <field>: "text" } )
 
 // For example:
-db.reviews.createIndex( { comments: "text" } )
+db.listings.createIndex( { location: "text" } )
 ```
 The following collections have a text index:
 * Listings on location
+* Users on name
 
 
 ### Logging

@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
-import { Input, Dropdown, LabelInputField } from 'react-semantic-redux-form';
+import { Input, Dropdown } from 'react-semantic-redux-form';
 import { Button, Divider, Form, Label } from 'semantic-ui-react';
-import WrappedDatePicker from './WrappedDatePicker';
-import WrappedTimePicker from './WrappedTimePicker';
+import WrappedDatePicker from '../WrappedDatePicker';
+import WrappedTimePicker from '../WrappedTimePicker';
 
 /* Validation */
 const validate = (formValues) => {
@@ -83,7 +83,8 @@ const TimeblockForm = ({
     startTimeChange,
     endTimeChange,
     availabilityOptions,
-    repeatingOptions
+    repeatingOptions,
+    cancel
 }) => {
     return (
         <div>
@@ -93,7 +94,7 @@ const TimeblockForm = ({
                 <div>
                     <Label size='large'>Availability type:</Label>
                     <br/>
-                    <Field 
+                    <Field
                         name='availability'
                         component={Dropdown}
                         placeholder='Select availability type'
@@ -106,12 +107,12 @@ const TimeblockForm = ({
                 {/* Calendar to choose date */}
                 <div>
                     <Label size='large'>Date:</Label>
-                    <Field 
-                        name='date' 
-                        dateChange= {dateChange}
+                    <Field
+                        name='date'
+                        dateChange = {dateChange}
                         selectedDate = {selectedDate}
                         component={WrappedDatePicker}
-                        
+
                     />
                     <br/>
                 </div>
@@ -146,7 +147,7 @@ const TimeblockForm = ({
                 <div>
                     <Label size='large'>Repeating Options:</Label>
                     <br/>
-                    <Field 
+                    <Field
                         name='repeating'
                         component={Dropdown}
                         placeholder='Select repeating type'
@@ -157,7 +158,8 @@ const TimeblockForm = ({
                     <br />
                 </div>
 
-                <Button type='submit' content='Save Availability'/>
+                <Button color='green' type='submit' content='Save Availability'/>
+                <Button color='red' type='button' onClick={cancel} content='Cancel'/>
                 <Divider />
             </Form>
         </div>

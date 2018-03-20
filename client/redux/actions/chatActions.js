@@ -72,10 +72,11 @@ export const modifyDisplayNewChannelModal = (displayModal) => ({
     }
 });
 
-export const modifyDisplayInviteModal = (displayModal) => ({
-    type: 'MODIFY_DISPLAY_INVITE_MODAL',
+export const modifyDisplayLeaveChannelModal = (displayModal,channel) => ({
+    type: 'MODIFY_DISPLAY_LEAVE_MODAL',
     payload: {
-        displayModal
+        displayModal,
+        channel
     }
 });
 
@@ -179,6 +180,12 @@ export const declineInviteToChannel = (channel) => (dispatch) =>{
      });
 }
 
+export const leaveChannel = (channel,userId) => ({
+    type: 'LEAVE_CHANNEL',
+    payload: axios.put(`${process.env.API_ROOT}/api/channels/${channel._id}/leave`,{
+        userId
+    })
+});
 export const startTimer = (tick) => ({
     type: 'START_TIMER',
     payload: {

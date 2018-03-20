@@ -23,7 +23,7 @@ export const createTimeblock = (options, user) => (dispatch) => {
                 return res;
             })
     });
-}
+};
 
 export const createMeeting = (options, user) => {
     const id = user._id;
@@ -33,7 +33,7 @@ export const createMeeting = (options, user) => {
         payload: axios.post(`${process.env.API_ROOT}/api/schedule/meeting/`, submissionData)
     }
     return action;
-}
+};
 
 export const deleteTimeblock = (options, user) => {
     const userId = user._id;
@@ -43,4 +43,14 @@ export const deleteTimeblock = (options, user) => {
         payload: axios.delete(`${process.env.API_ROOT}/api/schedule/timeblock/${timeblockId}`, user)
     }
     return action;
-}
+};
+
+export const showEventDetail = (event) => ({
+    type: 'SCHEDULE_ACTIONS_SHOW_EVENT_DETAIL',
+    payload: event
+});
+
+
+export const clearEventDetail = () => ({
+    type: 'SCHEDULE_ACTIONS_CLEAR_EVENT_DETAIL'
+});

@@ -176,12 +176,14 @@ const ScheduleMeeting = ({
         ) : (
             <div id='scheduleCalendarView'>
                 <BigCalendar
+                    popup
                     events={events}
                     views={['month']}
                     step={60}
                     showMultiDayTimes
                     defaultDate={new Date()}
                     selectable
+                    onSelectSlot={slotInfo => console.log(slotInfo)}
                 />
             </div>
         );

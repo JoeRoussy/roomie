@@ -2,7 +2,8 @@ const config = {
     timeblocks: [],
     meetings: [],
     events: [],
-    loading: false
+    loading: false,
+    eventBeingViewed: null,
 }
 
 const scheduleReducer = (state = config, actions) => {
@@ -110,6 +111,24 @@ const scheduleReducer = (state = config, actions) => {
             break;
         }
         case 'DELETE_TIMEBLOCK_REJECTED': {
+            break;
+        }
+
+        case 'SCHEDULE_ACTIONS_SHOW_EVENT_DETAIL': {
+            state = {
+                ...state,
+                eventBeingViewed: actions.payload
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_ACTIONS_CLEAR_EVENT_DETAIL': {
+            state = {
+                ...state,
+                eventBeingViewed: null
+            };
+
             break;
         }
     }

@@ -1,0 +1,17 @@
+#eventDetailView .header {
+    text-align: center;
+}
+
+#eventDetailView .content {
+    text-align: center;
+}
+
+#eventDetailView .content .title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+#eventDetailView .content p .rowTitle {
+    font-weight: bold;
+}

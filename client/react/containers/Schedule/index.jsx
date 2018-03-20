@@ -6,9 +6,11 @@ import { change } from 'redux-form';
 import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-import { Button, Loader, Dimmer } from 'semantic-ui-react';
+import { Button, Loader, Dimmer, Transition } from 'semantic-ui-react';
 import TimeblockForm from '../../components/TimeblockForm';
-import { createTimeblock, getSchedules } from '../../../redux/actions/scheduleActions';
+import { createTimeblock, getSchedules, showEventDetail, clearEventDetail } from '../../../redux/actions/scheduleActions';
+
+import EventDetailView from '../../components/EventDetailView';
 
 import './styles.css';
 
@@ -34,6 +36,8 @@ class Schedule extends Component{
         this.toggleForm = this.toggleForm.bind(this);
         this.submitTimeblock = this.submitTimeblock.bind(this);
         this.naviageToScheduleMeeting = this.naviageToScheduleMeeting.bind(this);
+        this.showDetailView = this.showDetailView.bind(this);
+        this.hideDetailView = this.hideDetailView.bind(this);
     }
 
     componentDidMount(){
@@ -73,6 +77,14 @@ class Schedule extends Component{
 
     naviageToScheduleMeeting() {
         this.props.dispatch(push('/schedule-meeting'));
+    }
+
+    showDetailView(event) {
+        this.props.dispatch(showEventDetail(event));
+    }
+
+    hideDetailView() {
+        this.props.dispatch(clearEventDetail())
     }
 
     render(){
@@ -118,13 +130,19 @@ class Schedule extends Component{
             </Dimmer>
                 :
             <div id='scheduleCalendarView'>
+                <EventDetailView
+                    event={this.props.scheduleInfo.eventBeingViewed}
+                    onClose={this.hideDetailView}
+                />
                 <BigCalendar
+                    popup
                     events={events}
                     views={['month']}
                     step={60}
                     showMultiDayTimes
                     defaultDate={new Date()}
                     selectable
+                    onSelectEvent={this.showDetailView}
                 />
             </div>
 

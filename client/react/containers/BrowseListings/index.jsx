@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { Button, Card, Icon, Image, Grid , Loader, Dimmer, Segment} from 'semantic-ui-react';
+import { Container, Button, Card, Icon, Image, Grid , Loader, Dimmer, Segment} from 'semantic-ui-react';
 
 import { getListings } from '../../../redux/actions/listingActions';
 import ListingCard from '../../components/ListingCard';
@@ -108,7 +108,7 @@ export default class Listings extends React.Component {
 
 
         return (
-            <div>
+            <Container>
                 <Grid>
                     <Grid.Column width={4}>
                         <ViewListingsSearch locationProps={locationProps} submitSearch={this.submitSearch} errorMessage={this.props.errorMessage} />
@@ -117,7 +117,7 @@ export default class Listings extends React.Component {
                         {body}
                     </Grid.Column>
                 </Grid>
-            </div>
+            </Container>
         )
     }
 }

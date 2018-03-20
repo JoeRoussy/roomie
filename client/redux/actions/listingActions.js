@@ -58,6 +58,37 @@ export const submitCreateForm = (formValues) => (dispatch) => {
         });
 }
 
+export const submitUpdateForm = (formValues, id) =>  (dispatch) => {
+    dispatch({
+        type: 'UPDATE_LISTING_SUBMIT'
+    });
+
+    const formSubmission = buildFormSubmissionData(formValues, [ 'images' ]);
+
+    axios.put(`${process.env.API_ROOT}/api/listings/${id}`, formSubmission)
+        .then(res => {
+            const {
+                data: {
+                    listing
+                } = {}
+            } = res;
+
+            toast.success('You have updated the listing!');
+
+            dispatch({
+                type: 'UPDATE_LISTING_FULFILLED',
+                payload: res
+            });
+        })
+        .catch(e => {
+            console.log(e);
+            dispatch({
+                type: 'UPDATE_LISTING_REJECTED',
+                payload: e
+            });
+        });
+};
+
 export const editListing = () => ({
     type: 'EDIT_LISTING'
 })

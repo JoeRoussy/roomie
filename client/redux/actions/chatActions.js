@@ -48,6 +48,14 @@ export const modifyDisplayInviteModal = (displayModal) => ({
     }
 });
 
+export const modifyDisplayLeaveChannelModal = (displayModal,channel) => ({
+    type: 'MODIFY_DISPLAY_LEAVE_MODAL',
+    payload: {
+        displayModal,
+        channel
+    }
+});
+
 export const postMessageToActiveChannel = (channel,message) => ({
     type: 'SEND_MESSAGE',
     payload: axios.post(`${process.env.API_ROOT}/api/channels/${channel._id}/messages`,{
@@ -77,3 +85,20 @@ export const declineInviteToChannel = (channel) => ({
         accepted:false
     })
 });
+
+export const leaveChannel = (channel,userId) => ({
+    type: 'LEAVE_CHANNEL',
+    payload: axios.put(`${process.env.API_ROOT}/api/channels/${channel._id}/leave`,{
+        userId
+    })
+});
+export const startTimer = (tick) => ({
+    type: 'START_TIMER',
+    payload: {
+        tick,
+        interval:`${process.env.CHAT_UPDATE_INTERVAL}`
+    }
+})
+export const stopTimer = (tick) => ({
+    type: 'STOP_TIMER'
+})

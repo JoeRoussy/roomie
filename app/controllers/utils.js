@@ -1,3 +1,7 @@
+import { wrap as coroutine } from 'co';
+import { required } from '../components/custom-utils';
+import { getById } from '../components/db/service';
+
 export const sendError = ({
     res,
     status,
@@ -76,3 +80,35 @@ export const canModifyUser = (req, res, next) => {
 
     return next();
 }
+
+// Checks to see if a user can modify (owns) the listing.
+export const canModifyListing = ({
+    listingsCollection = required('listingsCollection'),
+    logger = required('logger', 'You must pass a logger for this function to use'),
+}) => coroutine(function* (req, res, next) {
+
+    let result;
+
+    try {
+        result = yield getById({
+            collection: listingsCollection,
+            id: req.params.id
+        });
+    } catch (e) {
+        logger.error(e.err, e.msg);
+        return res.status(500).json({
+            error: true,
+            message: `Could not get listing with id ${req.params.id}`
+        });
+    }
+
+    if(result.ownerId != req.user._id)
+    {
+        return res.status(401).json({
+            error: true,
+            message: `You are not authorized to modify this listing.`
+        });
+    }
+
+    return next();
+})

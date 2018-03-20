@@ -1,7 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Container, Button, Item, Icon, Image, Label } from 'semantic-ui-react';
 import { push } from 'react-router-redux'; // TODO: Should probably use nagivateTo in components but there was wierd transpiling issues
+import { arrayPush, arrayRemove } from 'redux-form';
 
 import ListingForm from '../../components/ListingForm';
 import ListingDisplay from '../../components/ListingDisplay';
@@ -10,7 +11,7 @@ import { addLandlord, setListing } from '../../../redux/actions/scheduleMeetingA
 import {
     getListingById,
     editListing,
-    submitForm,
+    submitUpdateForm,
     cancelEditListing
 } from '../../../redux/actions/listingActions';
 
@@ -19,7 +20,7 @@ import {
         listing,
         isEditing,
         isFormProcessing,
-        errorMessage,
+        errorMessage
     } = {},
     userReducer: {
         user
@@ -45,6 +46,8 @@ export default class Listing extends React.Component {
         this.listingId = this.props.match.params.id;
         this.editListing = this.editListing.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.onImageDrop = this.onImageDrop.bind(this);
+        this.onImageRemove = this.onImageRemove.bind(this);
         this.onEditCancelClicked = this.onEditCancelClicked.bind(this);
         this.onBookMeetingClicked = this.onBookMeetingClicked.bind(this);
     }
@@ -58,7 +61,7 @@ export default class Listing extends React.Component {
     }
 
     onSubmit(formData) {
-        this.props.dispatch(submitForm(formData));
+        this.props.dispatch(submitUpdateForm(formData, this.listingId));
     }
 
     onEditCancelClicked() {
@@ -76,6 +79,14 @@ export default class Listing extends React.Component {
             return () => this.props.dispatch(push('/schedule-meeting'));
         }
     }
+    
+    onImageDrop(images) {
+        images.forEach((image) => this.props.dispatch(arrayPush('listingForm', 'images', image)));
+    }
+
+    onImageRemove(imageIndex) {
+        this.props.dispatch(arrayRemove('listingForm', 'images', imageIndex));
+    }
 
     render() {
         const {
@@ -88,21 +99,31 @@ export default class Listing extends React.Component {
         } = this.props;
 
         let editButton;
-        editButton = user && user.isLandlord ? (
+
+        editButton = (user && listing && user.isLandlord && user._id === listing.ownerId) ? (
             <Button onClick = { this.editListing }>Edit listing</Button>
         ) : ('');
 
         let bodySection;
 
-        if (isEditing) {
+        if (isEditing && listing) {
             bodySection = (
-                <ListingForm
-                    onSubmit={(formData) => () => this.onSubmit(formData)}
-                    onEditCancelClicked={ this.onEditCancelClicked }
-                    initialValues={{ ...listing }}
-                    isProcessing={ isFormProcessing }
-                    errorMessage={ errorMessage }
-                />
+                <div>
+                    <h1>Edit Listing</h1>
+                    <div>
+                        <p>{listing.location}</p>
+                    </div>
+                    <ListingForm
+                        onSubmit={(formData) => () => this.onSubmit(formData)}
+                        onEditCancelClicked={ this.onEditCancelClicked }
+                        initialValues={{ ...listing }}
+                        isProcessing={ isFormProcessing }
+                        errorMessage={ errorMessage }
+                        onImageDrop={(images) => this.onImageDrop(images)}
+                        onImageRemove={(imageIndex) => () => this.onImageRemove(imageIndex)}
+                        formData={formData}
+                    />
+                </div>
             );
         } else if (listing) {
             bodySection = (
@@ -120,7 +141,10 @@ export default class Listing extends React.Component {
         return (
             <Container>
                 {bodySection}
+<<<<<<< HEAD
                 <Button onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
+=======
+>>>>>>> master
             </Container>
         )
     }

@@ -26,7 +26,8 @@ export const findListings = async({
         keywords,
         maxPrice,
         minPrice,
-        location = ''
+        location = '',
+        ownerId
     } = query;
 
     //Generate query
@@ -68,7 +69,11 @@ export const findListings = async({
     }
 
     if(furnished){
-        filter.furnished = furnished
+        filter.furnished = furnished;
+    }
+
+    if(ownerId) {
+        filter.ownerId = ownerId;
     }
 
     aggregationOperator.push({

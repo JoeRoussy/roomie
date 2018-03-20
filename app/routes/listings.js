@@ -2,7 +2,7 @@ import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { isAuthenticated, isLandlord, canModifyListing } from '../controllers/utils';
 import { required } from '../components/custom-utils';
-import { createListing, getListings, getListingById, updateListing } from '../controllers/listings';
+import { createListing, getListings, getListingById, updateListing, getMyListings } from '../controllers/listings';
 import {
     singleFile as parseSingleFileUpload,
     error as handleImageUploadError,
@@ -34,6 +34,20 @@ export default ({
             }
         })
     }));
+
+    listingsRouter.get('/myListings', [
+        isAuthenticated,
+        isLandlord,
+        getMyListings({
+            listingsCollection: db.collection('listings'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-listings-get-my-listings'
+                }
+            })
+        })
+    ]);
 
     listingsRouter.post('/', [
         isAuthenticated,

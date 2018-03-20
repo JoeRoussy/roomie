@@ -2,7 +2,7 @@ import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
-import { required, extendIfPopulated, convertToBoolean } from '../components/custom-utils';
+import { required, extendIfPopulated, convertToBoolean, convertToObjectId } from '../components/custom-utils';
 import { findListings } from '../components/data';
 import { sendError } from './utils';
 import { isPrice, isInteger, isFullOrHalfInt, isPostalCode } from '../../common/validation';
@@ -13,6 +13,34 @@ import {
     findAndUpdate,
     deleteById
 } from '../components/db/service';
+
+export const getMyListings = ({
+    listingsCollection = required('listingsCollection'),
+    logger = required('logger', 'You must pass a logger for this function to use')
+}) => coroutine(function* (req, res) {
+    // Get the user id for the landlord we are retrieving listings for.
+    const userId = convertToObjectId(req.user._id);
+
+    console.log('get my listings');
+
+    try {
+        result = yield findListings({
+            listingsCollection,
+            query: userId
+        });
+    } catch (e) {
+        logger.error(e, `Error finding listings for user ${req.user._id}`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Error finding listings.'
+        });
+    }
+    return res.json({
+        listings: result
+    });
+});
 
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
@@ -226,7 +254,7 @@ export const updateListing = ({
     update = extendIfPopulated(update, 'furnished', furnishedBool);
     update = extendIfPopulated(update, 'parking', parkingBool);
     update = extendIfPopulated(update, 'internet', internetBool);
-    update = extendIfPopulated(update, 'laundry', airConditioningBool);
+    update = extendIfPopulated(update, 'laundry', laundryBool);
     update = extendIfPopulated(update, 'airConditioning', airConditioningBool);
     update = extendIfPopulated(update, 'images', newImages);
 
@@ -475,7 +503,7 @@ export const createListing = ({
                 airConditioning: airConditioningBool,
                 location: formattedAddress,
                 images,
-                ownerId: req.user._id,
+                ownerId: convertToObjectId(req.user._id),
                 keywords: [],
                 lat,
                 lng

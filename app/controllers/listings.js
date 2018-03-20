@@ -475,7 +475,7 @@ export const createListing = ({
                 airConditioning: airConditioningBool,
                 location: formattedAddress,
                 images,
-                ownerId: req.user._id,
+                ownerId: convertToObjectId(req.user._id),
                 keywords: [],
                 lat,
                 lng

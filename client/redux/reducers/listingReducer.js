@@ -3,7 +3,7 @@ const config = {
     listing: {},
     isEditing: false,
     isFormProcessing: false,
-    ownsListing: false
+    myListings: []
 };
 
 const listingReducer = (state = config, actions) => {
@@ -29,12 +29,10 @@ const listingReducer = (state = config, actions) => {
             break;
         }
         case 'GET_LISTINGS_PENDING': {
-            console.log('Get listings is pending');
 
             break;
         }
         case 'GET_LISTINGS_REJECTED' : {
-            console.log('Get listings was rejected');
 
             break;
         }
@@ -56,16 +54,39 @@ const listingReducer = (state = config, actions) => {
             break;
         }
         case 'GET_LISTING_BY_ID_PENDING': {
-            console.log('Get listing by id is pending');
 
             break;
         }
         case 'GET_LISTING_BY_ID_REJECTED' : {
-            console.log('Get listing by id was rejected');
 
             break;
         }
         /* END GET_LISTING_BY_ID */
+
+        /* GET_MY_LISTINGS */
+        case 'GET_MY_LISTINGS_FULFILLED': {
+            const {
+                data: {
+                    myListings
+                } = {}
+            } = payload;
+
+            state = {
+                ...state,
+                myListings
+            }
+
+            break;
+        }
+        case 'GET_MY_LISTINGS_PENDING': {
+
+            break;
+        }
+        case 'GET_MY_LISTINGS_REJECTED' : {
+
+            break;
+        }
+        /* END GET_MY_LISTINGS */
 
         /* CREATE_LISTING */
         case 'CREATE_LISTING_SUBMIT': {
@@ -205,8 +226,6 @@ const listingReducer = (state = config, actions) => {
             break;
         }
         /* END EDIT_LISTING */
-
-        /* TODO: Add more cases */
     }
 
     return state;

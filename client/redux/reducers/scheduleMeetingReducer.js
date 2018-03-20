@@ -337,8 +337,6 @@ const scheduleMeetingReducer = (state = config, actions) => {
         }
     }
 
-    console.log(state);
-
     return state;
 }
 

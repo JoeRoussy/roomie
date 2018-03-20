@@ -30,18 +30,44 @@ const ProcessBody = ({
 const ListComments = ({
     chatLog,
     users
-}) => chatLog.map((message,i) => (
-    <Comment key= {i}>
-        <Comment.Avatar src={`${process.env.ASSETS_ROOT}${users[message.userId].profilePictureLink}`} />
-        <Comment.Content>
-            <Comment.Author as='a'>{users[message.userId].name}</Comment.Author>
-            <Comment.Metadata>
-                <div>{moment(message.createdAt).fromNow()}</div>
-            </Comment.Metadata>
-            <Comment.Text>{ProcessBody({message})}</Comment.Text>
-        </Comment.Content>
-    </Comment>
-));
+}) => {
+    return chatLog.map((message,i) => {
+        //Check incase a message from a user not in this chat
+        if(!users[message.userId]){
+            return
+        }
+        if(message.failed){
+            return (
+                <Comment key= {i}>
+                    <Comment.Avatar src={`${process.env.ASSETS_ROOT}${users[message.userId].profilePictureLink}`} />
+                    <Comment.Content>
+                        <Comment.Author as='a'>{users[message.userId].name}</Comment.Author>
+                        <Comment.Metadata>
+                            <div>{moment(message.createdAt).fromNow()}</div>
+                        </Comment.Metadata>
+                        <Comment.Text>{message.body}</Comment.Text>
+                        <Comment.Actions>
+                            <Comment.Action><Icon color='red' name='warning sign' />Failed to send this message</Comment.Action>
+                        </Comment.Actions>
+                    </Comment.Content>
+                </Comment>
+            )
+        }
+        return (
+            <Comment key= {i}>
+                <Comment.Avatar src={`${process.env.ASSETS_ROOT}${users[message.userId].profilePictureLink}`} />
+                <Comment.Content>
+                    <Comment.Author as='a'>{users[message.userId].name}</Comment.Author>
+                    <Comment.Metadata>
+                        <div>{moment(message.createdAt).fromNow()}</div>
+                    </Comment.Metadata>
+                    <Comment.Text>{message.body}</Comment.Text>
+                </Comment.Content>
+            </Comment>
+        )
+    });
+}
+
 
 const ChatView = ({
     chatLog,

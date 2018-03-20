@@ -9,6 +9,7 @@ import ChatView from '../../components/chat/ChatView'
 import ExtraInfoBar from '../../components/chat/ExtraInfoBar'
 import CreateChannelModal from '../../components/chat/createChannelModal'
 import AcceptInviteModal from '../../components/chat/acceptInviteModal'
+import LeaveChannelModal from '../../components/chat/leaveChannelModal'
 
 import {
     getChannels,
@@ -17,11 +18,13 @@ import {
     modifyPendingMessage,
     modifyNewChannelName,
     modifyDisplayNewChannelModal,
+    modifyDisplayLeaveChannelModal,
     postMessageToActiveChannel,
     createChannel,
     modifyDisplayInviteModal,
     acceptInviteToChannel,
     declineInviteToChannel,
+    leaveChannel,
     startTimer,
     stopTimer,
     userSearch
@@ -40,7 +43,10 @@ import './styles.css';
     displayInviteModal: store.ChatReducer.displayInviteModal,
     user: store.userReducer.user,
     isUserSearchLoading: store.ChatReducer.isUserSearchLoading,
-    userSearchResults: store.ChatReducer.userSearchResults
+    userSearchResults: store.ChatReducer.userSearchResults,
+    displayLeaveChannelModal: store.ChatReducer.displayLeaveChannelModal,
+    channelToLeave: store.ChatReducer.channelToLeave,
+    user: store.userReducer.user
 }))
 class Chat extends React.Component{
     constructor(){
@@ -60,12 +66,17 @@ class Chat extends React.Component{
         this.setDisplayNewChannelModal = this.setDisplayNewChannelModal.bind(this);
         this.getIsUserSearchLoading = this.getIsUserSearchLoading.bind(this);
         this.getUserSearchResults = this.getUserSearchResults.bind(this);
+        this.getDisplayLeaveChannelModal = this.getDisplayLeaveChannelModal.bind(this);
+        this.getChannelToLeave = this.getChannelToLeave.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleNewChannelNameChange = this.handleNewChannelNameChange.bind(this);
         this.blankNewChannelName = this.blankNewChannelName.bind(this);
         this.checkForEnter = this.checkForEnter.bind(this);
         this.acceptInvite = this.acceptInvite.bind(this);
         this.declineInvite = this.declineInvite.bind(this);
+        this.displayLeaveChannelModal = this.displayLeaveChannelModal.bind(this)
+        this.acceptLeaveChannel = this.acceptLeaveChannel.bind(this);
+        this.declineLeaveChannel = this.declineLeaveChannel.bind(this);
         this.updateChat = this.updateChat.bind(this);
         this.onUserSearchChange = this.onUserSearchChange.bind(this);
         this.onUserSearchResultSelected = this.onUserSearchResultSelected.bind(this);
@@ -105,8 +116,13 @@ class Chat extends React.Component{
     getDisplayInviteModal(){
         return this.props.displayInviteModal;
     }
+
     setDisplayInviteModal(displayModal){
         this.props.dispatch(modifyDisplayInviteModal(displayModal));
+    }
+
+    getDisplayLeaveChannelModal(){
+        return this.props.displayLeaveChannelModal;
     }
 
     getActiveChannelUsers(){
@@ -120,7 +136,9 @@ class Chat extends React.Component{
     getUserSearchResults(){
         return this.props.userSearchResults;
     }
-
+    getChannelToLeave(){
+        return this.props.channelToLeave;
+    }
     acceptInvite(){
         this.props.dispatch(acceptInviteToChannel(this.getActiveChannel()));
         this.setDisplayInviteModal(false);
@@ -173,14 +191,13 @@ class Chat extends React.Component{
             if(this.getActiveChannel()._id){
                 //check if the message is not null or empty
                 if(event.target.value){
-                    this.props.dispatch(postMessageToActiveChannel(this.getActiveChannel(),event.target.value));
+                    this.props.dispatch(postMessageToActiveChannel(this.getActiveChannel(),event.target.value,this.getUser()));
                     //clear the pending message.
                     this.props.dispatch(modifyPendingMessage(this.getActiveChannel(),''));
                 }
             }
         }
     }
-
     onUserSearchChange(e, data){
         const {
             value
@@ -196,7 +213,16 @@ class Chat extends React.Component{
         } = data;
         console.log(selectedUser);
     }
-
+    displayLeaveChannelModal(channel){
+        this.props.dispatch(modifyDisplayLeaveChannelModal(true,channel));
+    }
+    acceptLeaveChannel(){
+        this.props.dispatch(leaveChannel(this.getChannelToLeave(),this.getUser()._id))
+        this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
+    }
+    declineLeaveChannel(){
+        this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
+    }
     updateChat(){
         this.props.dispatch(getChannels());
         const channel = this.getActiveChannel();
@@ -204,7 +230,6 @@ class Chat extends React.Component{
             this.props.dispatch(loadActiveChannel(channel));
         }
     }
-
     componentWillMount() {
         this.props.dispatch(getChannels());
         //Start timer to update chat
@@ -227,6 +252,7 @@ class Chat extends React.Component{
                             activeChannel={this.getActiveChannel()}
                             toggleDisplayNewChannelModal={this.setDisplayNewChannelModal}
                             displayNewChannelModal={this.getDisplayNewChannelModal()}
+                            leaveChannel={this.displayLeaveChannelModal}
                         />
                         <CreateChannelModal
                             onChange={this.handleNewChannelNameChange}
@@ -240,6 +266,12 @@ class Chat extends React.Component{
                             onAccept={this.acceptInvite}
                             onDecline={this.declineInvite}
                             displayModal={this.getDisplayInviteModal()}
+                        />
+                        <LeaveChannelModal
+                            channel={this.getChannelToLeave()}
+                            onAccept={this.acceptLeaveChannel}
+                            onDecline={this.declineLeaveChannel}
+                            displayModal={this.getDisplayLeaveChannelModal()}
                         />
                     </Grid.Column>
                     <Grid.Column width={11}>

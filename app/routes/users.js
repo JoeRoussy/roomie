@@ -5,7 +5,7 @@ import { required } from '../components/custom-utils';
 import { createUser, editUser, deleteCurrentUser, fetchRecommenedRoommates, userSearch } from '../controllers/users';
 import { canModifyUser, isAuthenticated } from '../controllers/utils';
 import {
-    singleFile as parseSingleFileUpload,
+    processFileUpload as parseImageUpload,
     error as handleImageUploadError,
     validate as validateImage
 } from '../components/image-upload-middleware';
@@ -31,7 +31,9 @@ export default ({
     ])
 
     userRouter.post('/', [
-        parseSingleFileUpload('profilePic'),
+        parseImageUpload({
+            name: 'profilePic'
+        }),
         validateImage,
         createUser({
             usersCollection: db.collection('users'),
@@ -56,7 +58,9 @@ export default ({
     userRouter.put('/:id', [
         isAuthenticated,
         canModifyUser,
-        parseSingleFileUpload('profilePic'),
+        parseImageUpload({
+            name: 'profilePic'
+        }),
         validateImage,
         editUser({
             usersCollection: db.collection('users'),

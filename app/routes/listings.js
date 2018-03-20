@@ -4,7 +4,7 @@ import { isAuthenticated, isLandlord, canModifyListing } from '../controllers/ut
 import { required } from '../components/custom-utils';
 import { createListing, getListings, getListingById, updateListing } from '../controllers/listings';
 import {
-    singleFile as parseSingleFileUpload,
+    processFileUpload as parseImageUpload,
     error as handleImageUploadError,
     validate as validateImage
 } from '../components/image-upload-middleware';
@@ -38,7 +38,10 @@ export default ({
     listingsRouter.post('/', [
         isAuthenticated,
         isLandlord,
-        parseSingleFileUpload('images'),
+        parseImageUpload({
+            name: 'images',
+            isMultipleUpload: true
+        }),
         createListing({
             listingsCollection: db.collection('listings'),
             logger: getChildLogger({
@@ -61,7 +64,10 @@ export default ({
     listingsRouter.put('/:id', [
         isAuthenticated,
         isLandlord,
-        parseSingleFileUpload('images'),
+        parseImageUpload({
+            name: 'images',
+            isMultipleUpload: true
+        }),
         canModifyListing({
             listingsCollection: db.collection('listings'),
             logger: getChildLogger({

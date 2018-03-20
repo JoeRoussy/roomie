@@ -71,7 +71,7 @@ const Profile = ({
         />
     )
 
-    const myListings = !isEditing && user.isLandlord ? (
+    const myListings = !isEditing && user && user.isLandlord ? (
         <Button onClick = { () => navigateTo('/my-listings') }>View my listings</Button>
     ) : ('');
 

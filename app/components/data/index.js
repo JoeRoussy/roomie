@@ -14,6 +14,19 @@ import { findAndUpdate } from '../db/service';
 import { generateHash as hashPassword } from '../authentication';
 import { roommateSurvey as surveyContants } from '../../../common/constants';
 
+export const getListingsByOwner = async({
+    listingsCollection = required('listingsCollection'),
+    ownerId = required('ownerId')
+}) => {
+    try {
+        return await listingsCollection.find({
+            ownerId: convertToObjectId(ownerId)
+        }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting a listing with owner ${ownerId}`);
+    }
+}
+
 // Get listings based on an optional query
 export const findListings = async({
     listingsCollection = required('listingsCollection'),
@@ -26,8 +39,7 @@ export const findListings = async({
         keywords,
         maxPrice,
         minPrice,
-        location = '',
-        ownerId
+        location = ''
     } = query;
 
     //Generate query
@@ -70,10 +82,6 @@ export const findListings = async({
 
     if(furnished){
         filter.furnished = furnished;
-    }
-
-    if(ownerId) {
-        filter.ownerId = ownerId;
     }
 
     aggregationOperator.push({

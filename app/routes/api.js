@@ -3,6 +3,7 @@ import { getChildLogger } from '../components/log-factory';
 import { required } from '../components/custom-utils';
 
 import listingsRouter from './listings';
+import myListingsRouter from './myListings';
 import usersRouter from './users';
 import channelsRouter from './channels';
 import verifyRouter from './verify';
@@ -19,6 +20,11 @@ export default ({
     const router = express.Router();
 
     router.use('/listings', listingsRouter({
+        db,
+        baseLogger
+    }));
+
+    router.use('/myListings', myListingsRouter({
         db,
         baseLogger
     }));

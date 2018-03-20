@@ -14,34 +14,6 @@ import {
     deleteById
 } from '../components/db/service';
 
-export const getMyListings = ({
-    listingsCollection = required('listingsCollection'),
-    logger = required('logger', 'You must pass a logger for this function to use')
-}) => coroutine(function* (req, res) {
-    // Get the user id for the landlord we are retrieving listings for.
-    const userId = convertToObjectId(req.user._id);
-
-    console.log('get my listings');
-
-    try {
-        result = yield findListings({
-            listingsCollection,
-            query: userId
-        });
-    } catch (e) {
-        logger.error(e, `Error finding listings for user ${req.user._id}`);
-
-        return sendError({
-            res,
-            status: 500,
-            message: 'Error finding listings.'
-        });
-    }
-    return res.json({
-        listings: result
-    });
-});
-
 export const getListings = ({
     listingsCollection = required('listingsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')

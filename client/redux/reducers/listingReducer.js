@@ -67,7 +67,7 @@ const listingReducer = (state = config, actions) => {
         case 'GET_MY_LISTINGS_FULFILLED': {
             const {
                 data: {
-                    myListings
+                    listings: myListings
                 } = {}
             } = payload;
 

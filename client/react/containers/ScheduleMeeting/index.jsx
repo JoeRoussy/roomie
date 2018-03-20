@@ -99,6 +99,7 @@ const ScheduleMeeting = ({
                 <div id='landlordSearchWrapper' className={invitedLandlord ? 'hidden' : ''}>
                     <h2>Invite A Landlord</h2>
                     <Search
+                        placeholder='Seach By Name'
                         results={landlordSearchResults}
                         loading={isLandlordSearchLoading}
                         onResultSelect={onLandlordSeachResultSelected}
@@ -125,6 +126,7 @@ const ScheduleMeeting = ({
                 <div id='chooseListingWrapper' className={listing ? 'hidden' : ''}>
                     <h2>Choose a Listing</h2>
                     <Search
+                        placeholder='Seach By Location'
                         results={listingSearchResults}
                         loading={isListingSearchLoading}
                         onResultSelect={onListingSeachResultSelected}
@@ -146,6 +148,7 @@ const ScheduleMeeting = ({
             <div id='userSearchWrapper'>
                 <h2>Invite Your Roommates</h2>
                 <Search
+                    placeholder='Seach By Name'
                     results={userSearchResults}
                     loading={isUserSearchLoading}
                     onResultSelect={onUserSearchResultSelected}
@@ -171,7 +174,7 @@ const ScheduleMeeting = ({
                 <Loader>Loading</Loader>
             </Dimmer>
         ) : (
-            <div id='scheudleCalendarView'>
+            <div id='scheduleCalendarView'>
                 <BigCalendar
                     events={events}
                     views={['month']}

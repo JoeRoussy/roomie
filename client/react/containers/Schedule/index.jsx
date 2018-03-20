@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import { push } from 'react-router-redux';
 import { change } from 'redux-form';
 import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -32,6 +33,7 @@ class Schedule extends Component{
         this.endTimeChange = this.endTimeChange.bind(this);
         this.toggleForm = this.toggleForm.bind(this);
         this.submitTimeblock = this.submitTimeblock.bind(this);
+        this.naviageToScheduleMeeting = this.naviageToScheduleMeeting.bind(this);
     }
 
     componentDidMount(){
@@ -69,12 +71,16 @@ class Schedule extends Component{
         this.props.dispatch(createTimeblock(values, user));
     }
 
+    naviageToScheduleMeeting() {
+        this.props.dispatch(push('/schedule-meeting'));
+    }
+
     render(){
         const redirectSection = this.props.userInfo.user ? '' : <Redirect to='/sign-in'/>;
         const availabilityOptions = [{text:'Unavailable' , value:'Unavailable'}];
         const repeatingOptions = [{text:'None' , value:'None'}, {text:'Daily' , value:'Daily' }, {text:'Weekly' , value:'Weekly' }];
 
-        const timeblock = this.state.isEditingTimeblock ?
+        const timeblock = this.state.isEditingTimeblock ? (
             <TimeblockForm
                 submitTimeblock={this.submitTimeblock}
                 dateChange={this.dateChange}
@@ -94,8 +100,13 @@ class Schedule extends Component{
                     repeating: repeatingOptions[0].value
                 }}
             />
-                :
-            <Button onClick={this.toggleForm} content='Set Availability'/>
+        ) : (
+            <div id='scheduleButtonWrapper'>
+                <Button className='primaryColour' onClick={this.naviageToScheduleMeeting} content='Schedule Meeting'/>
+                <Button className='primaryColour' onClick={this.toggleForm} content='Set Availability'/>
+            </div>
+        );
+
 
         const events = !this.props.scheduleInfo.loading ? this.props.scheduleInfo.events : [];
 
@@ -106,7 +117,7 @@ class Schedule extends Component{
                 <Loader>Loading</Loader>
             </Dimmer>
                 :
-            <div id='scheudleCalendarView'>
+            <div id='scheduleCalendarView'>
                 <BigCalendar
                     events={events}
                     views={['month']}
@@ -121,6 +132,7 @@ class Schedule extends Component{
 
             <div id='scheduleWrapper'>
                 {redirectSection}
+                <h1>Your Schedule</h1>
                 {/* Timeblock */}
                 {timeblock}
 

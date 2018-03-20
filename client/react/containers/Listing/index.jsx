@@ -79,7 +79,7 @@ export default class Listing extends React.Component {
             return () => this.props.dispatch(push('/schedule-meeting'));
         }
     }
-    
+
     onImageDrop(images) {
         images.forEach((image) => this.props.dispatch(arrayPush('listingForm', 'images', image)));
     }
@@ -141,10 +141,7 @@ export default class Listing extends React.Component {
         return (
             <Container>
                 {bodySection}
-<<<<<<< HEAD
-                <Button onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
-=======
->>>>>>> master
+                <Button className='primaryColour' onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
             </Container>
         )
     }

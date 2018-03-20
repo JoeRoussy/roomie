@@ -158,8 +158,8 @@ const TimeblockForm = ({
                     <br />
                 </div>
 
-                <Button type='submit' content='Save Availability'/>
-                <Button type='button' onClick={cancel} content='Cancel'/>
+                <Button color='green' type='submit' content='Save Availability'/>
+                <Button color='red' type='button' onClick={cancel} content='Cancel'/>
                 <Divider />
             </Form>
         </div>

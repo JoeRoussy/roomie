@@ -56,6 +56,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
             break;
         }
 
+        case 'SCHEDULE_MEETING_SET_STEP': {
+            state = {
+                ...state,
+                step: payload
+            };
+
+            break;
+        }
+
         case 'SCHEDULE_MEETING_USER_SEARCH_BY_NAME_PENDING': {
             state = {
                 ...state,
@@ -144,6 +153,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
             break;
         }
 
+        case 'SCHEDULE_MEETING_CLEAR_PARTICIPANTS': {
+            state = {
+                ...state,
+                participants: []
+            };
+
+            break;
+        }
+
         case 'SCHEDULE_MEETING_CLEAR_LANDLORD': {
             const newParticipants = state.participants.filter(x => x.islandlord !== 'true');
 
@@ -152,6 +170,8 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 participants: [ ...newParticipants ],
                 invitedLandlord: undefined
             };
+
+            break;
         }
 
         case 'SCHEDULE_MEETING_LANDLORD_SEARCH_BY_NAME_PENDING': {
@@ -316,6 +336,8 @@ const scheduleMeetingReducer = (state = config, actions) => {
             break;
         }
     }
+
+    console.log(state);
 
     return state;
 }

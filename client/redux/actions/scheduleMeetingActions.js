@@ -15,6 +15,19 @@ export const getAggregateSchedules = (participants) => ({
     })
 });
 
+// Helper action to dispatch all the needed actions to reset the state of the
+export const reset = (dispatch) => {
+    dispatch(setStep(1));
+    dispatch(clearListing());
+    dispatch(clearLandlord());
+    dispatch(clearParticipants());
+};
+
+export const setStep = (step) => ({
+    type: 'SCHEDULE_MEETING_SET_STEP',
+    payload: step
+});
+
 export const nextStep = () => ({
     type: 'SCHEDULE_MEETING_NEXT_STEP'
 });
@@ -48,6 +61,10 @@ export const addParticipant = (user) => ({
 export const removeParticipant = (user) => ({
     type: 'SCHEDULE_MEETING_REMOVE_PARTICIPANT',
     payload: user
+});
+
+export const clearParticipants = () => ({
+    type: 'SCHEDULE_MEETING_CLEAR_PARTICIPANTS'
 });
 
 export const clearLandlord = () => ({
@@ -119,6 +136,7 @@ export const submitMeetingForm = (formData) => (dispatch) => {
                 type: 'SCHEDULE_MEETING_FORM_SUBMITTED_SUCCESS',
                 payload: res
             });
+            dispatch(reset);
         })
         .catch((e) => {
             dispatch({

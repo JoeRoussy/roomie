@@ -186,8 +186,6 @@ const ScheduleMeeting = ({
             </div>
         );
 
-
-
         content = (
             <div id='stepTwoWrapper'>
                 <Button id='scheduleMeetingBackToStepOneButton' onClick={onPreviousStep} className='primaryColour'>Back</Button>
@@ -212,8 +210,6 @@ const ScheduleMeeting = ({
                 />
             </div>
         );
-    } else if (step === 3) {
-
     }
 
     return (

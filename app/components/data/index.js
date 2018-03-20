@@ -127,7 +127,7 @@ export const findListings = async({
             ...filter
         }
     });
-    console.log(filter);
+
     try {
         return await listingsCollection.aggregate(aggregationOperator).toArray();
     } catch (e) {

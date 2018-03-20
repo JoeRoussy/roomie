@@ -40,7 +40,13 @@ export const findListings = async({
         maxPrice,
         minPrice,
         location = '',
-        ownerId
+        ownerId,
+        type,
+        utilities,
+        parking,
+        internet,
+        laundry,
+        ac
     } = query;
 
     //Generate query
@@ -70,6 +76,12 @@ export const findListings = async({
         const bedroomArray = bedrooms.split(',').map(item => ({bedroom:parseInt(item)}));
         orArgs = orArgs.concat(bedroomArray);
     }
+
+    if(type){
+        const typeArray = type.split(',').map(item => ({type:item}));
+        orArgs = orArgs.concat(typeArray);
+    }
+
     if(orArgs.length){
         filter.$or = orArgs;
     }
@@ -82,8 +94,25 @@ export const findListings = async({
     }
 
     if(furnished){
-        filter.furnished = furnished;
+        filter.furnished = furnished == "Yes" ? true: false;
     }
+
+    if(utilities){
+        filter.utilities = utilities == "Yes" ? true: false;
+    }
+    if(parking){
+        filter.parking = parking == "Yes" ? true: false;
+    }
+    if(internet){
+        filter.internet = internet == "Yes" ? true: false;
+    }
+    if(laundry){
+        filter.laundry = furnished == "Yes" ? true: false;
+    }
+    if(ac){
+        filter.ac = ac == "Yes" ? true: false;
+    }
+
 
     if (ownerId) {
         filter.ownerId = convertToObjectId(ownerId)
@@ -98,7 +127,7 @@ export const findListings = async({
             ...filter
         }
     });
-
+    console.log(filter);
     try {
         return await listingsCollection.aggregate(aggregationOperator).toArray();
     } catch (e) {

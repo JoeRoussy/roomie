@@ -122,11 +122,111 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
         <Divider />
 
         <div>
-            <Label size='large' content='Furnished' icon='shopping basket' /> 
+            <Label size='large' content='Furnished' icon='bar' /> 
+            {["Yes", "No"].map((text)=>(
+                <div key={'furnished' + text}>
+                    <Field
+                        name={'furnished'}
+                        component='input'
+                        type='radio'
+                        value={text}
+                    />
+                    {' ' + text}
+                </div> 
+            ))}
+        </div>
+
+        <Divider />
+
+        <div>
+            <Label size='large' content='Type(s)' icon='home' /> 
+                {['Apartment', 'Condominium', 'House', 'Town House', 'Other'].map((item)=>(
+                    <div key={'type' + item}>
+                        <Field
+                            name={'type'}
+                            component={WrappedCheckBox}
+                            label={item}
+                        />
+                    </div> 
+                ))}
+        </div>
+
+        <Divider />
+
+        <div>
+            <Label size='large' content='Utilities' icon='lightbulb' /> 
             {["Yes", "No"].map((text)=>(
                 <div key={'bathroom' + text}>
                     <Field
-                        name={'furnished'}
+                        name={'utilities'}
+                        component='input'
+                        type='radio'
+                        value={text}
+                    />
+                    {' ' + text}
+                </div> 
+            ))}
+        </div>
+
+        <Divider />
+
+        <div>
+            <Label size='large' content='Parking' icon='car' /> 
+            {["Yes", "No"].map((text)=>(
+                <div key={'parking' + text}>
+                    <Field
+                        name={'parking'}
+                        component='input'
+                        type='radio'
+                        value={text}
+                    />
+                    {' ' + text}
+                </div> 
+            ))}
+        </div>
+
+        <Divider />
+
+        <div>
+            <Label size='large' content='Internet' icon='wifi' /> 
+            {["Yes", "No"].map((text)=>(
+                <div key={'internet' + text}>
+                    <Field
+                        name={'internet'}
+                        component='input'
+                        type='radio'
+                        value={text}
+                    />
+                    {' ' + text}
+                </div> 
+            ))}
+        </div>
+
+        <Divider />
+
+        <div>
+            <Label size='large' content='Laundry' icon='shopping basket' /> 
+            {["Yes", "No"].map((text)=>(
+                <div key={'laundry' + text}>
+                    <Field
+                        name={'laundry'}
+                        component='input'
+                        type='radio'
+                        value={text}
+                    />
+                    {' ' + text}
+                </div> 
+            ))}
+        </div>
+
+        <Divider />
+
+        <div>
+            <Label size='large' content='Air Conditioned' icon='snowflake outline' /> 
+            {["Yes", "No"].map((text)=>(
+                <div key={'ac' + text}>
+                    <Field
+                        name={'ac'}
                         component='input'
                         type='radio'
                         value={text}
@@ -156,8 +256,7 @@ const ViewListingsSearch = ({
             <Tab 
                 menu={{pointing: true}} 
                 panes={[
-                    { menuItem: 'Refine Results', render: () => <Tab.Pane attached={false}>{renderForm(locationProps, submitSearch, errorMessage)}</Tab.Pane>},
-                    { menuItem: 'View Map', render: () => <Tab.Pane attached={false}>{renderMap()}</Tab.Pane>}
+                    { menuItem: 'Refine Results', render: () => <Tab.Pane attached={false}>{renderForm(locationProps, submitSearch, errorMessage)}</Tab.Pane>}
                 ]}
             />
         </div>

@@ -1,5 +1,6 @@
 import {connect} from 'react-redux';
-import {Button,Divider,Grid,Search} from 'semantic-ui-react'
+import {Button,Divider,Grid,Search} from 'semantic-ui-react';
+import { Redirect } from 'react-router';
 import {push} from 'react-router-redux';
 import React, {Component}  from 'react';
 
@@ -265,65 +266,72 @@ class Chat extends React.Component{
         this.props.dispatch(stopTimer())
     }
 
-    render(){
+    render() {
+        const user = this.getUser();
+        const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
+
+        const bodySection = user ? (
+            <Grid>
+                <Grid.Column width={2}>
+                    <ChannelBar
+                        channels={this.getChannels()}
+                        changeChannel={this.changeChannel}
+                        activeChannel={this.getActiveChannel()}
+                        toggleDisplayNewChannelModal={this.setDisplayNewChannelModal}
+                        displayNewChannelModal={this.getDisplayNewChannelModal()}
+                        leaveChannel={this.displayLeaveChannelModal}
+                    />
+                    <CreateChannelModal
+                        onChange={this.handleNewChannelNameChange}
+                        text={this.newChannelName}
+                        onConfirm={this.createChannel}
+                        onClose={this.blankNewChannelName}
+                        displayModal={this.getDisplayNewChannelModal()}
+                    />
+                    <AcceptInviteModal
+                        channel={this.getActiveChannel()}
+                        onAccept={this.acceptInvite}
+                        onDecline={this.declineInvite}
+                        displayModal={this.getDisplayInviteModal()}
+                    />
+                    <LeaveChannelModal
+                        channel={this.getChannelToLeave()}
+                        onAccept={this.acceptLeaveChannel}
+                        onDecline={this.declineLeaveChannel}
+                        displayModal={this.getDisplayLeaveChannelModal()}
+                    />
+                </Grid.Column>
+                <Grid.Column width={11}>
+                    <ChatView
+                        chatLog={this.getChatLog()}
+                        users={this.getActiveChannelUsers()}
+                    />
+                    <Divider horizontal></Divider>
+                    <ChatInput
+                        onChange={this.handleMessageChange}
+                        onKeyUp={this.checkForEnter}
+                        text={this.getCurrentPendingMessage()}
+                        disabled={!this.getActiveChannel()._id}
+                    />
+                </Grid.Column>
+                <Grid.Column width={3}>
+                    <ExtraInfoBar
+                        users={this.getActiveChannelUsers()}
+                        isAdmin={this.isUserAdmin()}
+                        searchResults={this.getUserSearchResults()}
+                        searchLoading={this.getIsUserSearchLoading()}
+                        searchOnSelect={this.onUserSearchResultSelected}
+                        searchOnChange={this.onUserSearchChange}
+                        inviteUser={this.inviteUserToChannel}
+                    />
+                </Grid.Column>
+            </Grid>
+        ) : ('');
+
         return(
             <div>
-                <Grid>
-                    <Grid.Column width={2}>
-                        <ChannelBar
-                            channels={this.getChannels()}
-                            changeChannel={this.changeChannel}
-                            activeChannel={this.getActiveChannel()}
-                            toggleDisplayNewChannelModal={this.setDisplayNewChannelModal}
-                            displayNewChannelModal={this.getDisplayNewChannelModal()}
-                            leaveChannel={this.displayLeaveChannelModal}
-                        />
-                        <CreateChannelModal
-                            onChange={this.handleNewChannelNameChange}
-                            text={this.newChannelName}
-                            onConfirm={this.createChannel}
-                            onClose={this.blankNewChannelName}
-                            displayModal={this.getDisplayNewChannelModal()}
-                        />
-                        <AcceptInviteModal
-                            channel={this.getActiveChannel()}
-                            onAccept={this.acceptInvite}
-                            onDecline={this.declineInvite}
-                            displayModal={this.getDisplayInviteModal()}
-                        />
-                        <LeaveChannelModal
-                            channel={this.getChannelToLeave()}
-                            onAccept={this.acceptLeaveChannel}
-                            onDecline={this.declineLeaveChannel}
-                            displayModal={this.getDisplayLeaveChannelModal()}
-                        />
-                    </Grid.Column>
-                    <Grid.Column width={11}>
-                        <ChatView
-                            chatLog={this.getChatLog()}
-                            users={this.getActiveChannelUsers()}
-                        />
-                        <Divider horizontal></Divider>
-                        <ChatInput
-                            onChange={this.handleMessageChange}
-                            onKeyUp={this.checkForEnter}
-                            text={this.getCurrentPendingMessage()}
-                            disabled={!this.getActiveChannel()._id}
-                        />
-                    </Grid.Column>
-                    <Grid.Column width={3}>
-                        <ExtraInfoBar
-                            users={this.getActiveChannelUsers()}
-                            isAdmin={this.isUserAdmin()}
-                            searchResults={this.getUserSearchResults()}
-                            searchLoading={this.getIsUserSearchLoading()}
-                            searchOnSelect={this.onUserSearchResultSelected}
-                            searchOnChange={this.onUserSearchChange}
-                            inviteUser={this.inviteUserToChannel}
-                        />
-                    </Grid.Column>
-                </Grid>
-
+                {redirectSection}
+                {bodySection}
             </div>
         )
     }

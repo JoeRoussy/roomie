@@ -12,7 +12,7 @@ import {
 import { insert as insertInDb } from '../db/service';
 import { findAndUpdate } from '../db/service';
 import { generateHash as hashPassword } from '../authentication';
-import { roommateSurvey as surveyContants } from '../../../common/constants';
+import { roommateSurvey as surveyContants, userTypes } from '../../../common/constants';
 
 // Get listings based on an optional query
 export const findListings = async({
@@ -103,6 +103,42 @@ export const getUserByEmail = async({
     }
 }
 
+
+export const findUsersByName = async({
+    usersCollection = required('usersCollection'),
+    name = required('name'),
+    type
+}) => {
+    // NOTE: We enclose the name in double quotes because we want it to be treated as a phrase.
+    // Typing a first and last name should narrow results, not expand them.
+    // Or logic is default for tokens in text search: https://docs.mongodb.com/manual/text-search/
+    let matchQuery = {
+        $text: {
+            $search: `"${name}"`,
+            $language: 'english'
+        }
+    };
+
+    if (type === userTypes.tenant) {
+        matchQuery.isLandlord = {
+            $ne: true
+        };
+    } else if (type === userTypes.landlord) {
+        matchQuery.isLandlord = true;
+    }
+
+    try {
+        return await usersCollection.aggregate([
+            {
+                $match: {
+                    ...matchQuery
+                }
+            }
+        ]).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error search for users with the name ${name}`);
+    }
+}
 // Makes a verification document and returns a link a user can use to verify their email
 export const getEmailConfirmationLink = async({
     user = required('user'),

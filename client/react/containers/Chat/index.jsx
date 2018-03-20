@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {Divider,Grid} from 'semantic-ui-react'
+import {Divider,Grid,Search} from 'semantic-ui-react'
 import {push} from 'react-router-redux';
 import React, {Component}  from 'react';
 
@@ -23,7 +23,8 @@ import {
     acceptInviteToChannel,
     declineInviteToChannel,
     startTimer,
-    stopTimer
+    stopTimer,
+    userSearch
 } from '../../../redux/actions/chatActions';
 
 import './styles.css';
@@ -37,7 +38,9 @@ import './styles.css';
     newChannelName: store.ChatReducer.newChannelName,
     displayNewChannelModal: store.ChatReducer.displayNewChannelModal,
     displayInviteModal: store.ChatReducer.displayInviteModal,
-    user: store.userReducer.user
+    user: store.userReducer.user,
+    isUserSearchLoading: store.ChatReducer.isUserSearchLoading,
+    userSearchResults: store.ChatReducer.userSearchResults
 }))
 class Chat extends React.Component{
     constructor(){
@@ -55,6 +58,8 @@ class Chat extends React.Component{
         this.getActiveChannelUsers = this.getActiveChannelUsers.bind(this);
         this.getNewChannelName = this.getNewChannelName.bind(this);
         this.setDisplayNewChannelModal = this.setDisplayNewChannelModal.bind(this);
+        this.getIsUserSearchLoading = this.getIsUserSearchLoading.bind(this);
+        this.getUserSearchResults = this.getUserSearchResults.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleNewChannelNameChange = this.handleNewChannelNameChange.bind(this);
         this.blankNewChannelName = this.blankNewChannelName.bind(this);
@@ -62,6 +67,8 @@ class Chat extends React.Component{
         this.acceptInvite = this.acceptInvite.bind(this);
         this.declineInvite = this.declineInvite.bind(this);
         this.updateChat = this.updateChat.bind(this);
+        this.onUserSearchChange = this.onUserSearchChange.bind(this);
+        this.onUserSearchResultSelected = this.onUserSearchResultSelected.bind(this);
     }
     getChannels(){
         return this.props.channels;
@@ -104,6 +111,14 @@ class Chat extends React.Component{
 
     getActiveChannelUsers(){
         return this.props.activeChannelUsers;
+    }
+
+    getIsUserSearchLoading(){
+        return this.props.isUserSearchLoading;
+    }
+
+    getUserSearchResults(){
+        return this.props.userSearchResults;
     }
 
     acceptInvite(){
@@ -164,6 +179,22 @@ class Chat extends React.Component{
                 }
             }
         }
+    }
+
+    onUserSearchChange(e, data){
+        const {
+            value
+        } = data;
+        if (value.length >= 3) {
+            this.props.dispatch(userSearch(value));
+        }
+    }
+
+    onUserSearchResultSelected(e, data){
+        const {
+            result: selectedUser
+        } = data;
+        console.log(selectedUser);
     }
 
     updateChat(){
@@ -227,6 +258,12 @@ class Chat extends React.Component{
                     <Grid.Column width={3}>
                         <ExtraInfoBar
                             users={this.getActiveChannelUsers()}
+                        />
+                        <Search
+                            results={this.getUserSearchResults()}
+                            loading={this.getIsUserSearchLoading()}
+                            onResultSelect={this.onUserSearchResultSelected}
+                            onSearchChange={this.onUserSearchChange}
                         />
                     </Grid.Column>
                 </Grid>

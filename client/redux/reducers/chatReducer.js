@@ -8,7 +8,17 @@ const config = {
     displayNewChannelModal:false,
     displayInviteModal:false,
     chatTimer:null,
+    isUserSearchLoading: false,
+    userSearchResults: []
 };
+
+// NOTE: islandlord needs to be lowercase because it is not a normal dom element
+const mapUserForSearchResults = (user) => ({
+    title: user.name,
+    image: `${process.env.ASSETS_ROOT}${user.profilePictureLink}`,
+    islandlord: user.isLandlord ? 'true' : 'false',
+    api_response: user
+});
 
 const ChatReducer = (state = config, actions) => {
     switch(actions.type) {
@@ -190,7 +200,62 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+        case 'SEND_CHANNEL_INVITE_FULFILLED': {
+            const channels = state.channels.map((channel)=>{
+                if(channel._id === actions.payload.data.channel._id){
+                    return actions.payload.data.channel;
+                }
+                return channel;
+            });
+            state = {
+                ...state,
+                channels: channels
+            }
+            break;
+        }
+        case 'SEND_CHANNEL_INVITE_PENDING': {
+            break;
+        }
+        case 'SEND_CHANNEL_INVITE_REJECTED' : {
+            break;
+        }
 
+        case 'CHAT_USER_SEARCH_BY_NAME_PENDING': {
+            state = {
+                ...state,
+                isUserSearchLoading: true,
+                userSearchResults: []
+            };
+
+            break;
+        }
+
+        case 'CHAT_USER_SEARCH_BY_NAME_FULFILLED': {
+            console.log(actions.payload)
+
+            // Filter out the current participants from the search result
+            const searchResults = actions.payload.data.users
+                    .filter((user) => !Object.values(state.activeChannelUsers).some(x => x.api_response._id === user._id))
+                    .map(mapUserForSearchResults)
+
+            state = {
+                ...state,
+                isUserSearchLoading: false,
+                userSearchResults: searchResults
+            };
+
+            break;
+        }
+
+        case 'CHAT_USER_SEARCH_BY_NAME_REJECTED': {
+            state = {
+                ...state,
+                isUserSearchLoading: false,
+                userSearchResults: []
+            };
+
+            break;
+        }
     }
     return state;
 }

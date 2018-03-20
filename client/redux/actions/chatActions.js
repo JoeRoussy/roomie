@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { userTypes } from '../../../common/constants';
 
 export const getChannels = () => ({
     type: 'GET_CHANNELS',
@@ -88,3 +90,36 @@ export const startTimer = (tick) => ({
 export const stopTimer = (tick) => ({
     type: 'STOP_TIMER'
 })
+
+export const sendChannelInvite = (channel,userId) => (dispatch) =>{
+    dispatch({
+        type: 'SEND_CHANNEL_INVITE_PENDING'
+    });
+    axios.post(`${process.env.API_ROOT}/api/channels/${channel._id}/invites`,{
+        userIds:[userId]
+    })
+     .then( res =>{
+         dispatch({
+             type: 'SEND_CHANNEL_INVITE_FULFILLED',
+             payload: res
+         });
+     }).catch(e => {
+         toast.error("Failed to send channel invite");
+         console.log(e);
+         dispatch({
+             type: 'SEND_CHANNEL_INVITE_REJECTED',
+             payload: e
+         });
+     });
+}
+
+export const userSearch = (name) => ({
+    type: 'CHAT_USER_SEARCH_BY_NAME',
+    payload: axios.get(`${process.env.API_ROOT}/api/users?name=${name}&type=${userTypes.tenant}`)
+        .catch((e) => {
+            toast.error('Something went wrong with the user search, please try again later');
+
+            // Return the error so other handlers can use it
+            return e;
+        })
+});

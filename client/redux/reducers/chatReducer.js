@@ -236,7 +236,10 @@ const ChatReducer = (state = config, actions) => {
             });
             state = {
                 ...state,
-                channels: channels
+                channels: channels,
+                activeChannel: {},
+                activeChannelUsers:{},
+                chatLog: []
             }
             break;
         }

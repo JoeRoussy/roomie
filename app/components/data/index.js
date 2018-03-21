@@ -1,6 +1,5 @@
 import faker from 'faker';
 import moment from 'moment';
-//import crypto from 'crypto';
 import { GCM } from 'node-crypto-gcm';
 
 import {

@@ -81,8 +81,8 @@ class RoommateSurvey extends React.Component {
         } = this.props;
 
         return (
-            <Container id='roommateSurveySection'>
-                {!user ? (<Redirect to='/'/>) : ('')}
+            <Container id='roommateSurveySection' className='rootContainer'>
+                {!user ? (<Redirect to='/sign-in'/>) : ('')}
                 <h1>Roommate Matching</h1>
                 <h2>Complete the following survey to get matched with potential roomates based on your interests</h2>
                 <div id='explainationSection'>

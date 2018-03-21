@@ -1,7 +1,8 @@
-.rightAligned {
-    text-align: right;
+#listingContainer #mapsComponentWrapper {
+    margin: 30px auto;
 }
 
-.signUpForm {
-    margin-top: 15px;
+#listingContainer button.primaryColour {
+    position: relative;
+    z-index: 1;
 }

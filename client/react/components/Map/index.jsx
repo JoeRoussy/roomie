@@ -28,15 +28,15 @@ class MapComponent extends Component {
 
     render(){
         const style = {
-            width: '60%',
-            height: '60%'
+            width: '68%',
+            top: '120px'
         }
         const zoom = 15;
         const {
             position
         } = this.props
 
-        const marker = <Marker 
+        const marker = <Marker
             position = {position}
         />
 
@@ -49,16 +49,14 @@ class MapComponent extends Component {
         }
 
         return (
-            <div>
-                <Map    
-                    google = {this.props.google}
-                    style = {style}
-                    zoom = {zoom}
-                    initialCenter={position}
-                >
-                    {marker}
-                </Map>
-            </div>
+            <Map
+                google = {this.props.google}
+                style = {style}
+                zoom = {zoom}
+                initialCenter={position}
+            >
+                {marker}
+            </Map>
         )
     }
 }

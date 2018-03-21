@@ -15,6 +15,10 @@
     margin-top: 15px;
 }
 
+#scheduleMeetingContainer #userSearchWrapper .ui.cards .ui.card .meta, #scheduleMeetingContainer #userSearchWrapper .ui.cards .ui.card .header {
+    text-align: left;
+}
+
 #scheduleMeetingContainer #scheduleMeetingStepOneAdvanceButton {
     margin-top: 60px;
 }

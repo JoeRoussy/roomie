@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/JoeRoussy/roomie#readme",
   "dependencies": {
+    "@google-cloud/vision": "^0.17.0",
     "axios": "0.17.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -42,8 +43,8 @@
     "dotenv-webpack": "1.5.4",
     "express": "4.16.2",
     "express-jwt": "5.3.0",
-    "google-maps-react": "^1.1.2",
     "faker": "4.1.0",
+    "google-maps-react": "^1.1.2",
     "history": "4.7.2",
     "image-type": "3.0.0",
     "json-loader": "^0.5.7",

@@ -6,6 +6,7 @@ import { Input, LabelInputField } from 'react-semantic-redux-form';
 import { isPrice } from '../../../../common/validation'
 import WrappedPlacesAutoComplete from './WrappedPlacesAutoComplete';
 import WrappedCheckBox from './WrappedCheckBox';
+
 import './styles.css';
 
 const validate = (values) => {
@@ -58,9 +59,9 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
             </div>
         </div>
         <Divider />
-        
+
         <div>
-            <Label size='large' content='Tags' icon='tags' /> 
+            <Label size='large' content='Tags' icon='tags' />
             <div>
                 <Field
                     name='keywords'
@@ -73,14 +74,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
         <Divider />
 
         <div>
-            <Label size='large' content='Price Range' icon='dollar' /> 
+            <Label size='large' content='Price Range' icon='dollar' />
             <div>
                 <Field
                     name='minPrice'
                     component={LabelInputField}
                     placeholder="Minimum price..."
                 />
-                - 
+                -
                  <Field
                     name='maxPrice'
                     component={LabelInputField}
@@ -92,7 +93,7 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
         <Divider />
 
         <div>
-            <Label size='large' content='Bedroom(s)' icon='bed' /> 
+            <Label size='large' content='Bedroom(s)' icon='bed' />
                 {[1,2,3,4,'5+'].map((num)=>(
                         <div key={'bedroom' + num}>
                             <Field
@@ -100,14 +101,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                                 component={WrappedCheckBox}
                                 label={num}
                             />
-                        </div> 
+                        </div>
                     ))}
         </div>
 
         <Divider />
 
         <div>
-            <Label size='large' content='Bathroom(s)' icon='bath' /> 
+            <Label size='large' content='Bathroom(s)' icon='bath' />
                 {[1,2,'3+'].map((num)=>(
                     <div key={'bathroom' + num}>
                         <Field
@@ -115,14 +116,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                             component={WrappedCheckBox}
                             label={num}
                         />
-                    </div> 
+                    </div>
                 ))}
         </div>
 
         <Divider />
 
         <div>
-            <Label size='large' content='Furnished' icon='bar' /> 
+            <Label size='large' content='Furnished' icon='bar' />
             {["Yes", "No"].map((text)=>(
                 <div key={'furnished' + text}>
                     <Field
@@ -132,14 +133,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                         value={text}
                     />
                     {' ' + text}
-                </div> 
+                </div>
             ))}
         </div>
 
         <Divider />
 
         <div>
-            <Label size='large' content='Type(s)' icon='home' /> 
+            <Label size='large' content='Type(s)' icon='home' />
                 {['Apartment', 'Condominium', 'House', 'Town House', 'Other'].map((item)=>(
                     <div key={'type' + item}>
                         <Field
@@ -147,14 +148,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                             component={WrappedCheckBox}
                             label={item}
                         />
-                    </div> 
+                    </div>
                 ))}
         </div>
 
         <Divider />
 
         <div>
-            <Label size='large' content='Utilities' icon='lightbulb' /> 
+            <Label size='large' content='Utilities' icon='lightbulb' />
             {["Yes", "No"].map((text)=>(
                 <div key={'bathroom' + text}>
                     <Field
@@ -164,14 +165,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                         value={text}
                     />
                     {' ' + text}
-                </div> 
+                </div>
             ))}
         </div>
 
         <Divider />
 
         <div>
-            <Label size='large' content='Parking' icon='car' /> 
+            <Label size='large' content='Parking' icon='car' />
             {["Yes", "No"].map((text)=>(
                 <div key={'parking' + text}>
                     <Field
@@ -181,14 +182,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                         value={text}
                     />
                     {' ' + text}
-                </div> 
+                </div>
             ))}
         </div>
 
         <Divider />
 
         <div>
-            <Label size='large' content='Internet' icon='wifi' /> 
+            <Label size='large' content='Internet' icon='wifi' />
             {["Yes", "No"].map((text)=>(
                 <div key={'internet' + text}>
                     <Field
@@ -198,14 +199,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                         value={text}
                     />
                     {' ' + text}
-                </div> 
+                </div>
             ))}
         </div>
 
         <Divider />
 
         <div>
-            <Label size='large' content='Laundry' icon='shopping basket' /> 
+            <Label size='large' content='Laundry' icon='shopping basket' />
             {["Yes", "No"].map((text)=>(
                 <div key={'laundry' + text}>
                     <Field
@@ -215,14 +216,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                         value={text}
                     />
                     {' ' + text}
-                </div> 
+                </div>
             ))}
         </div>
 
         <Divider />
 
         <div>
-            <Label size='large' content='Air Conditioned' icon='snowflake outline' /> 
+            <Label size='large' content='Air Conditioned' icon='snowflake outline' />
             {["Yes", "No"].map((text)=>(
                 <div key={'ac' + text}>
                     <Field
@@ -232,14 +233,14 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                         value={text}
                     />
                     {' ' + text}
-                </div> 
+                </div>
             ))}
         </div>
 
         <Divider />
 
         <div>
-            <Button type='submit' content="Submit" />
+            <Button color='green' type='submit' content="Submit" />
         </div>
     </Form>
 )
@@ -253,8 +254,8 @@ const ViewListingsSearch = ({
 }) => {
     return (
         <div >
-            <Tab 
-                menu={{pointing: true}} 
+            <Tab
+                menu={{pointing: true}}
                 panes={[
                     { menuItem: 'Refine Results', render: () => <Tab.Pane attached={false}>{renderForm(locationProps, submitSearch, errorMessage)}</Tab.Pane>}
                 ]}

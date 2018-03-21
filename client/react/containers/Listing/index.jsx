@@ -116,7 +116,7 @@ export default class Listing extends React.Component {
 
         let startChatButton;
         startChatButton = (user && !user.isLandlord) ? (
-            <Button color='green' onClick={()=>this.createChatWithLandlord(listing.owner)}>Message</Button>
+            <Button color='green' onClick={()=>this.createChatWithLandlord(listing.owner)}>Message Landlord</Button>
         ) : ('');
 
         let bodySection;

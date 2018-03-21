@@ -1,9 +1,14 @@
 import { wrap as coroutine } from 'co';
 
 import { required, convertToObjectId } from '../components/custom-utils';
-import { getListingsByOwner, getListingByIdWithOwnerPopulated, getLeaseEmailIdentifiersForTenants } from '../components/data';
 import { sendError } from './utils';
 import { deleteById } from '../components/db/service';
+import {
+    getListingsByOwner,
+    getListingByIdWithOwnerPopulated,
+    getLeaseEmailIdentifiersForTenants,
+    getLeaseAndTenantFromEncryption
+} from '../components/data';
 
 export const getMyListings = ({
     listingsCollection = required('listingsCollection'),
@@ -107,7 +112,7 @@ export const createLease = ({
     usersCollection = required(usersCollection),
     logger = required('logger', 'You must pass a logger for this function')
 })=> coroutine(function* (req, res) {
-    const {
+    let {
         tenantIds: tenants,
         listingId
     } = req.body;
@@ -121,12 +126,7 @@ export const createLease = ({
 
     //Send emails
     // Get identifiers for email
-    let emailIdentifiers = getLeaseEmailIdentifiersForTenants({
-        tenantIds: tenants.map(convertToObjectId),
-        listingId: convertToObjectId(listingId)
-    });
 
-    console.log(emailIdentifiers);
 
     //Return result
     return res.json({

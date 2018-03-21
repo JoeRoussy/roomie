@@ -1,6 +1,7 @@
 import faker from 'faker';
 import moment from 'moment';
-import crypto from 'crypto';
+//import crypto from 'crypto';
+import { GCM } from 'node-crypto-gcm';
 
 import {
     required,
@@ -694,23 +695,32 @@ export const getLeaseEmailIdentifiersForTenants = ({
         ENC_PRIVATE_KEY = required('ENC_PRIVATE_KEY')
     } = process.env;
 
-    const data = JSON.stringify({
-        tenantIds,
-        listingId
-    });
-
     return tenantIds.reduce((accumulator, tenantId) => {
-        const cipher = crypto.createCipher('aes192', ENC_PRIVATE_KEY);
         const data = JSON.stringify({
             tenantId,
             listingId
         });
 
-        cipher.update(Buffer.from(data));
+        let gcm = new GCM(ENC_PRIVATE_KEY);
 
         return {
             ...accumulator,
-            [tenantId]: cipher.final('hex')
+            [tenantId]: gcm.encrypt(data)
         };
     }, {});
+};
+
+// Takes an encryption and returns the object
+export const getLeaseAndTenantFromEncryption = (encryption) => {
+    const {
+        ENC_PRIVATE_KEY = required('ENC_PRIVATE_KEY')
+    } = process.env;
+
+    if (!encryption) {
+        return null;
+    }
+
+    const gcm = new GCM(ENC_PRIVATE_KEY);
+
+    return gcm.decrypt(encryption);
 }

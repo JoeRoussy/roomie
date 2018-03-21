@@ -13,14 +13,14 @@ const EventDetailView = ({
         title = '',
         start,
         end,
-        location
+        locationDisplay
     } = event || {};
 
     const titleDisplay = title.replace(/,/g , ', ');
     const startMoment = moment(start);
     const endMoment = moment(end);
-    const locationSection = location ? (
-        <p className='subTitle'>{location}</p>
+    const locationSection = locationDisplay ? (
+        <p className='subTitle'>{locationDisplay}</p>
     ) : (
         ''
     );

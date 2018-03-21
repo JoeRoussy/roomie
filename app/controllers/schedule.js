@@ -59,6 +59,30 @@ const applyRepeating = (events) => {
     });
 
     return newEvents;
+};
+
+const mapForCalendarDisplay = (event) => {
+    let title;
+    let location;
+    let id = 0;
+
+    if(event.type === 'Unavailable'){
+        title = event.type;
+    } else {
+        title = `Meeting with: ${event.participants.map((person)=>person.name).toString()}`;
+        location = event.listing.locationDisplay;
+    }
+
+    return {
+        id: id++,
+        title: title,
+        allDay: false,
+        start: event.start,
+        end: event.end,
+        location,
+        type: event.type === 'Unavailable' ? event.type : 'Meeting',
+        _id: event._id
+    };
 }
 
 export const getSchedules = ({
@@ -107,39 +131,13 @@ export const getSchedules = ({
     }
 
     let eventResults = [].concat(timeblockResults).concat(meetingResults);
-    let id = 0;
-
     eventResults = applyRepeating(eventResults);
-
-    console.log(eventResults);
-
-    eventResults = eventResults.map((item)=>{
-        let title;
-        let location;
-        if(item.type === 'Unavailable'){
-            title = item.type;
-        }
-        else{
-            title = `Meeting with: ${item.participants.map((person)=>person.name).toString()}`;
-            location = item.listing.location;
-        }
-        return {
-            id: id++,
-            title: title,
-            allDay: false,
-            start: item.start,
-            end: item.end,
-            location,
-            type: item.type === 'Unavailable' ? item.type : 'Meeting',
-            _id: item._id
-        }
-    });
 
     //Return result
     return res.json({
         timeblocks:timeblockResults,
         meetings: meetingResults,
-        events: eventResults
+        events: eventResults.map(mapForCalendarDisplay)
     });
 });
 
@@ -240,28 +238,8 @@ export const findAggregatedSchedules = ({
 
     events = applyRepeating(events);
 
-    let id = 0;
-    events = events.map((item)=>{
-        let title;
-        if(item.type === 'Unavailable'){
-            title = item.type
-        } else {
-            title = `Meeting with: ${item.participants.map((person)=>person.name).toString()}`
-        }
-
-        return {
-            id: id++,
-            title: title,
-            allDay: false,
-            start: item.start,
-            end: item.end,
-            randomInfo: 'please show me'
-        }
-    });
-
-    //Return result
     return res.json({
-        aggregatedEvents: events
+        aggregatedEvents: events.map(mapForCalendarDisplay)
     });
 });
 

@@ -98,7 +98,10 @@ export default class Listings extends React.Component {
             onKeyUp: (event) => {if(event.keyCode==13) this.submitSearch()}
         }
 
-        const { listings, waitingForSearch} = this.props;
+        const {
+            listings,
+            waitingForSearch
+        } = this.props;
 
         let body;
         if(waitingForSearch){

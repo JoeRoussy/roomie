@@ -21,7 +21,7 @@ const ListingDisplay = ({
         );
     } else {
         imagePortion = listing.images ? (
-            <Carousel>
+            <Carousel width='80%'>
                 {showImages(listing.images)}
             </Carousel>
         ) : (
@@ -31,24 +31,15 @@ const ListingDisplay = ({
 
     return (
         <Container id='listingDisplayWrapper'>
-            <Header as='h2' icon textAlign='center'>
+            <Header as='h1' textAlign='center'>
               <Header.Content>
                   { listing.name }
               </Header.Content>
             </Header>
+            <p className='address'>{ `${listing.street}, ${listing.city} ${listing.postalCode}` }</p>
+            <p className='price' color='green'>${listing.price}</p>
+            <p className='description'>{listing.description}</p>
             {imagePortion}
-            <Item>
-                  <Item.Content>
-                      <Item.Header as='a'>{ `$${listing.price}` }</Item.Header>
-                      <Item.Meta>
-                          <span className='address'>{ `${listing.street}, ${listing.city} ${listing.postalCode}` }</span>
-                      </Item.Meta>
-                      <Item.Description>{ listing.description }</Item.Description>
-                      <Item.Extra>
-                          <Label icon='globe' content='View Map' />
-                      </Item.Extra>
-                  </Item.Content>
-            </Item>
         </Container>
     );
 }

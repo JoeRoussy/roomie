@@ -392,7 +392,7 @@ export const findRecommendedRoommates = async({
                 user: users[0],
                 ...rest
             }))
-            .filter(x => !x.isLandlord);
+            .filter(x => !x.user.isLandlord);
 
     } catch (e) {
         throw new RethrownError(e, 'Error getting roommate survey responses');

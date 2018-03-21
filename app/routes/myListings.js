@@ -40,22 +40,6 @@ export default ({
         })
     ]);
 
-    myListingsRouter.get('/lease/confirm/:id', [
-        isAuthenticated,
-        isLandlord,
-        updateLease({
-            listingsCollection: db.collection('listings'),
-            leasesCollection: db.collection('leases'),
-            usersCollection: db.collection('users'),
-            logger: getChildLogger({
-                baseLogger,
-                additionalFields: {
-                    module: 'api-create-lease'
-                }
-            })
-        })
-    ]);
-
     myListingsRouter.get('/lease/:indentifier', [
         isAuthenticated,
         isLandlord,

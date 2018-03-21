@@ -1,5 +1,6 @@
 import faker from 'faker';
 import moment from 'moment';
+import crypto from 'crypto';
 
 import {
     required,
@@ -683,3 +684,33 @@ export const getListingViewers = async({
         throw new RethrownError(e, `Error finding document with userId: ${userId} and listingId: ${listingId}`);
     }
 };
+
+// Returns an object with tenant ids and the keys and the associated listings as the values
+export const getLeaseEmailIdentifiersForTenants = ({
+    tenantIds = required('tenants'),
+    listingId = required('listingId')
+}) => {
+    const {
+        ENC_PRIVATE_KEY = required('ENC_PRIVATE_KEY')
+    } = process.env;
+
+    const data = JSON.stringify({
+        tenantIds,
+        listingId
+    });
+
+    return tenantIds.reduce((accumulator, tenantId) => {
+        const cipher = crypto.createCipher('aes192', ENC_PRIVATE_KEY);
+        const data = JSON.stringify({
+            tenantId,
+            listingId
+        });
+
+        cipher.update(Buffer.from(data));
+
+        return {
+            ...accumulator,
+            [tenantId]: cipher.final('hex')
+        };
+    }, {});
+}

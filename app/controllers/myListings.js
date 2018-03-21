@@ -1,7 +1,7 @@
 import { wrap as coroutine } from 'co';
 
 import { required, convertToObjectId } from '../components/custom-utils';
-import { getListingsByOwner, getListingByIdWithOwnerPopulated } from '../components/data';
+import { getListingsByOwner, getListingByIdWithOwnerPopulated, getLeaseEmailIdentifiersForTenants } from '../components/data';
 import { sendError } from './utils';
 import { deleteById } from '../components/db/service';
 
@@ -107,6 +107,11 @@ export const createLease = ({
     usersCollection = required(usersCollection),
     logger = required('logger', 'You must pass a logger for this function')
 })=> coroutine(function* (req, res) {
+    const {
+        tenantIds: tenants,
+        listingId
+    } = req.body;
+
     //TODO
     //Perform Validation
 
@@ -115,6 +120,13 @@ export const createLease = ({
     //Update the listing
 
     //Send emails
+    // Get identifiers for email
+    let emailIdentifiers = getLeaseEmailIdentifiersForTenants({
+        tenantIds: tenants.map(convertToObjectId),
+        listingId: convertToObjectId(listingId)
+    });
+
+    console.log(emailIdentifiers);
 
     //Return result
     return res.json({
@@ -132,7 +144,7 @@ export const updateLease = ({
     //Extract information about user accepting or declining lease
 
     //Perform Validation
-    
+
     //Update the lease
 
     //Return result

@@ -143,7 +143,7 @@ export default class Listing extends React.Component {
         }
 
         return (
-            <Container>
+            <Container className='rootContainer'>
                 {bodySection}
                 <Button className='primaryColour' onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
             </Container>

@@ -43,6 +43,10 @@ h1 {
     padding: 50px 30px;
 }
 
+.rootContainer {
+    margin-top: 30px;
+}
+
 .hidden {
     display: none;
 }

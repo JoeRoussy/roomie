@@ -76,7 +76,7 @@ const Profile = ({
     ) : ('');
 
     return (
-        <Container>
+        <Container className='rootContainer'>
             <h1>Profile</h1>
             {redirectSection}
             {bodySection}

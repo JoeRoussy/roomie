@@ -120,7 +120,7 @@ export default class Listings extends React.Component {
 
 
         return (
-            <Container>
+            <Container className='rootContainer'>
                 <Grid>
                     <Grid.Column width={4}>
                         <ViewListingsSearch locationProps={locationProps} submitSearch={this.submitSearch} errorMessage={this.props.errorMessage} />

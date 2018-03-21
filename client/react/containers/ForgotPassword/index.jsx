@@ -47,7 +47,7 @@ const ForgotPassword = ({
     }
 
     return (
-        <Container id='forgotPasswordWrapper'>
+        <Container id='forgotPasswordWrapper' className='rootContainer'>
             <h1>Password Recovery</h1>
             {bodySection}
         </Container>

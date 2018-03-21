@@ -22,7 +22,7 @@ const ForgotPasswordForm = ({
     const redirectSection = user ? (<Redirect to='/' />) : '';
 
     return (
-        <Container>
+        <Container className='rootContainer'>
             {redirectSection}
             <h1>Password Reset</h1>
             <h2>Enter your new password in the form below</h2>

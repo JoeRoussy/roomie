@@ -6,7 +6,7 @@ import { change } from 'redux-form';
 import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-import { Button, Loader, Dimmer, Transition } from 'semantic-ui-react';
+import { Container, Button, Loader, Dimmer, Transition } from 'semantic-ui-react';
 import TimeblockForm from '../../components/TimeblockForm';
 import {
     createTimeblock,
@@ -167,7 +167,7 @@ class Schedule extends Component{
 
         return (
 
-            <div id='scheduleWrapper'>
+            <Container id='scheduleWrapper' className='rootContainer'>
                 {redirectSection}
                 <h1>Your Schedule</h1>
                 {/* Timeblock */}
@@ -175,7 +175,7 @@ class Schedule extends Component{
 
                 {/* Schedule */}
                 {schedule}
-            </div>
+            </Container>
         )
     }
 }

@@ -224,7 +224,7 @@ const ScheduleMeeting = ({
     }
 
     return (
-        <Container id='scheduleMeetingContainer'>
+        <Container id='scheduleMeetingContainer' className='rootContainer'>
             {userRedirect}
             <h1>Book a Meeting</h1>
             {content}

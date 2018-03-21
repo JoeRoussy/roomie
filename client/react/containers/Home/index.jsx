@@ -6,6 +6,7 @@ import moment from 'moment';
 import queryString from 'query-string';
 import { Redirect } from 'react-router';
 import jwtDecode from 'jwt-decode';
+import { toast } from 'react-toastify';
 
 import HomeSearch from '../../components/Search/HomeSearch';
 import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
@@ -54,6 +55,7 @@ class Home extends Component {
 
             setJwt(queryParams.newToken);
             this.props.dispatch(setCurrentUser(currentUser));
+            toast.success('Your email has been confirmed!');
         }
 
         if (user) {

@@ -10,9 +10,13 @@ export const populateForm = (listing) => ({
 
 
 export const submitForm = (values, tenants) => {
+    const mappedTenants = tenants.map(x=>(x.api_response._id));
+    const listingId = values.listing._id;
+
     const submissionData = {
         ...values,
-        tenants: [...tenants]
+        listing: listingId,
+        tenantIds: [...mappedTenants]
     }
 
     const action = {

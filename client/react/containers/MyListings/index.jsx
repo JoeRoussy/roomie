@@ -13,6 +13,7 @@ import './styles.css';
 @connect(({
     listingReducer: {
         myListings,
+        myLeases,
         isDeleting,
         listingToDelete
     } = {},
@@ -21,6 +22,7 @@ import './styles.css';
     } = {}
 }) => ({
     myListings,
+    myLeases,
     isDeleting,
     listingToDelete,
     user
@@ -85,6 +87,7 @@ export default class MyListings extends React.Component {
     render() {
         const {
             myListings,
+            myLeases,
             user,
             isDeleting,
             listingToDelete
@@ -115,6 +118,10 @@ export default class MyListings extends React.Component {
                 {redirectSection}
                 {body}
                 {deleteModal}
+
+                <div>
+
+                </div>
             </Container>
         )
     }

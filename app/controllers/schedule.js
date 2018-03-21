@@ -502,7 +502,8 @@ export const postMeeting = ({
         end: new Date(endMoment.toISOString()),
         date: new Date(dateMoment.toISOString()),
         owners: [convertToObjectId(userId), convertToObjectId(listingValidation.ownerId)],
-        listing: convertToObjectId(listing)
+        listing: convertToObjectId(listing),
+        location: listingValidation.locationDisplay
     }
     try{
         result = yield insertInDb({
@@ -669,7 +670,91 @@ export const postTimeblock = ({
         timeblocks: [result]
     });
 });
+export const acceptMeeting=({
+    meetingsCollection = required('meetingsCollection'),
+    logger = required('logger', 'You must pass a logger for this function to use')
+}) => coroutine(function* (req, res){
+    //Extract values
+    const {
+        id
+    } = req.params;
 
+    const {
+        _id: userId
+    } = req.user;
+
+    //Perform Validation
+    let meeting;
+    try {
+        meeting = yield getById({
+            collection: meetingsCollection,
+            id: convertToObjectId(id)
+        });
+    } catch (e){
+        logger.error(e, 'Error retrieving meeting from meetings collection');
+        return sendError({
+            res,
+            status: 500,
+            message: 'Error retrieving meeting'
+        });
+    }
+
+    if(!meeting){
+        logger.error('Error no meeting provided');
+        return sendError({
+            res,
+            status: 400,
+            message: 'Error finding meeting'
+        })
+    }
+
+    //Check if user is part of meeting
+    const ObjectUserId = convertToObjectId(userId);
+    let userInMeeting = false;
+    let participantsInMeeting = [...meeting.participants];
+    for(let i=0; i<meeting.participants.length; ++i){
+        if(ObjectUserId.equals(convertToObjectId(meeting.participants[i].id))){
+            userInMeeting = true;
+            participantsInMeeting[i].acceptedInvite = true;
+            break;
+        }
+    }
+
+    if(!userInMeeting){
+        logger.error('Error user is not part of meeting provided');
+        return sendError({
+            res,
+            status: 400,
+            message: 'User is not part of meeting'
+        });
+    }
+
+    //Perform Query
+    let result;
+    const updatedMeeting = {
+        ...meeting,
+        participants: participantsInMeeting
+    }
+    try{
+        result = yield findAndUpdate({
+            collection:meetingsCollection,
+            query: {_id: id},
+            update: updatedMeeting
+        });
+    } catch(e){
+        logger.error(e, 'Error deleting meeting');
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'Error deleting meeting'
+        });
+    }
+    //Return result
+    return res.json({
+        meeting: result
+    });
+});
 
 export const deleteMeeting=({
     meetingsCollection = required('meetingsCollection'),

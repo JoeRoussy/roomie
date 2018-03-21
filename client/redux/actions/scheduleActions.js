@@ -77,6 +77,27 @@ export const deleteMeeting = (id) => (dispatch) => {
         });
 };
 
+export const acceptMeeting = (id) => (dispatch) => {
+    dispatch({
+        type: "SCHEDULE_ACCEPT_MEETING_PENDING",
+    });
+
+    axios.put(`${process.env.API_ROOT}/api/schedule/meeting/${id}`)
+        .then((res) => {
+            dispatch({
+                type: "SCHEDULE_ACCEPT_MEETING_FULLFILED",
+                payload: res
+            });
+            dispatch(getSchedules());
+        })
+        .catch((e) => {
+            dispatch({
+                type: "SCHEDULE_ACCEPT_MEETING_REJECTED",
+                payload: e
+            });
+        });
+};
+
 export const showEventDetail = (event) => ({
     type: 'SCHEDULE_ACTIONS_SHOW_EVENT_DETAIL',
     payload: event

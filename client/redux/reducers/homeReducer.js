@@ -52,7 +52,8 @@ const homeReducer = (state = config, actions) => {
             if (!user) {
                 state = {
                     ...state,
-                    recommendedRoommates: []
+                    recommendedRoommates: [],
+                    isLoadingRoommateSuggestions: false
                 };
             }
 

@@ -6,15 +6,17 @@ import { change } from 'redux-form';
 import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-import { Button, Loader, Dimmer, Transition } from 'semantic-ui-react';
+import { Button, Card, Loader, Dimmer, Transition } from 'semantic-ui-react';
 import TimeblockForm from '../../components/TimeblockForm';
+import MeetingCard from '../../components/MeetingCard';
 import {
     createTimeblock,
     getSchedules,
     showEventDetail,
     clearEventDetail,
     deleteMeeting,
-    deleteTimeblock
+    acceptMeeting,
+    deleteTimeblock,
 } from '../../../redux/actions/scheduleActions';
 
 import EventDetailView from '../../components/EventDetailView';
@@ -46,6 +48,13 @@ class Schedule extends Component{
         this.showDetailView = this.showDetailView.bind(this);
         this.hideDetailView = this.hideDetailView.bind(this);
         this.onEventDelete = this.onEventDelete.bind(this);
+        this.getMeetingCards = this.getMeetingCards.bind(this);
+        this.filterMeetings = this.filterMeetings.bind(this);
+        this.acceptMeeting = this.acceptMeeting.bind(this);
+        this.declineMeeting = this.declineMeeting.bind(this);
+        this.formatParticipants = this.formatParticipants.bind(this);
+        this.formatDate = this.formatDate.bind(this);
+        this.formatTime = this.formatTime.bind(this);
     }
 
     componentDidMount(){
@@ -101,6 +110,82 @@ class Schedule extends Component{
         } else {
             return () => this.props.dispatch(deleteTimeblock(event._id));
         }
+    }
+
+    filterMeetings(meetings){
+        const { 
+            user
+        } = this.props.userInfo;
+
+        if(!user) 
+            return [];
+
+        return meetings.filter((item)=>{
+            const {
+                participants
+            } = item;
+
+            for(let i = 0; i < participants.length; ++i){
+                if(participants[i].id === user._id && !participants[i].acceptedInvite)
+                    return true;
+            }
+            return false;
+        });
+    }
+
+    acceptMeeting(meeting){
+        return () => this.props.dispatch(acceptMeeting(meeting._id));
+    }
+
+    declineMeeting(meeting){
+        return () => this.props.dispatch(deleteMeeting(meeting._id));
+    }
+
+    formatParticipants(meeting){
+        let participants = meeting.participants[0].name;
+        for(let i = 1; i < meeting.participants.length; ++i){
+            participants += ' + ' + meeting.participants[i].name 
+        }
+        return participants;
+    }
+
+    formatDate(d){
+        return moment(d).format("dddd, MMMM Do YYYY");
+    }
+
+    formatTime(t){
+        return moment(t).format("h:mm a");
+    }
+
+    getMeetingCards(){
+        const {
+            meetings = []
+        } = this.props.scheduleInfo;
+
+        //Get all meetings that have acceptedInvite = false
+        const pendingMeetings = this.filterMeetings(meetings);
+
+        if(pendingMeetings.length < 1) 
+            return (<h3> You do not have any pending meetings. </h3>)
+
+        const meetingCards = pendingMeetings.map((meeting)=>{
+            const formattedParticipants = this.formatParticipants(meeting);
+            return (
+                <MeetingCard
+
+                    acceptMeeting={this.acceptMeeting(meeting)}
+                    declineMeeting={this.declineMeeting(meeting)}
+                    participants={formattedParticipants}
+                    date={this.formatDate(meeting.date)}
+                    start={this.formatTime(meeting.start)}
+                    end={this.formatTime(meeting.end)}
+                    listing={meeting.listing.location}
+                    key={meeting._id}
+                />
+            )
+        });
+            
+        return meetingCards;
     }
 
     render(){
@@ -165,16 +250,28 @@ class Schedule extends Component{
                 />
             </div>
 
+        const meetingCards = this.getMeetingCards();
+        let pendingMeetings = meetingCards;
+        if(Array.isArray(meetingCards)){
+            pendingMeetings = <Card.Group> { meetingCards } </Card.Group>
+        }
         return (
-
-            <div id='scheduleWrapper'>
+            <div>
                 {redirectSection}
-                <h1>Your Schedule</h1>
-                {/* Timeblock */}
-                {timeblock}
+                
+                <div id='meetingCards'>
+                    <h1> Your Pending Meetings </h1>
+                    {pendingMeetings}
+                </div>
 
-                {/* Schedule */}
-                {schedule}
+                <div id='scheduleWrapper'>
+                    <h1>Your Schedule</h1>
+                    {/* Timeblock */}
+                    {timeblock}
+
+                    {/* Schedule */}
+                    {schedule}
+                </div>
             </div>
         )
     }

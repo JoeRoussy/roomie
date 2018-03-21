@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 
 import { navigateTo as getNavigateTo, setJwt } from '../../../components';
 import { setCurrentUser } from '../../../redux/actions/userActions';
+import { resetChat } from '../../../redux/actions/chatActions';
 
 import './styles.css';
 
@@ -79,6 +80,7 @@ const mapDispatchToProps = (dispatch) => ({
     logout: () => {
         setJwt(null);
         dispatch(setCurrentUser(null));
+        dispatch(resetChat());
         toast.success('You have been logged out');
     }
 });

@@ -1,3 +1,7 @@
 #listingDisplaySingleImage {
     margin: 0 auto;
 }
+
+#listingDisplayWrapper .carousel .thumbs {
+    text-align: center;
+}

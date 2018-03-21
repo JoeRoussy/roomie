@@ -1,7 +1,8 @@
 import React from 'react';
 import { Container, Header, Icon, Image, Item, Label } from 'semantic-ui-react';
-import Carousel from 'nuka-carousel';
+import { Carousel } from 'react-responsive-carousel';
 
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './styles.css';
 
 const showImages = (images) => images.map((image, i) =>
@@ -19,15 +20,17 @@ const ListingDisplay = ({
             <Image id='listingDisplaySingleImage' size='large' src={singleImage} />
         );
     } else {
-        imagePortion = (
+        imagePortion = listing.images ? (
             <Carousel>
-                { listing.images ? showImages(listing.images) : [] }
+                {showImages(listing.images)}
             </Carousel>
-        )
+        ) : (
+            ''
+        );
     }
 
     return (
-        <Container>
+        <Container id='listingDisplayWrapper'>
             <Header as='h2' icon textAlign='center'>
               <Header.Content>
                   { listing.name }

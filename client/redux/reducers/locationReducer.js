@@ -25,13 +25,9 @@ const locationReducer = (state = config, actions) => {
             break;
         }
         case 'GET_PROVINCES_PENDING': {
-            console.log('Get provinces is pending');
-
             break;
         }
         case 'GET_PROVINCES_REJECTED' : {
-            console.log('Get provinces was rejected');
-
             break;
         }
 
@@ -58,8 +54,6 @@ const locationReducer = (state = config, actions) => {
             break;
         }
         case 'GET_CITIES_FOR_PROVINCE_PENDING': {
-            console.log('Get cities is pending');
-
             state = {
                 ...state,
                 errorMessage: null
@@ -68,8 +62,6 @@ const locationReducer = (state = config, actions) => {
             break;
         }
         case 'GET_CITIES_FOR_PROVINCE_REJECTED' : {
-            console.log('Get cities was rejected');
-
             break;
         }
     }

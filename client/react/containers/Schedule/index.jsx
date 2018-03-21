@@ -8,7 +8,14 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import { Button, Loader, Dimmer, Transition } from 'semantic-ui-react';
 import TimeblockForm from '../../components/TimeblockForm';
-import { createTimeblock, getSchedules, showEventDetail, clearEventDetail } from '../../../redux/actions/scheduleActions';
+import {
+    createTimeblock,
+    getSchedules,
+    showEventDetail,
+    clearEventDetail,
+    deleteMeeting,
+    deleteTimeblock
+} from '../../../redux/actions/scheduleActions';
 
 import EventDetailView from '../../components/EventDetailView';
 
@@ -38,6 +45,7 @@ class Schedule extends Component{
         this.naviageToScheduleMeeting = this.naviageToScheduleMeeting.bind(this);
         this.showDetailView = this.showDetailView.bind(this);
         this.hideDetailView = this.hideDetailView.bind(this);
+        this.onEventDelete = this.onEventDelete.bind(this);
     }
 
     componentDidMount(){
@@ -87,6 +95,14 @@ class Schedule extends Component{
         this.props.dispatch(clearEventDetail())
     }
 
+    onEventDelete(event) {
+        if (event.type === 'Meeting') {
+            return () => this.props.dispatch(deleteMeeting(event._id));
+        } else {
+            return () => this.props.dispatch(deleteTimeblock(event._id));
+        }
+    }
+
     render(){
         const redirectSection = this.props.userInfo.user ? '' : <Redirect to='/sign-in'/>;
         const availabilityOptions = [{text:'Unavailable' , value:'Unavailable'}];
@@ -133,6 +149,9 @@ class Schedule extends Component{
                 <EventDetailView
                     event={this.props.scheduleInfo.eventBeingViewed}
                     onClose={this.hideDetailView}
+                    onDelete={this.onEventDelete}
+                    isLoading={this.props.scheduleInfo.eventDeleteLoading}
+                    errorMessage={this.props.scheduleInfo.eventDeleteErrorMessage}
                 />
                 <BigCalendar
                     popup

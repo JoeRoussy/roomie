@@ -30,7 +30,8 @@ const applyRepeating = (events) => {
                         type: event.type,
                         participants: event.participants,
                         start: newEventStartMoment.toDate(),
-                        end: newEventEndMoment.toDate()
+                        end: newEventEndMoment.toDate(),
+                        _id: event._id
                     });
                 }
 
@@ -47,7 +48,8 @@ const applyRepeating = (events) => {
                         type: event.type,
                         participants: event.participants,
                         start: newEventStartMoment.toDate(),
-                        end: newEventEndMoment.toDate()
+                        end: newEventEndMoment.toDate(),
+                        _id: event._id
                     });
                 }
 
@@ -109,6 +111,8 @@ export const getSchedules = ({
 
     eventResults = applyRepeating(eventResults);
 
+    console.log(eventResults);
+
     eventResults = eventResults.map((item)=>{
         let title;
         let location;
@@ -125,7 +129,9 @@ export const getSchedules = ({
             allDay: false,
             start: item.start,
             end: item.end,
-            location
+            location,
+            type: item.type === 'Unavailable' ? item.type : 'Meeting',
+            _id: item._id
         }
     });
 

@@ -6,7 +6,8 @@ import './styles.css';
 
 const EventDetailView = ({
     event,
-    onClose
+    onClose,
+    onDelete
 }) => {
     const {
         title = '',
@@ -20,6 +21,14 @@ const EventDetailView = ({
     const endMoment = moment(end);
     const locationSection = location ? (
         <p className='subTitle'>{location}</p>
+    ) : (
+        ''
+    );
+
+    const deleteSection = onDelete && event ? (
+        <Modal.Actions>
+            <Button negative onClick={onDelete(event)}>Delete</Button>
+        </Modal.Actions>
     ) : (
         ''
     );
@@ -49,9 +58,7 @@ const EventDetailView = ({
                         <span>{endMoment.format('h:mm a')}</span>
                     </p>
                 </Modal.Content>
-                <Modal.Actions>
-                    <Button negative>Delete</Button>
-                </Modal.Actions>
+                {deleteSection}
             </Modal>
         </Transition>
     )

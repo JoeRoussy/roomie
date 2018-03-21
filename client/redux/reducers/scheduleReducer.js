@@ -103,14 +103,63 @@ const scheduleReducer = (state = config, actions) => {
             break;
         }
 
-        /* DELETE TIMEBLOCK */
-        case 'DELETE_TIMEBLOCK_FULFILLED': {
+        case 'DELETE_TIMEBLOCK_FULLFILED': {
+            state = {
+                ...state,
+                eventDeleteLoading: false,
+                eventBeingViewed: null
+            };
+
             break;
         }
+
         case 'DELETE_TIMEBLOCK_PENDING': {
+            state = {
+                ...state,
+                eventDeleteLoading: true,
+                eventDeleteErrorMessage: null
+            };
+
             break;
         }
+
         case 'DELETE_TIMEBLOCK_REJECTED': {
+            state = {
+                ...state,
+                eventDeleteLoading: false,
+                eventDeleteErrorMessage: 'Could not delete event, please try again later'
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_DELETE_MEETING_FULLFILED': {
+            state = {
+                ...state,
+                eventDeleteLoading: false,
+                eventBeingViewed: null
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_DELETE_MEETING_PENDING': {
+            state = {
+                ...state,
+                eventDeleteLoading: true,
+                eventDeleteErrorMessage: null
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_DELETE_MEETING_REJECTED': {
+            state = {
+                ...state,
+                eventDeleteLoading: false,
+                eventDeleteErrorMessage: 'Could not delete event, please try again later'
+            };
+
             break;
         }
 
@@ -132,6 +181,7 @@ const scheduleReducer = (state = config, actions) => {
             break;
         }
     }
+
     return state;
 }
 

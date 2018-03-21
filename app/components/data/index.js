@@ -571,7 +571,33 @@ export const getUserMeetings = async({
     meetingsCollection = required('meetingsCollection')
 }) => {
     try{
-        return await meetingsCollection.find({ participants: {$elemMatch: { id: id} } }).toArray();
+        return await meetingsCollection.aggregate([
+            {
+                $match: {
+                    participants: {
+                        $elemMatch: { id }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'listings',
+                    localField: 'listing',
+                    foreignField: '_id',
+                    as: 'listings'
+                }
+            },
+            {
+                $project: {
+                    participants: 1,
+                    start: 1,
+                    end: 1,
+                    date: 1,
+                    owners: 1,
+                    listing: { $arrayElemAt: [ '$listings', 0 ] }
+                }
+            }
+        ]).toArray();
     } catch (e) {
         throw new RethrownError(e, `Error finding timeblocks for user with id ${id}`);
     }

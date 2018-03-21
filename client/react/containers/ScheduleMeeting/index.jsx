@@ -9,7 +9,9 @@ import { change } from 'redux-form';
 import ProfileCard from '../../components/ProfileCard';
 import ListingDisplay from '../../components/ListingDisplay';
 import ScheduleMeetingForm from '../../components/ScheduleMeetingForm';
+import EventDetailView from '../../components/EventDetailView';
 
+import { showEventDetail, clearEventDetail, deleteMeeting, deleteTimeblock } from '../../../redux/actions/scheduleActions';
 import {
     nextStep,
     previousStep,
@@ -66,7 +68,10 @@ const ScheduleMeeting = ({
     onEndTimeChange,
     selectedDate,
     startTime,
-    endTime
+    endTime,
+    onShowEventDetail,
+    eventBeingViewed,
+    onHideDetailView
 }) => {
     const userRedirect = user ? '' : (<Redirect to='sign-in' />);
 
@@ -175,13 +180,19 @@ const ScheduleMeeting = ({
             </Dimmer>
         ) : (
             <div id='scheduleCalendarView'>
+                <EventDetailView
+                    event={eventBeingViewed}
+                    onClose={onHideDetailView}
+                />
                 <BigCalendar
+                    popup
                     events={events}
                     views={['month']}
                     step={60}
                     showMultiDayTimes
                     defaultDate={new Date()}
                     selectable
+                    onSelectEvent={onShowEventDetail}
                 />
             </div>
         );
@@ -243,6 +254,9 @@ const mapStateToProps = ({
         isListingSearchLoading,
         meetingFormErrorMessage
     } = {},
+    scheduleReducer: {
+        eventBeingViewed
+    } = {},
     form: {
         scheduleMeetingForm: {
             values: formValues
@@ -269,7 +283,8 @@ const mapStateToProps = ({
     meetingFormErrorMessage,
     selectedDate: formValues ? formValues.date : null,
     startTime: formValues ? formValues.start : null,
-    endTime: formValues ? formValues.end : null
+    endTime: formValues ? formValues.end : null,
+    eventBeingViewed
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -344,6 +359,8 @@ const mapDispatchToProps = (dispatch) => ({
     onDateChange: (date) => dispatch(change('scheduleMeetingForm', 'date', date)),
     onStartTimeChange: (time) => dispatch(change('timeblockForm', 'start', time)),
     onEndTimeChange: (time) => dispatch(change('timeblockForm', 'end', time)),
+    onShowEventDetail: (event) => dispatch(showEventDetail(event)),
+    onHideDetailView: () => dispatch(clearEventDetail())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScheduleMeeting);

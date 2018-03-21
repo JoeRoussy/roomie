@@ -6,3 +6,16 @@
 #scheduleWrapper #scheduleButtonWrapper {
     margin-top: 30px;
 }
+
+#scheduleWrapper #meetingCards #pendingMeetingsCardGroup {
+    margin-top: 15px;
+}
+
+#scheduleWrapper #scheduleCalendarWrapper {
+    margin-top: 50px;
+}
+
+#scheduleWrapper #noPendingMeetings {
+    font-style: italic;
+    font-weight: normal;
+}

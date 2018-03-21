@@ -284,7 +284,7 @@ export const inviteUserToChannel = ({
 
     //check if the user to invite exist
     if(userArray.length < 1){
-        logger.error(e, 'Error finding users' );
+        logger.error('Error finding users' );
         return sendError({
             res,
             status: 500,
@@ -357,7 +357,7 @@ export const acceptInviteToChannel = ({
     }
     //if the channel was not found
     if(!channel){
-        logger.error(e, 'Error finding channel' );
+        logger.error('Error finding channel' );
         return sendError({
             res,
             status: 500,

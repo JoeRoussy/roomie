@@ -691,6 +691,7 @@ export const acceptMeeting=({
             id: convertToObjectId(id)
         });
     } catch (e){
+        logger.error(e, 'Error retrieving meeting from meetings collection');
         return sendError({
             res,
             status: 500,
@@ -699,6 +700,7 @@ export const acceptMeeting=({
     }
 
     if(!meeting){
+        logger.error('Error no meeting provided');
         return sendError({
             res,
             status: 400,
@@ -719,6 +721,7 @@ export const acceptMeeting=({
     }
 
     if(!userInMeeting){
+        logger.error('Error user is not part of meeting provided');
         return sendError({
             res,
             status: 400,

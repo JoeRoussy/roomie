@@ -2,7 +2,7 @@ import express from 'express';
 import { getChildLogger } from '../components/log-factory';
 import { isAuthenticated, isLandlord } from '../controllers/utils';
 import { required } from '../components/custom-utils';
-import { getMyListings } from '../controllers/myListings';
+import { getMyListings, deleteMyListing } from '../controllers/myListings';
 
 export default ({
     db = required('db'),
@@ -19,6 +19,20 @@ export default ({
                 baseLogger,
                 additionalFields: {
                     module: 'api-get-my-listings'
+                }
+            })
+        })
+    ]);
+
+    myListingsRouter.delete('/:id', [
+        isAuthenticated,
+        isLandlord,
+        deleteMyListing({
+            listingsCollection: db.collection('listings'),
+            logger: getChildLogger({
+                baseLogger,
+                additionalFields: {
+                    module: 'api-delete-my-listings'
                 }
             })
         })

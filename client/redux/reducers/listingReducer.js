@@ -3,7 +3,9 @@ const config = {
     listing: {},
     isEditing: false,
     isFormProcessing: false,
-    myListings: []
+    myListings: [],
+    isDeleting: false,
+    listingToDelete: {}
 };
 
 const listingReducer = (state = config, actions) => {
@@ -79,11 +81,9 @@ const listingReducer = (state = config, actions) => {
             break;
         }
         case 'GET_MY_LISTINGS_PENDING': {
-
             break;
         }
         case 'GET_MY_LISTINGS_REJECTED' : {
-
             break;
         }
         /* END GET_MY_LISTINGS */
@@ -226,6 +226,50 @@ const listingReducer = (state = config, actions) => {
             break;
         }
         /* END EDIT_LISTING */
+
+        /* DELETE_LISTING */
+        case 'DELETING_LISTING': {
+            state = {
+                ...state,
+                isDeleting: true,
+                listingToDelete: payload
+            };
+
+            break;
+        }
+        case 'DELETING_LISTING_CANCELLED': {
+            state = {
+                ...state,
+                isDeleting: false,
+                listingToDelete: {}
+            };
+
+            break;
+        }
+        /* END DELETE_LISTING */
+
+        /* DELETE_LISTING */
+        case 'DELETE_LISTING_FULFILLED': {
+            state = {
+                ...state,
+                isDeleting: false,
+                listingToDelete: {}
+            }
+            break;
+        }
+        case 'DELETE_LISTING_PENDING': {
+            break;
+        }
+        case 'DELETE_LISTING_REJECTED' : {
+            state = {
+                ...state,
+                isDeleting: false,
+                listingToDelete: {}
+            }
+
+            break;
+        }
+        /* END DELETE_LISTING */
     }
 
     return state;

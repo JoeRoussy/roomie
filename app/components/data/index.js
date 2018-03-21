@@ -8,7 +8,7 @@ import {
     RethrownError,
     getUniqueHash
 } from '../custom-utils';
-//import { get as getHash } from '../hash';
+
 import { insert as insertInDb } from '../db/service';
 import { findAndUpdate } from '../db/service';
 import { generateHash as hashPassword } from '../authentication';
@@ -25,7 +25,7 @@ export const getListingsByOwner = async({
     } catch (e) {
         throw new RethrownError(e, `Error getting a listing with owner ${ownerId}`);
     }
-}
+};
 
 // Get listings based on an optional query
 export const findListings = async({

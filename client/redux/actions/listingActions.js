@@ -28,7 +28,6 @@ export const getMyListings = () => ({
     payload: axios.get(`${process.env.API_ROOT}/api/myListings`)
         .catch((e) => {
             toast.error('Error retrieving your listings.');
-
             return e;
         })
 });
@@ -66,9 +65,9 @@ export const submitCreateForm = (formValues) => (dispatch) => {
                 payload: e
             });
         });
-}
+};
 
-export const submitUpdateForm = (formValues, id) =>  (dispatch) => {
+export const submitUpdateForm = (formValues, id) => (dispatch) => {
     dispatch({
         type: 'UPDATE_LISTING_SUBMIT'
     });
@@ -101,8 +100,39 @@ export const submitUpdateForm = (formValues, id) =>  (dispatch) => {
 
 export const editListing = () => ({
     type: 'EDIT_LISTING'
-})
+});
 
 export const cancelEditListing = () => ({
     type: 'EDIT_LISTING_CANCELLED'
+});
+
+export const deletingListing = (listingToDelete) => ({
+    type: 'DELETING_LISTING',
+    payload: listingToDelete
 })
+
+export const cancelDeletingListing = () => ({
+    type: 'DELETING_LISTING_CANCELLED'
+})
+
+export const deleteMyListing = (id) => (dispatch) => {
+    dispatch({
+        type: 'DELETE_LISTING_PENDING'
+    });
+
+    axios.delete(`${process.env.API_ROOT}/api/myListings/${id}`)
+        .then(res => {
+            toast.success('You have deleted the listing!');
+            dispatch({
+                type: 'DELETE_LISTING_FULFILLED'
+            });
+            dispatch(getMyListings());
+        })
+        .catch((e) => {
+            toast.error('Error deleting your listing.');
+            dispatch({
+                type: 'DELETE_LISTING_REJECTED',
+                payload: e
+            });
+        });
+};

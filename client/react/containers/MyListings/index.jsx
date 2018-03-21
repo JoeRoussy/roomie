@@ -4,20 +4,25 @@ import { Container, Card } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import { push } from 'react-router-redux';
 
-import { getMyListings } from '../../../redux/actions/listingActions';
+import { getMyListings, deletingListing, cancelDeletingListing, deleteMyListing } from '../../../redux/actions/listingActions';
 import ListingCard from '../../components/ListingCard';
+import DeleteItemModal from '../../components/DeleteItemModal';
 
 import './styles.css';
 
 @connect(({
     listingReducer: {
-        myListings
+        myListings,
+        isDeleting,
+        listingToDelete
     } = {},
     userReducer: {
         user
     } = {}
 }) => ({
     myListings,
+    isDeleting,
+    listingToDelete,
     user
 }))
 
@@ -27,6 +32,9 @@ export default class MyListings extends React.Component {
 
         this.mapListings = this.mapListings.bind(this);
         this.viewListing = this.viewListing.bind(this);
+        this.deletingListing = this.deletingListing.bind(this);
+        this.cancelDeletingListing = this.cancelDeletingListing.bind(this);
+        this.deletingListingConfirmed = this.deletingListingConfirmed.bind(this);
     }
 
     componentWillMount() {
@@ -36,7 +44,15 @@ export default class MyListings extends React.Component {
 
     // Map all the listings.
     mapListings = (listings) => listings.map((listing, i) =>
-        <ListingCard key = { i } listing = { listing } id = { i } viewListing = { () => this.viewListing(listing) } />)
+        <ListingCard
+            key = { i }
+            listing = { listing }
+            id = { i }
+            canDelete = { true }
+            viewListing = { () => this.viewListing(listing) }
+            deleteListing = { () => this.deletingListing(listing) }
+        />
+    )
 
     // Called when a listing card is clicked.
     // Route to the appropriate listing page using the id.
@@ -46,17 +62,29 @@ export default class MyListings extends React.Component {
         this.props.dispatch(push(path));
     }
 
+    deletingListing(listing) {
+        this.props.dispatch(deletingListing(listing));
+    }
+
+    cancelDeletingListing() {
+        this.props.dispatch(cancelDeletingListing());
+    }
+
+    deletingListingConfirmed(listing) {
+        this.props.dispatch(deleteMyListing(listing._id));
+    }
+
     render() {
         const {
             myListings,
-            user
+            user,
+            isDeleting,
+            listingToDelete
         } = this.props;
 
         const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
-        let body;
-
-        body = myListings.length ? (
+        const body = myListings.length ? (
             <Card.Group>
                 { this.mapListings(myListings) }
             </Card.Group>
@@ -64,10 +92,21 @@ export default class MyListings extends React.Component {
             <p>No listings found.</p>
         );
 
+        const deleteModal = isDeleting && listingToDelete ? (
+            <DeleteItemModal
+                header = 'Deleting Listing'
+                content = { `Are you sure you want to delete the listing: ${listingToDelete.name}` }
+                onAccept = { () => this.deletingListingConfirmed(listingToDelete) }
+                onDecline = { this.cancelDeletingListing }
+                displayModal = { isDeleting }
+            />
+        ) : ('');
+
         return (
             <Container>
                 {redirectSection}
                 {body}
+                {deleteModal}
             </Container>
         )
     }

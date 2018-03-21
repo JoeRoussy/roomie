@@ -15,6 +15,7 @@ const HomeSearch = ({
 }) => {
     const postListingButton = isLandlord ? (
         <div>
+            <Divider id='searchDivider' horizontal>Or</Divider>
             <Button
                 className='listingsButton primaryColour'
                 content='Post new listing'
@@ -26,7 +27,6 @@ const HomeSearch = ({
     return (
         <div id='searchWrapper' className='search' >
             <PlacesAutoComplete inputProps={{...inputProps, placeholder: "Enter a destination..."}}/>
-            <Divider id='searchDivider' horizontal>Or</Divider>
             {postListingButton}
         </div>
     )

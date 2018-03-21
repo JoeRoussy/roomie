@@ -7,7 +7,10 @@
     "start": "node app/index.js",
     "client-dev": "webpack-dev-server --content-base public --no-inline --hot",
     "server-dev": "nodemon --inspect --watch app app/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"webpack",
+    "start-prod":"node_modules/.bin/pm2 startOrGracefulReload app.json",
+    "stop": "node_modules/.bin/pm2 stop app.json"
   },
   "repository": {
     "type": "git",

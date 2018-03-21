@@ -132,6 +132,30 @@ export const getListingById = ({
         }
         //if view doesnt exist, add to view table and increase count
         if(Array.isArray(viewLookup) && viewLookup.length < 1){
+            let listing;
+            try{
+                listing = yield findAndUpdate({
+                    collection: listingsCollection,
+                    query: {_id: req.params.id},
+                    update: {$inc: {views: 1}}
+                });
+            } catch(e) {
+                logger.error(e, `Error finding listing with id: ${req.params.id}`);
+                return sendError({
+                    res,
+                    status: 500,
+                    message: `Error finding listing with id: ${req.params.id}`
+                });
+            }
+
+            if(!listing){
+                return sendError({
+                    res,
+                    status: 404,
+                    message: 'Error: user provided an invalid listing'
+                });
+            }
+
             const view = {
                 userId: convertToObjectId(userId),
                 listingId: convertToObjectId(req.params.id)
@@ -151,27 +175,6 @@ export const getListingById = ({
                     message: 'Error inserting document into views collection'
                 });
             }
-
-            let listing;
-            try{
-                listing = yield findAndUpdate({
-                    collection: listingsCollection,
-                    query: {_id: req.params.id},
-                    update: {$inc: {views: 1}}
-                });
-            } catch(e) {
-                logger.error(e, `Error finding listing with id: ${req.params.id}`);
-                return sendError({
-                    res,
-                    status: 500,
-                    message: `Error finding listing with id: ${req.params.id}`
-                });
-            }
-
-            //Success finding and updating the view, so return the listing
-            return res.json({
-                listing
-            });
         }
     }
 

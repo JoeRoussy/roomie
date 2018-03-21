@@ -383,14 +383,17 @@ export const findRecommendedRoommates = async({
         ]).toArray();
 
         // NOTE: Cheesey map to take 1 user out of the users because we don't have time to deal with the db upgrade to 3.4
-        roommateSurveyResponses = roommateSurveyResponses.map(({
-            users,
-            userId,
-            ...rest
-        }) => ({
-            user: users[0],
-            ...rest
-        }));
+        roommateSurveyResponses = roommateSurveyResponses
+            .map(({
+                users,
+                userId,
+                ...rest
+            }) => ({
+                user: users[0],
+                ...rest
+            }))
+            .filter(x => !x.isLandlord);
+
     } catch (e) {
         throw new RethrownError(e, 'Error getting roommate survey responses');
     }

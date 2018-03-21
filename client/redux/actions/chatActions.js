@@ -141,6 +141,36 @@ export const createChannel  = (channelName) => (dispatch) =>{
          });
      });
 }
+export const createChannelWithUser  = (channelName,user) => (dispatch) =>{
+    dispatch({
+        type: 'CREATE_CHANNEL_PENDING'
+    });
+    axios.post(`${process.env.API_ROOT}/api/channels/`,{
+        channelName
+    })
+     .then( res =>{
+         dispatch({
+             type: 'CREATE_CHANNEL_FULFILLED',
+             payload: res
+         });
+         //once we know the channel id
+         const channel = res.data.channel;
+         //set that as the active channel
+         dispatch(setActiveChannel(channel));
+         //send an invite to the new channel to the other user
+         dispatch(sendChannelInvite(channel,user._id));
+
+     }).catch(e => {
+         toast.error("Failed to create channel");
+         console.log(e);
+         dispatch({
+             type: 'CREATE_CHANNEL_REJECTED',
+             payload: e
+         });
+     });
+}
+
+
 
 export const acceptInviteToChannel = (channel) => (dispatch) =>{
     dispatch({

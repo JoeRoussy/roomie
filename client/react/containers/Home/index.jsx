@@ -14,6 +14,9 @@ import { navigateTo } from '../../../components';
 import { setPasswordResetToken } from '../../../redux/actions/forgotPasswordFormActions';
 import ProfileCard from '../../components/ProfileCard';
 
+import {createChannelWithUser} from '../../../redux/actions/chatActions';
+
+
 import './styles.css';
 
 @connect((store)=>({
@@ -33,6 +36,7 @@ class Home extends Component {
         this.submitSearch = this.submitSearch.bind(this);
         this.navigateToRoommateSurvey = this.navigateToRoommateSurvey.bind(this);
         this.onPasswordResetToken = this.onPasswordResetToken.bind(this);
+        this.createChatWithRoommate = this.createChatWithRoommate.bind(this);
     }
 
     componentWillMount() {
@@ -75,6 +79,11 @@ class Home extends Component {
         this.props.dispatch(setPasswordResetToken(token));
     }
 
+    createChatWithRoommate(roommate){
+        this.props.dispatch(createChannelWithUser(roommate.name,roommate));
+        navigateTo(this.props.dispatch)('/chat');
+    }
+
     render(){
          const locationProps = {
             value: this.props.searchState.location,
@@ -99,7 +108,7 @@ class Home extends Component {
                     topExtras={(<Label color='green' floating>{Math.floor(roommate.percentMatch)}%</Label>)}
                     bottomExtras={(
                         <Card.Content>
-                            <Button color='green'>Message</Button>
+                            <Button color='green' onClick={()=>this.createChatWithRoommate(roommate)}>Message</Button>
                         </Card.Content>
                     )}
                     user={roommate}

@@ -61,4 +61,4 @@ typings/
 #Custom settings....
 
 #Ignore uploaded assets
-assets/
+app/assets/

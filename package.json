@@ -8,8 +8,8 @@
     "client-dev": "webpack-dev-server --content-base public --no-inline --hot",
     "server-dev": "nodemon --inspect --watch app app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"webpack",
-    "start-prod":"node_modules/.bin/pm2 startOrGracefulReload app.json",
+    "build": "webpack",
+    "start-prod": "node_modules/.bin/pm2 startOrGracefulReload app.json",
     "stop": "node_modules/.bin/pm2 stop app.json"
   },
   "repository": {
@@ -61,6 +61,7 @@
     "nodemailer-express-handlebars": "3.0.0",
     "nodemailer-juice": "1.0.0",
     "path": "^0.12.7",
+    "pm2": "^2.10.1",
     "prop-types": "^15.6.1",
     "qs": "6.5.1",
     "query-string": "5.1.0",

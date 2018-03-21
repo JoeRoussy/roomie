@@ -45,7 +45,7 @@ const ListComments = ({
                         <Comment.Metadata>
                             <div>{moment(message.createdAt).fromNow()}</div>
                         </Comment.Metadata>
-                        <Comment.Text>{message.body}</Comment.Text>
+                        <Comment.Text>{ProcessBody({message})}</Comment.Text>
                         <Comment.Actions>
                             <Comment.Action><Icon color='red' name='warning sign' />Failed to send this message</Comment.Action>
                         </Comment.Actions>
@@ -61,7 +61,7 @@ const ListComments = ({
                     <Comment.Metadata>
                         <div>{moment(message.createdAt).fromNow()}</div>
                     </Comment.Metadata>
-                    <Comment.Text>{message.body}</Comment.Text>
+                    <Comment.Text>{ProcessBody({message})}</Comment.Text>
                 </Comment.Content>
             </Comment>
         )

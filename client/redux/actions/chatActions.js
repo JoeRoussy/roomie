@@ -274,3 +274,7 @@ export const userSearch = (name) => ({
             return e;
         })
 });
+
+export const resetChat = () => ({
+    type: 'RESET_CHAT'
+});

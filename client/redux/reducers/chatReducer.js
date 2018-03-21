@@ -345,6 +345,17 @@ const ChatReducer = (state = config, actions) => {
             };
             break;
         }
+        case 'RESET_CHAT':{
+            let tmr = null;
+            if(state.chatTimer){
+                 tmr = clearInterval(state.chatTimer);
+            }
+            state = {
+                ...config,
+                chatTimer:tmr
+            }
+            break;
+        }
     }
     return state;
 }

@@ -10,24 +10,16 @@ const showImages = (images) => images.map((image, i) =>
 
 const ListingDisplay = ({
     listing,
-    singleImage // Must be a full URL
+    carouselWidth = '80%',
+    centered = false
 }) => {
-
-    let imagePortion;
-
-    if (singleImage) {
-        imagePortion = (
-            <Image id='listingDisplaySingleImage' size='large' src={singleImage} />
-        );
-    } else {
-        imagePortion = listing.images ? (
-            <Carousel width='80%'>
-                {showImages(listing.images)}
-            </Carousel>
-        ) : (
-            ''
-        );
-    }
+    const imagePortion = listing.images ? (
+        <Carousel width={carouselWidth}>
+            {showImages(listing.images)}
+        </Carousel>
+    ) : (
+        ''
+    );
 
     return (
         <Container id='listingDisplayWrapper'>
@@ -38,7 +30,7 @@ const ListingDisplay = ({
             </Header>
             <p className='address'>{ `${listing.street}, ${listing.city} ${listing.postalCode}` }</p>
             <p className='price' color='green'>${listing.price}</p>
-            <p className='description'>{listing.description}</p>
+            <p className={`description${centered ? ' centered' : ''}`}>{listing.description}</p>
             {imagePortion}
         </Container>
     );

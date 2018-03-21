@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import nodemailerHandlebars from 'nodemailer-express-handlebars';
 import inlineCss from 'nodemailer-juice';
 import marked from 'marked';
+import moment from 'moment';
 
 import { required, RethrownError } from '../custom-utils';
 
@@ -25,6 +26,9 @@ const _helpers = {
         }
 
         return text.replace(/\n/g, '<br>');
+    },
+    formatDate(date) {
+        return moment(date).format('MMMM DD YYYY');
     }
 };
 

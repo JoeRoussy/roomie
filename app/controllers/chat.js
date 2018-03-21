@@ -250,7 +250,7 @@ export const inviteUserToChannel = ({
     }
     //if the channel was not found
     if(!channel){
-        logger.error(e, 'Error finding channel' );
+        logger.error('Error finding channel' );
         return sendError({
             res,
             status: 500,

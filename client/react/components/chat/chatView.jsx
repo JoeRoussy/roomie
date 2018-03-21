@@ -11,17 +11,14 @@ const ProcessBody = ({
     if(body){
         const parts = body.split(' ');
         return parts.map((part, i)=>{
-            if(part){
-                if(part.startsWith("www.")){
-                    return ( <a href={'//'+part} target="_blank" key={`${message._id}${i}`}>{part}</a>)
-                }
-                else if(part.startsWith("http")){
-                    return ( <a href={part} target="_blank" key={`${message._id}${i}`}>{part}</a>)
-                }else {
-                    return part + ' ';
-                }
+            const expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
+            const regex = new RegExp(expression);
+            if(part.match(regex)){
+                return <a href = { part } target="_blank"> {part} </a>
             }
-            return "";
+            else{
+                return part + ' ';
+            }
         })
     }
     return "";

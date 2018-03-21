@@ -154,7 +154,7 @@ class Schedule extends Component{
     }
 
     formatTime(t){
-        return moment(t).format("h:mm: a");
+        return moment(t).format("h:mm a");
     }
 
     getMeetingCards(){

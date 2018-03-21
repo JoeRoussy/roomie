@@ -89,7 +89,9 @@ export const findAndUpdate = async ({
     let updateResult;
     let updateObj;
 
-    if (update) {
+    if (update.$inc) {
+        updateObj = update;
+    } else {
         updateObj = {
             $set: update
         };

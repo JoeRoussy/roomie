@@ -641,3 +641,16 @@ export const getPasswordResetLink = async({
     // Now make a link to reset the email
     return `${FRONT_END_ROOT}/?passwordResetToken=${urlIdentifyer}`;
 };
+
+export const getListingViewers = async({
+    viewsCollection = required('viewsCollection'),
+    userId,
+    listingId
+}) => {
+    let query = {userId: userId, listingId:listingId}
+    try {
+        return await viewsCollection.find(query).toArray();
+    } catch (e){
+        throw new RethrownError(e, `Error finding document with userId: ${userId} and listingId: ${listingId}`);
+    }
+};

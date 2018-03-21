@@ -466,6 +466,10 @@ export const createListing = ({
             errorKey: LISTING_ERRORS_INVALID_ADDRESS
         });
     }
+    let formattedAddressWithCity = formattedAddress;
+    if(formattedAddress.indexOf(city) == -1){
+        formattedAddressWithCity += `, ${city}`;
+    }
 
     let savedListing;
 
@@ -491,7 +495,8 @@ export const createListing = ({
                 internet: internetBool,
                 laundry: laundryBool,
                 airConditioning: airConditioningBool,
-                location: formattedAddress,
+                location: formattedAddressWithCity,
+                locationDisplay: formattedAddress,
                 images,
                 ownerId: convertToObjectId(req.user._id),
                 keywords: [],

@@ -27,6 +27,7 @@ export default ({
 
     listingsRouter.get('/:id', getListingById({
         listingsCollection: db.collection('listings'),
+        viewsCollection: db.collection('views'),
         logger: getChildLogger({
             baseLogger,
             additionalFields: {

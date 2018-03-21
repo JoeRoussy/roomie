@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
 import { required, convertToObjectId, extendIfPopulated, convertToBoolean } from '../components/custom-utils';
-import { findListings, getListingByIdWithOwnerPopulated } from '../components/data';
+import { findListings, getListingByIdWithOwnerPopulated, getListingViewers} from '../components/data';
 import { sendError } from './utils';
 import { isPrice, isInteger, isFullOrHalfInt, isPostalCode } from '../../common/validation';
 import { listingTypes, provinces, cities } from '../../common/constants';
@@ -87,6 +87,7 @@ export const getListings = ({
 
 export const getListingById = ({
     listingsCollection = required('listingsCollection'),
+    viewsCollection = required('viewsCollection'),
     logger = required('logger', 'You must pass a logger for this function to use'),
 }) => coroutine(function* (req, res) {
 
@@ -96,10 +97,82 @@ export const getListingById = ({
         // Something weird has happened...
         logger.error('No id in parameters for get listing by id');
 
-        return res.status(500).json({
-            error: true,
-            message: `Could not get listing with id ${req.params.id}`
+        return sendError({
+            res,
+            status: 400,
+            message: 'No id in parameters for get listing by id'
         });
+    }
+    
+    //if user is logged in check if they have viewed listing before.
+    const {
+        user: {
+            _id: userId
+        } = {}
+    } = req;
+
+    let viewLookup;
+
+    if(userId){
+        //check look up table to see if view exists
+        try {
+            viewLookup = yield getListingViewers({
+                viewsCollection,
+                userId: convertToObjectId(userId),
+                listingId: convertToObjectId(req.params.id)
+            });
+        } catch (e){
+            logger.error(e, `Error finding listing with user ${userId} on listing ${req.params.id}`);
+
+            return sendError({
+                res,
+                status: 500,
+                message: 'Error retrieving from views collection'
+            });
+        }
+        //if view doesnt exist, add to view table and increase count
+        if(Array.isArray(viewLookup) && viewLookup.length < 1){
+            const view = {
+                userId: convertToObjectId(userId),
+                listingId: convertToObjectId(req.params.id)
+            }
+            let viewResult;
+            try {
+                viewResult = yield insertInDb({
+                    collection: viewsCollection,
+                    document: view
+                });
+            } catch (e) {
+                logger.error(e, `Error inserting document into views collection`)
+
+                return sendError({
+                    res,
+                    status: 500,
+                    message: 'Error inserting document into views collection'
+                });
+            }
+
+            let listing;
+            try{
+                listing = yield findAndUpdate({
+                    collection: listingsCollection,
+                    query: {_id: req.params.id},
+                    update: {$inc: {views: 1}}
+                });
+            } catch(e) {
+                logger.error(e, `Error finding listing with id: ${req.params.id}`);
+                return sendError({
+                    res,
+                    status: 500,
+                    message: `Error finding listing with id: ${req.params.id}`
+                });
+            }
+
+            //Success finding and updating the view, so return the listing
+            return res.json({
+                listing
+            });
+        }
     }
 
     try {
@@ -496,7 +569,8 @@ export const createListing = ({
                 ownerId: convertToObjectId(req.user._id),
                 keywords: [],
                 lat,
-                lng
+                lng,
+                views: 0
             },
             returnInsertedDocument: true
         });

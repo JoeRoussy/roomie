@@ -111,6 +111,11 @@ export default class Listing extends React.Component {
             <Button onClick = { this.editListing }>Edit listing</Button>
         ) : ('');
 
+        let startChatButton;
+        startChatButton = (user && !user.isLandlord) ? (
+            <Button color='green' onClick={()=>this.createChatWithLandlord(listing.owner)}>Message</Button>
+        ) : ('');
+
         let bodySection;
 
         if (isEditing && listing) {
@@ -138,7 +143,7 @@ export default class Listing extends React.Component {
                     <ListingDisplay
                         listing={ listing }
                     />
-                {//<Button color='green' onClick={()=>this.createChatWithLandlord(listing.owner)}>Message</Button>}
+                    {startChatButton}
                     <div style= {{margin:'auto'}}>
                         { (()=><MapComponent position={{lat: this.props.listing.lat, lng: this.props.listing.lng}} />)() }
                     {/*<MapComponent position={position} />*/}

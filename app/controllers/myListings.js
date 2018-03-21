@@ -26,6 +26,9 @@ export const getMyListings = ({
         });
     }
 
+    //TODO: ALSO add functionality to get leases and display it on my-listings
+
+
     return res.json({
         listings: result
     });
@@ -94,5 +97,46 @@ export const deleteMyListing = ({
 
     return res.json({
         listings: result
+    });
+});
+
+
+export const createLease = ({
+    listingsCollection = required(listingsCollection),
+    leasesCollection = required(leasesCollection),
+    usersCollection = required(usersCollection),
+    logger = required('logger', 'You must pass a logger for this function')
+})=> coroutine(function* (req, res) {
+    //TODO
+    //Perform Validation
+
+    //Create the Lease
+
+    //Update the listing
+
+    //Send emails
+
+    //Return result
+    return res.json({
+
+    });
+});
+
+export const updateLease = ({
+    listingsCollection = required(listingsCollection),
+    leasesCollection = required(leasesCollection),
+    usersCollection = required(usersCollection),
+    logger = required('logger', 'You must pass a logger for this function')
+})=> coroutine(function* (req, res) {
+    //TODO
+    //Extract information about user accepting or declining lease
+
+    //Perform Validation
+    
+    //Update the lease
+
+    //Return result
+    return res.json({
+
     });
 });

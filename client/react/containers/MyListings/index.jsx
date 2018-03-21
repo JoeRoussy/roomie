@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Container, Card } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import { push } from 'react-router-redux';
-
+import { populateForm } from '../../../redux/actions/leaseActions'
 import { getMyListings, deletingListing, cancelDeletingListing, deleteMyListing } from '../../../redux/actions/listingActions';
 import ListingCard from '../../components/ListingCard';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -31,6 +31,7 @@ export default class MyListings extends React.Component {
         super(props);
 
         this.mapListings = this.mapListings.bind(this);
+        this.createLease = this.createLease.bind(this);
         this.viewListing = this.viewListing.bind(this);
         this.deletingListing = this.deletingListing.bind(this);
         this.cancelDeletingListing = this.cancelDeletingListing.bind(this);
@@ -49,6 +50,7 @@ export default class MyListings extends React.Component {
             listing = { listing }
             id = { i }
             canDelete = { true }
+            createLease = { () => this.createLease(listing) }
             viewListing = { () => this.viewListing(listing) }
             deleteListing = { () => this.deletingListing(listing) }
         />
@@ -59,6 +61,12 @@ export default class MyListings extends React.Component {
     viewListing(listing) {
         // Route to the view listing page with the id of this listing
         const path = `/listings/${listing._id}`;
+        this.props.dispatch(push(path));
+    }
+
+    createLease(listing){
+        const path = `/lease`;
+        this.props.dispatch(populateForm(listing))
         this.props.dispatch(push(path));
     }
 

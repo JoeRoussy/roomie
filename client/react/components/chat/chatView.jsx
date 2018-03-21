@@ -11,17 +11,14 @@ const ProcessBody = ({
     if(body){
         const parts = body.split(' ');
         return parts.map((part, i)=>{
-            if(part){
-                if(part.startsWith("www.")){
-                    return ( <a href={'//'+part} target="_blank" key={`${message._id}${i}`}>{part}</a>)
-                }
-                else if(part.startsWith("http")){
-                    return ( <a href={part} target="_blank" key={`${message._id}${i}`}>{part}</a>)
-                }else {
-                    return part + ' ';
-                }
+            const expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
+            const regex = new RegExp(expression);
+            if(part.match(regex)){
+                return <a href = { part } target="_blank"> {part} </a>
             }
-            return "";
+            else{
+                return part + ' ';
+            }
         })
     }
     return "";
@@ -45,7 +42,7 @@ const ListComments = ({
                         <Comment.Metadata>
                             <div>{moment(message.createdAt).fromNow()}</div>
                         </Comment.Metadata>
-                        <Comment.Text>{message.body}</Comment.Text>
+                        <Comment.Text>{ProcessBody({message})}</Comment.Text>
                         <Comment.Actions>
                             <Comment.Action><Icon color='red' name='warning sign' />Failed to send this message</Comment.Action>
                         </Comment.Actions>
@@ -61,7 +58,7 @@ const ListComments = ({
                     <Comment.Metadata>
                         <div>{moment(message.createdAt).fromNow()}</div>
                     </Comment.Metadata>
-                    <Comment.Text>{message.body}</Comment.Text>
+                    <Comment.Text>{ProcessBody({message})}</Comment.Text>
                 </Comment.Content>
             </Comment>
         )

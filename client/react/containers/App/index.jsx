@@ -23,11 +23,6 @@ import ScheduleMeeting from '../ScheduleMeeting';
 
 import './styles.css';
 
-
-const mainInlineStyles = {
-    paddingTop: '90px'
-};
-
 const App = ({
 
 }) => (
@@ -35,7 +30,7 @@ const App = ({
         <header>
             <Navbar />
         </header>
-        <main style={mainInlineStyles}>
+        <main>
             <ToastContainer />
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />

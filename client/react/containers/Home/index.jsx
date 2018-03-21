@@ -16,7 +16,6 @@ import ProfileCard from '../../components/ProfileCard';
 
 import {createChannelWithUser} from '../../../redux/actions/chatActions';
 
-
 import './styles.css';
 
 @connect((store)=>({
@@ -153,8 +152,12 @@ class Home extends Component {
         return (
             <div>
                 {passwordResetRedirect}
-                <div className='section'>
-                    <Container>
+                <div id='homeWrapper' className='section'>
+                    <div id='heroOverlay'>
+                    </div>
+                    <Container id='homeSearchWrapper'>
+                        <h1 id='homeHeading'>Roomie</h1>
+                        <h2 id='homeSubHeading'>Your new place is a search away</h2>
                         <HomeSearch
                             navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
                             inputProps = {locationProps}

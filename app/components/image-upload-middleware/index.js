@@ -8,7 +8,11 @@ import validateImage from '../validate-image';
 
 // Provides middleware to parse a file uploaded under on a field defined by name
 // Parsed file will be avaiable in req.file
-export const singleFile = (name, storagePath) => {
+export const processFileUpload = ({
+    name,
+    storagePath,
+    isMultipleUpload
+}) => {
     if (!name) {
         throw new Error('You must pass in the name of the form field to inspect for the file');
     }
@@ -57,8 +61,11 @@ export const singleFile = (name, storagePath) => {
 
     const upload = multer({ storage });
 
-    //return upload.single(name);
-    return upload.array(name);
+    if (isMultipleUpload) {
+        return upload.array(name);
+    }
+
+    return upload.single(name);
 }
 
 // Ensures an images is valid by inspecting the contents of the image itself. Prevents a client of lying about the mimetype

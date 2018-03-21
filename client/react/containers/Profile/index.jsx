@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { Container } from 'semantic-ui-react';
+import { Container, Button } from 'semantic-ui-react';
 import { change } from 'redux-form';
 
 import ProfileForm from '../../components/ProfileForm';
@@ -71,11 +71,16 @@ const Profile = ({
         />
     )
 
+    const myListings = !isEditing && user && user.isLandlord ? (
+        <Button onClick = { () => navigateTo('/my-listings') }>View my listings</Button>
+    ) : ('');
+
     return (
         <Container>
             <h1>Profile</h1>
             {redirectSection}
             {bodySection}
+            {myListings}
         </Container>
     );
 };

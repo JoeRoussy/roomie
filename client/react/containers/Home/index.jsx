@@ -46,7 +46,7 @@ class Home extends Component {
     }
 
     navigateToCreateListing(user) {
-        return user ? this.props.dispatch(push('/login')):this.props.dispatch(push('/create-listing'));
+        return user ? this.props.dispatch(push('/create-listing')):this.props.dispatch(push('/sign-in'));
     }
 
     processLocation(searchArgs) {
@@ -149,6 +149,7 @@ class Home extends Component {
                         <HomeSearch
                             navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
                             inputProps = {locationProps}
+                            isLandlord = {this.props.user ? this.props.user.isLandlord : true}
                         />
                     </Container>
                     {/* INSERT 5 POPULAR LISTINGS HERE */}

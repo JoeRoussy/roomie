@@ -47,7 +47,13 @@ export default class Listings extends React.Component {
                 furnished,
                 keywords,
                 maxPrice,
-                minPrice
+                minPrice,
+                type,
+                utilities,
+                parking,
+                internet,
+                laundry,
+                ac
             } = {}
         } = form;
 
@@ -61,6 +67,12 @@ export default class Listings extends React.Component {
         if(location) processedArgs.push(`location=${location}`);
         if(maxPrice) processedArgs.push(`maxPrice=${maxPrice}`);
         if(minPrice) processedArgs.push(`minPrice=${minPrice}`);
+        if(type) processedArgs.push(`type=${type}`);
+        if(utilities) processedArgs.push(`utilities=${utilities}`);
+        if(parking) processedArgs.push(`parking=${parking}`);
+        if(internet) processedArgs.push(`internet=${internet}`);
+        if(laundry) processedArgs.push(`laundry=${laundry}`);
+        if(ac) processedArgs.push(`ac=${ac}`);
 
         return processedArgs;
     }

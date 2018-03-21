@@ -15,6 +15,8 @@ import {
     cancelEditListing
 } from '../../../redux/actions/listingActions';
 
+import './styles.css';
+
 @connect(({
     listingReducer: {
         listing,
@@ -131,9 +133,8 @@ export default class Listing extends React.Component {
                     <ListingDisplay
                         listing={ listing }
                     />
-                    <div style= {{margin:'auto'}}>
-                        { (()=><MapComponent position={{lat: this.props.listing.lat, lng: this.props.listing.lng}} />)() }
-                    {/*<MapComponent position={position} />*/}
+                <div id='mapsComponentWrapper'>
+                        <MapComponent position={{lat: this.props.listing.lat, lng: this.props.listing.lng}} />
                     </div>
                     {editButton}
                 </div>
@@ -143,7 +144,7 @@ export default class Listing extends React.Component {
         }
 
         return (
-            <Container className='rootContainer'>
+            <Container id='listingContainer' className='rootContainer'>
                 {bodySection}
                 <Button className='primaryColour' onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
             </Container>

@@ -29,9 +29,28 @@ const ChatReducer = (state = config, actions) => {
     switch(actions.type) {
 
         case 'GET_CHANNELS_FULFILLED': {
+            let activeChannel;
+            if(state.activeChannel._id){
+                activeChannel = actions.payload.data.channels.find((channel)=>{
+                    return channel._id === state.activeChannel._id;
+                })
+            }
+            let channelUsers;
+            if(!activeChannel){
+                activeChannel = state.activeChannel;
+                channelUsers = state.activeChannelUsers;
+            }else{
+                channelUsers = activeChannel.users.reduce((r,e)=>{
+                    r[e.userId] = e;
+                    return r;
+                },{})
+            }
+
             state = {
                 ...state,
-                channels:actions.payload.data.channels
+                channels:actions.payload.data.channels,
+                activeChannel: activeChannel,
+                activeChannelUsers: channelUsers
             }
             break;
         }

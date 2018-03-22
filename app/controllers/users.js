@@ -472,16 +472,6 @@ export const fetchRecommenedRoommates = ({
         });
     }
 
-    if (!recommendedRoommates.length) {
-        logger.error(`No recommended roommates found for user with id: ${userId}`);
-
-        return sendError({
-            res,
-            status: 500,
-            message: 'Something went wrong processing your request'
-        });
-    }
-
     return res.json({
         recommendedRoommates
     });

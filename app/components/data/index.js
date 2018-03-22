@@ -28,6 +28,19 @@ export const getListingsByOwner = async({
     }
 };
 
+export const getLeasesByOwner = async({
+    leasesCollection = required('leasesCollection'),
+    ownerId = required('ownerId')
+}) => {
+    try {
+        return await leasesCollection.find({
+            ownerId: convertToObjectId(ownerId)
+        }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting a leases with owner ${ownerId}`);
+    }
+};
+
 // Get listings based on an optional query
 export const findListings = async({
     listingsCollection = required('listingsCollection'),

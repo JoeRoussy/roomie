@@ -157,3 +157,13 @@ export const sendPasswordResetEmail = async({
         throw new RethrownError(e, `Error sending sign up message to user with email: ${email}`);
     }
 };
+
+export const sendLeaseInviteEmail = async({
+    user = required('user'),
+    indentifier = required('indentifier'),
+    lease = required('lease'),
+    listing = required('listing'),
+    landlordName = required('landlordName')
+}) => {
+    
+}

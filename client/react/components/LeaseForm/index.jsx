@@ -4,10 +4,21 @@ import { Form, Icon, Button, Search, Input, Card } from 'semantic-ui-react';
 import { LabelInputField } from 'react-semantic-redux-form';
 import WrappedDatePicker from '../WrappedDatePicker';
 import ProfileCard from '../ProfileCard';
+import { isPrice } from '../../../../common/validation';
 
 const validate = (values) => {
     let errors = {};
 
+    const {
+        price
+    } = values;
+
+    if (price && !isPrice(price)) {
+        errors = {
+            maxPrice: 'Please enter a valid price',
+            ...errors
+        };
+    }
     return errors;
 }
 

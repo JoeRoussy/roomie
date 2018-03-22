@@ -15,6 +15,7 @@ export default ({
         isLandlord,
         getMyListings({
             listingsCollection: db.collection('listings'),
+            leasesCollection: db.collection('leases'),
             logger: getChildLogger({
                 baseLogger,
                 additionalFields: {

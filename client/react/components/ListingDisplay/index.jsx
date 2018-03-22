@@ -1,7 +1,8 @@
 import React from 'react';
 import { Container, Header, Icon, Image, Item, Label } from 'semantic-ui-react';
-import Carousel from 'nuka-carousel';
+import { Carousel } from 'react-responsive-carousel';
 
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './styles.css';
 
 const showImages = (images) => images.map((image, i) =>
@@ -9,43 +10,28 @@ const showImages = (images) => images.map((image, i) =>
 
 const ListingDisplay = ({
     listing,
-    singleImage // Must be a full URL
+    carouselWidth = '80%',
+    centered = false
 }) => {
-
-    let imagePortion;
-
-    if (singleImage) {
-        imagePortion = (
-            <Image id='listingDisplaySingleImage' size='large' src={singleImage} />
-        );
-    } else {
-        imagePortion = (
-            <Carousel>
-                { listing.images ? showImages(listing.images) : [] }
-            </Carousel>
-        )
-    }
+    const imagePortion = listing.images ? (
+        <Carousel width={carouselWidth}>
+            {showImages(listing.images)}
+        </Carousel>
+    ) : (
+        ''
+    );
 
     return (
-        <Container>
-            <Header as='h2' icon textAlign='center'>
+        <Container id='listingDisplayWrapper'>
+            <Header as='h1' textAlign='center'>
               <Header.Content>
                   { listing.name }
               </Header.Content>
             </Header>
+            <p className='address'>{ `${listing.street}, ${listing.city} ${listing.postalCode}` }</p>
+            <p className='price' color='green'>${listing.price}</p>
+            <p className={`description${centered ? ' centered' : ''}`}>{listing.description}</p>
             {imagePortion}
-            <Item>
-                  <Item.Content>
-                      <Item.Header as='a'>{ `$${listing.price}` }</Item.Header>
-                      <Item.Meta>
-                          <span className='address'>{ `${listing.street}, ${listing.city} ${listing.postalCode}` }</span>
-                      </Item.Meta>
-                      <Item.Description>{ listing.description }</Item.Description>
-                      <Item.Extra>
-                          <Label icon='globe' content='View Map' />
-                      </Item.Extra>
-                  </Item.Content>
-            </Item>
         </Container>
     );
 }

@@ -142,3 +142,8 @@ Optional environment variables are:
 
 ### Running The app
 Once all of the above conditions are taken care of, run the front end using `npm run client-dev` and run the server in a new tab using `npm run server-dev`.
+
+### Running in production environment
+Run `npm run build` to build the front-end
+Start the app using `num run start-prod`
+Stop the app using `npm run stop`

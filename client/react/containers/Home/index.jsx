@@ -5,17 +5,21 @@ import { push } from 'react-router-redux';
 import moment from 'moment';
 import queryString from 'query-string';
 import { Redirect } from 'react-router';
+import jwtDecode from 'jwt-decode';
+import { toast } from 'react-toastify';
 
 import HomeSearch from '../../components/Search/HomeSearch';
 import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
-import { search, handleLocationChange } from '../../../redux/actions/searchActions';
-import { getRoommateSuggestionsForUser } from '../../../redux/actions/homeActions';
 import { navigateTo } from '../../../components';
-import { setPasswordResetToken } from '../../../redux/actions/forgotPasswordFormActions';
 import ProfileCard from '../../components/ProfileCard';
 
-import {createChannelWithUser} from '../../../redux/actions/chatActions';
+import { createChannelWithUser } from '../../../redux/actions/chatActions';
+import { search, handleLocationChange } from '../../../redux/actions/searchActions';
+import { getRoommateSuggestionsForUser } from '../../../redux/actions/homeActions';
+import { setPasswordResetToken } from '../../../redux/actions/forgotPasswordFormActions';
+import { setCurrentUser} from '../../../redux/actions/userActions';
 
+import { setJwt } from '../../../components';
 
 import './styles.css';
 
@@ -43,6 +47,16 @@ class Home extends Component {
         const {
             user
         } = this.props;
+
+        const queryParams = queryString.parse(this.props.location.search);
+
+        if (queryParams.newToken) {
+            const currentUser = jwtDecode(queryParams.newToken);
+
+            setJwt(queryParams.newToken);
+            this.props.dispatch(setCurrentUser(currentUser));
+            toast.success('Your email has been confirmed!');
+        }
 
         if (user) {
             this.props.dispatch(getRoommateSuggestionsForUser(user));
@@ -153,8 +167,12 @@ class Home extends Component {
         return (
             <div>
                 {passwordResetRedirect}
-                <div className='section'>
-                    <Container>
+                <div id='homeWrapper' className='section'>
+                    <div id='heroOverlay'>
+                    </div>
+                    <Container id='homeSearchWrapper'>
+                        <h1 id='homeHeading'>Roomie</h1>
+                        <h2 id='homeSubHeading'>Your new place is a search away</h2>
                         <HomeSearch
                             navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
                             inputProps = {locationProps}

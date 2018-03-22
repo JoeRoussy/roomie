@@ -98,7 +98,10 @@ export default class Listings extends React.Component {
             onKeyUp: (event) => {if(event.keyCode==13) this.submitSearch()}
         }
 
-        const { listings, waitingForSearch} = this.props;
+        const {
+            listings,
+            waitingForSearch
+        } = this.props;
 
         let body;
         if(waitingForSearch){
@@ -120,7 +123,7 @@ export default class Listings extends React.Component {
 
 
         return (
-            <Container>
+            <Container className='rootContainer'>
                 <Grid>
                     <Grid.Column width={4}>
                         <ViewListingsSearch locationProps={locationProps} submitSearch={this.submitSearch} errorMessage={this.props.errorMessage} />

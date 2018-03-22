@@ -1,11 +1,3 @@
-// const typedTextOptions = [
-//     'Toronto',
-//     'London',
-//     'Montreal',
-//     'Edmonton',
-//     'Vancouver'
-// ];
-
 import { cities } from '../../../common/constants';
 
 const config = {

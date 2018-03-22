@@ -21,6 +21,10 @@ const ProfileDisplay = ({
 
     let editSection;
 
+    const viewListingsButton = user.isLandlord ? (
+        <Button className='primaryColour' id="viewListingsProfileButton" onClick = { () => navigateTo('/my-listings') }>View my listings</Button>
+    ) : ('');
+
     if (isDeleting) {
         editSection = (
             <Card id="deleteProfileConfirmation">
@@ -38,7 +42,7 @@ const ProfileDisplay = ({
     } else {
         editSection = (
             <div>
-                <Button className='primaryColour' id="viewListingsProfileButton" onClick = { () => navigateTo('/my-listings') }>View my listings</Button>
+                {viewListingsButton}
                 <Button className='primaryColour' id="editProfileButton" onClick={onEditClicked}>Edit Profile</Button>
                 <Button id="deleteProfileButton" color="red" onClick={onDeleteClicked}>Delete Profile</Button>
             </div>

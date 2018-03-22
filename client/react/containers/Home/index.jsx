@@ -184,7 +184,7 @@ class Home extends Component {
                         <h3 id='homeTypingWrapper'>
                             <Typing onFinishedTyping={this.onFinishedTyping} loop speed={200} cursor={<TypeCursor />}>
                                 <span>{this.props.currentTypeText}</span>
-                                <Typing.Backspace count={this.props.currentTypeText.length} />
+                                <Typing.Backspace count={this.props.currentTypeText.length} speed={100}/>
                             </Typing>
                         </h3>
                         <HomeSearch

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import {Button, Container, Menu, Icon,Search } from 'semantic-ui-react';
+import {Button, Container, Menu, Icon, Search } from 'semantic-ui-react';
 
 const InviteSearch = ({
     isAdmin,
@@ -13,7 +13,7 @@ const InviteSearch = ({
 })=>{
     if(isAdmin){
         return(
-            <div>
+            <div id='extraInfoSearchWrapper'>
                 Invite User:
                 <Search
                     fluid
@@ -22,7 +22,7 @@ const InviteSearch = ({
                     onResultSelect={searchOnSelect}
                     onSearchChange={searchOnChange}
                 />
-                <Button onClick={inviteUser}>Invite</Button>
+            <Button id='extraInfoInviteButton' color='green' onClick={inviteUser}>Invite</Button>
             </div>
         )
     }
@@ -36,7 +36,7 @@ const listUsers = ({
         return Object.values(users).map((element,i) => {
             if(element.isActive){
                 return (
-                    <Menu.Item key={i} >{element.name}</Menu.Item>
+                    <Menu.Item key={i} ><Icon name='user' /> {element.name}</Menu.Item>
                 )
             }
             return ;
@@ -51,15 +51,19 @@ const ExtraInfoBar = ({
     searchLoading,
     searchOnSelect,
     searchOnChange,
-    inviteUser
+    inviteUser,
+    show
 }) => (
     <Container>
-        <Menu float='right' vertical inverted fluid>
-            <Menu.Item header>User Information</Menu.Item>
-            {listUsers({users})}
-            <Menu.Item key={users.size}>{InviteSearch({isAdmin,searchResults,searchLoading,searchOnSelect,searchOnChange,inviteUser})}</Menu.Item>
-
-        </Menu>
+        {show ? (
+            <Menu id='extraInfoBar' float='right' vertical inverted fluid>
+                <Menu.Item header>User Information</Menu.Item>
+                {listUsers({users})}
+                <Menu.Item key={users.size}>{InviteSearch({isAdmin,searchResults,searchLoading,searchOnSelect,searchOnChange,inviteUser})}</Menu.Item>
+            </Menu>
+        ) : (
+            ''
+        )}
     </Container>
 );
 

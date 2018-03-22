@@ -1,0 +1,74 @@
+/* This is a generic style page for all the components in this folder but it is only included in the chat view */
+
+#chatSideBar {
+    border-radius: 0;
+    background-color: #60b0f4;
+    color: white;
+    min-height: 88vh;
+}
+
+#chatSideBar .leaveChannelButton {
+    background-color: white;
+    color: black;
+}
+
+#extraInfoBar {
+    border-radius: 0;
+    background-color: #60b0f4;
+    color: white;
+    min-height: 88vh;
+}
+
+#chatSideBar .item {
+    position: relative;
+    padding: 30px;
+    padding-right: 50px; /* More padding to leave space for the button */
+}
+
+#chatSideBar .item {
+    padding: 30px;
+}
+
+#chatSideBar .item.header, #extraInfoBar .item.header {
+    padding: 30px;
+    font-size: 1.5em;
+}
+
+#chatSideBar .item .leaveChannelButton {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+#channelBarNewChannelButtonItem {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-size: 1.2em;
+}
+
+#channelBarNewChannelButtonItem:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+#channelBarNewChannelButtonItem #plusIcon {
+    position: absolute;
+    right: 19px;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+#extraInfoBar .item {
+    padding: 30px;
+}
+
+#extraInfoBar .item .icon {
+    float: none;
+}
+
+#extraInfoBar #extraInfoSearchWrapper .ui.input {
+    margin-top: 15px;
+}
+
+#extraInfoBar #extraInfoSearchWrapper #extraInfoInviteButton {
+    margin-top: 15px;
+}

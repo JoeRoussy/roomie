@@ -13,7 +13,7 @@ const listChannels = ({
 }) => {
     return channels.map((element,i) => (
         <Menu.Item key={i} onClick={()=>{changeChannel(element)}} active= {activeChannel._id === element._id}>
-            {element.name} <Button size='tiny' color='black' icon='remove' onClick={()=>{leaveChannel(element)}}/>
+            {element.name} <Button className='leaveChannelButton' size='tiny' circular icon='remove' onClick={()=>{leaveChannel(element)}}/>
         </Menu.Item>
     ));
 }
@@ -30,8 +30,7 @@ const ChannelBar = ({
         <Menu id='chatSideBar' float='left' vertical inverted fluid>
             <Menu.Item header>Channels</Menu.Item>
             {listChannels({channels,changeChannel,activeChannel,leaveChannel})}
-            <Menu.Item key={channels.size} onClick={()=>{toggleDisplayNewChannelModal(!displayNewChannelModal)}}>New Channel</Menu.Item>
-
+            <Menu.Item id='channelBarNewChannelButtonItem' key={channels.size} onClick={()=>{toggleDisplayNewChannelModal(!displayNewChannelModal)}}>New Channel <Icon id='plusIcon' name='plus' /></Menu.Item>
         </Menu>
     </Container>
 

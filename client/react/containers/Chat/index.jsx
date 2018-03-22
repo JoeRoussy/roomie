@@ -1,5 +1,5 @@
-import {connect} from 'react-redux';
-import {Button,Divider,Grid,Search} from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { Button, Divider, Grid, Search, Container } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import {push} from 'react-router-redux';
 import React, {Component}  from 'react';
@@ -271,8 +271,8 @@ class Chat extends React.Component{
         const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
         const bodySection = user ? (
-            <Grid>
-                <Grid.Column width={2}>
+            <Grid id='chatRoot'>
+                <Grid.Column width={3} id='chatLeftColumn'>
                     <ChannelBar
                         channels={this.getChannels()}
                         changeChannel={this.changeChannel}
@@ -301,7 +301,7 @@ class Chat extends React.Component{
                         displayModal={this.getDisplayLeaveChannelModal()}
                     />
                 </Grid.Column>
-                <Grid.Column width={11}>
+                <Grid.Column width={10} id='chatMiddleColumn'>
                     <ChatView
                         chatLog={this.getChatLog()}
                         users={this.getActiveChannelUsers()}
@@ -314,7 +314,7 @@ class Chat extends React.Component{
                         disabled={!this.getActiveChannel()._id}
                     />
                 </Grid.Column>
-                <Grid.Column width={3}>
+                <Grid.Column width={3} id='chatRightColumn'>
                     <ExtraInfoBar
                         users={this.getActiveChannelUsers()}
                         isAdmin={this.isUserAdmin()}
@@ -323,16 +323,17 @@ class Chat extends React.Component{
                         searchOnSelect={this.onUserSearchResultSelected}
                         searchOnChange={this.onUserSearchChange}
                         inviteUser={this.inviteUserToChannel}
+                        show={!!this.getActiveChannel()._id}
                     />
                 </Grid.Column>
             </Grid>
         ) : ('');
 
         return(
-            <div>
+            <Container id='chatContainer'>
                 {redirectSection}
                 {bodySection}
-            </div>
+            </Container>
         )
     }
 }

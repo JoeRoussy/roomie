@@ -48,14 +48,6 @@ const App = ({
             <Route exact path="/roommate-survey" component={RoommateSurvey} />
             <Route exact path="/my-listings" component={MyListings} />
         </main>
-        { /* NOTE: This is a diry hack and should be taken out when we have a better map component */ }
-        {window.location.pathname.indexOf('/listings') !== -1 ? (
-            ''
-        ) : (
-            <footer>
-                Copyright © 2018 Roomie
-            </footer>
-        )}
     </div>
 )
 

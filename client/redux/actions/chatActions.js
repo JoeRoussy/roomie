@@ -41,8 +41,6 @@ export const loadActiveChannel = (channel) => (dispatch) =>{
              type: 'LOAD_ACTIVE_CHANNEL_FULFILLED',
              payload: res
          });
-         const chatView = document.getElementById('chatView');
-         chatView.scrollTop = chatView.scrollHeight;
      }).catch(e => {
          console.log(e);
          dispatch({

@@ -7,6 +7,8 @@ import './styles.css';
 const ListingCard = ({
     listing,
     id,
+    createLease,
+    canLease,
     viewListing,
     canDelete = false,
     deleteListing
@@ -31,7 +33,8 @@ const ListingCard = ({
             </Card.Description>
         </Card.Content>
         <Card.Content extra>
-            <div className='ui two buttons'>
+            <div className='ui three buttons'>
+                {canLease ? (<Button basic color='blue' onClick={createLease}> Lease </Button>): ('')}
                 <Button basic color='green' onClick = { viewListing } >View</Button>
                 {canDelete ? (<Button basic color='red' onClick={deleteListing}>Delete</Button>) : ('')}
             </div>

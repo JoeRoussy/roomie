@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import nodemailerHandlebars from 'nodemailer-express-handlebars';
 import inlineCss from 'nodemailer-juice';
 import marked from 'marked';
+import moment from 'moment';
 
 import { required, RethrownError } from '../custom-utils';
 
@@ -25,6 +26,9 @@ const _helpers = {
         }
 
         return text.replace(/\n/g, '<br>');
+    },
+    formatDate(date) {
+        return moment(date).format('MMMM DD YYYY');
     }
 };
 
@@ -153,3 +157,38 @@ export const sendPasswordResetEmail = async({
         throw new RethrownError(e, `Error sending sign up message to user with email: ${email}`);
     }
 };
+
+export const sendLeaseInviteEmail = async({
+    user = required('user'),
+    identifier = required('indentifier'),
+    lease = required('lease'),
+    listing = required('listing'),
+    landlordName = required('landlordName')
+}) => {
+    const {
+        name: tenantName,
+        email: userEmail
+    } = user;
+
+    const message = {
+        context: {
+            acceptLink: encodeURI(`${process.env.API_ROOT}/api/myListings/lease/${identifier}?response=accept`),
+            declineLink: encodeURI(`${process.env.API_ROOT}/api/myListings/lease/${identifier}?response=decline`),
+            listing,
+            lease,
+            tenantName,
+            landlordName
+        },
+        template: 'listingInvite'
+    };
+
+    try {
+        return await _sendMessage({
+            to: userEmail,
+            message,
+            subject: 'Your Lease Is Ready!'
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error sending sign up message to user with email: ${userEmail}`);
+    }
+}

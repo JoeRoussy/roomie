@@ -1,5 +1,6 @@
 import faker from 'faker';
 import moment from 'moment';
+import { GCM } from 'node-crypto-gcm';
 
 import {
     required,
@@ -20,10 +21,24 @@ export const getListingsByOwner = async({
 }) => {
     try {
         return await listingsCollection.find({
-            ownerId: convertToObjectId(ownerId)
+            ownerId: convertToObjectId(ownerId),
+            isCurrentlyLeased: false
         }).toArray();
     } catch (e) {
         throw new RethrownError(e, `Error getting a listing with owner ${ownerId}`);
+    }
+};
+
+export const getLeasesByOwner = async({
+    leasesCollection = required('leasesCollection'),
+    ownerId = required('ownerId')
+}) => {
+    try {
+        return await leasesCollection.find({
+            ownerId: convertToObjectId(ownerId)
+        }).toArray();
+    } catch (e) {
+        throw new RethrownError(e, `Error getting a leases with owner ${ownerId}`);
     }
 };
 
@@ -69,11 +84,12 @@ export const findListings = async({
 
     let orArgs = [];
     if(bathrooms){
-        const bathroomArray = bathrooms.split(',').map(item => ({bathroom:parseInt(item)}));
+        const bathroomArray = bathrooms.split(',').map(item => ({'bathrooms':item}));
         orArgs = orArgs.concat(bathroomArray);
     }
+
     if(bedrooms){
-        const bedroomArray = bedrooms.split(',').map(item => ({bedroom:parseInt(item)}));
+        const bedroomArray = bedrooms.split(',').map(item => ({bedrooms:item}));
         orArgs = orArgs.concat(bedroomArray);
     }
 
@@ -92,7 +108,7 @@ export const findListings = async({
             $all: keywordArray
         }
     }
-
+    console.log(filter)
     if(furnished){
         filter.furnished = furnished == "Yes" ? true: false;
     }
@@ -127,6 +143,8 @@ export const findListings = async({
             ...filter
         }
     });
+
+    console.log(aggregationOperator)
 
     try {
         return await listingsCollection.aggregate(aggregationOperator).toArray();
@@ -677,3 +695,42 @@ export const getListingViewers = async({
         throw new RethrownError(e, `Error finding document with userId: ${userId} and listingId: ${listingId}`);
     }
 };
+
+// Returns an object with tenant ids and the keys and the associated listings as the values
+export const getLeaseEmailIdentifiersForTenants = ({
+    tenantIds = required('tenants'),
+    leaseId = required('leaseId')
+}) => {
+    const {
+        ENC_PRIVATE_KEY = required('ENC_PRIVATE_KEY')
+    } = process.env;
+
+    return tenantIds.reduce((accumulator, tenantId) => {
+        const data = JSON.stringify({
+            tenantId,
+            leaseId
+        });
+
+        let gcm = new GCM(ENC_PRIVATE_KEY);
+
+        return {
+            ...accumulator,
+            [tenantId]: gcm.encrypt(data)
+        };
+    }, {});
+};
+
+// Takes an encryption and returns the object
+export const getLeaseAndTenantFromEncryption = (encryption) => {
+    const {
+        ENC_PRIVATE_KEY = required('ENC_PRIVATE_KEY')
+    } = process.env;
+
+    if (!encryption) {
+        return null;
+    }
+
+    const gcm = new GCM(ENC_PRIVATE_KEY);
+
+    return JSON.parse(gcm.decrypt(encryption));
+}

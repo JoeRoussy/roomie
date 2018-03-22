@@ -54,3 +54,11 @@ h1 {
 .centered {
     text-align: center;
 }
+
+.underlined {
+    text-decoration: underline;
+}
+
+footer {
+    padding-top: 50px;
+}

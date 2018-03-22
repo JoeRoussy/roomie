@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Button, Item, Icon, Image, Label } from 'semantic-ui-react';
+import { Container, Button, Item, Icon, Image, Label, Message } from 'semantic-ui-react';
 import { push } from 'react-router-redux'; // TODO: Should probably use nagivateTo in components but there was wierd transpiling issues
 import { arrayPush, arrayRemove } from 'redux-form';
 
@@ -24,7 +24,8 @@ import './styles.css';
         listing,
         isEditing,
         isFormProcessing,
-        errorMessage
+        errorMessage,
+        analyticsMessage
     } = {},
     userReducer: {
         user
@@ -40,7 +41,8 @@ import './styles.css';
     formData: values,
     isEditing,
     isFormProcessing,
-    errorMessage
+    errorMessage,
+    analyticsMessage
 }))
 
 export default class Listing extends React.Component {
@@ -105,7 +107,8 @@ export default class Listing extends React.Component {
             isEditing,
             isFormProcessing,
             errorMessage,
-            formData
+            formData,
+            analyticsMessage
         } = this.props;
 
         let editButton;
@@ -158,9 +161,18 @@ export default class Listing extends React.Component {
             bodySection = '';
         }
 
+        let message;
+
+        message = analyticsMessage ? (
+            <Message warning>
+                <div dangerouslySetInnerHTML = {{ __html: analyticsMessage }}></div>
+            </Message>
+        ) : ('');
+
         return (
             <Container id='listingContainer' className='rootContainer'>
                 {bodySection}
+                {message}
                 {editButton}
                 {meetingButton}
             </Container>

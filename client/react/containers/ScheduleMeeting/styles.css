@@ -3,6 +3,10 @@
     margin-top: 30px;
 }
 
+#scheduleMeetingContainer #landlordSectionWrapper .ui.card .meta, #scheduleMeetingContainer #landlordSectionWrapper .ui.card .header {
+    text-align: left;
+}
+
 #scheduleMeetingContainer #listingSectionWrapper {
     margin-top: 30px;
 }

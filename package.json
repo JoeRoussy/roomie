@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/JoeRoussy/roomie#readme",
   "dependencies": {
+    "@google-cloud/vision": "^0.17.0",
     "axios": "0.17.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",

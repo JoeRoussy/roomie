@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import { Container } from 'semantic-ui-react';
 
 import SignUpBody from '../../components/SignUpBody';
 import { chooseUserType, submitForm } from '../../../redux/actions/signupActions';
@@ -19,7 +20,7 @@ const Signup = ({
     const userRedirect = user ? (<Redirect to='/'/>) : ('');
 
     return (
-        <div>
+        <Container className='rootContainer'>
             <h1>Sign Up</h1>
             {userRedirect}
             <SignUpBody
@@ -30,7 +31,7 @@ const Signup = ({
                 isFormProcessing={isFormProcessing}
                 errorMessage={errorMessage}
             />
-        </div>
+    </Container  >
     );
 };
 

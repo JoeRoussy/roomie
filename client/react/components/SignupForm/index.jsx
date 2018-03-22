@@ -78,28 +78,28 @@ const SignUpForm = ({
         <Field
             name='name'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='user' size='large' /> }}
+            label='Name'
             labelPosition='left'
             placeholder='Name'
         />
         <Field
             name='email'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='mail' size='large' /> }}
+            label='Email'
             labelPosition='left'
             placeholder='Email'
         />
         <Field
             name='confirmEmail'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='mail' size='large' /> }}
+            label='Confirm Email'
             labelPosition='left'
             placeholder='Confirm Email'
         />
         <Field
             name='password'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='lock' size='large' /> }}
+            label='Password'
             labelPosition='left'
             placeholder='Password'
             type='password'
@@ -107,7 +107,7 @@ const SignUpForm = ({
         <Field
             name='confirmPassword'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='lock' size='large' /> }}
+            label='Confirm Password'
             labelPosition='left'
             placeholder='Confirm Password'
             type='password'

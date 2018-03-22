@@ -110,7 +110,7 @@ export default class Listing extends React.Component {
 
         let editButton;
 
-        editButton = (user && listing && user.isLandlord && user._id === listing.ownerId) ? (
+        editButton = (user && listing && user.isLandlord && user._id === listing.ownerId && !isEditing) ? (
             <Button className='primaryColour' onClick={ this.editListing }>Edit listing</Button>
         ) : ('');
 
@@ -119,15 +119,17 @@ export default class Listing extends React.Component {
             <Button color='green' onClick={()=>this.createChatWithLandlord(listing.owner)}>Message Landlord</Button>
         ) : ('');
 
+        let meetingButton = (user && listing && !isEditing) ? (
+            <Button className='primaryColour' onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
+        ) : ('');
+
         let bodySection;
 
         if (isEditing && listing) {
             bodySection = (
                 <div>
                     <h1>Edit Listing</h1>
-                    <div>
-                        <p>{listing.location}</p>
-                    </div>
+                    <h2>{listing.location}</h2>
                     <ListingForm
                         onSubmit={(formData) => () => this.onSubmit(formData)}
                         onEditCancelClicked={ this.onEditCancelClicked }
@@ -160,7 +162,7 @@ export default class Listing extends React.Component {
             <Container id='listingContainer' className='rootContainer'>
                 {bodySection}
                 {editButton}
-                <Button className='primaryColour' onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
+                {meetingButton}
             </Container>
         )
     }

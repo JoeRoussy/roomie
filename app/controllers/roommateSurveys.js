@@ -139,17 +139,6 @@ export const createRoommateSurvey = ({
         });
     }
 
-    if (!recommendedRoommates.length) {
-        logger.error(`No recommended roommates found for user with id: ${userId}`);
-
-        return sendError({
-            res,
-            status: 500,
-            message: 'Something went wrong processing your request',
-            errorKey: GENERIC_ERROR_KEY
-        })
-    }
-
     return res.json({
         recommendedRoommates
     });

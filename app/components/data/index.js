@@ -84,11 +84,12 @@ export const findListings = async({
 
     let orArgs = [];
     if(bathrooms){
-        const bathroomArray = bathrooms.split(',').map(item => ({bathroom:parseInt(item)}));
+        const bathroomArray = bathrooms.split(',').map(item => ({'bathrooms':item}));
         orArgs = orArgs.concat(bathroomArray);
     }
+
     if(bedrooms){
-        const bedroomArray = bedrooms.split(',').map(item => ({bedroom:parseInt(item)}));
+        const bedroomArray = bedrooms.split(',').map(item => ({bedrooms:item}));
         orArgs = orArgs.concat(bedroomArray);
     }
 
@@ -107,7 +108,7 @@ export const findListings = async({
             $all: keywordArray
         }
     }
-
+    console.log(filter)
     if(furnished){
         filter.furnished = furnished == "Yes" ? true: false;
     }
@@ -142,6 +143,8 @@ export const findListings = async({
             ...filter
         }
     });
+
+    console.log(aggregationOperator)
 
     try {
         return await listingsCollection.aggregate(aggregationOperator).toArray();

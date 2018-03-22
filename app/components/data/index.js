@@ -87,7 +87,7 @@ export const findListings = async({
     }
 
     if(keywords){
-        const keywordArray = keywords.split(' ');
+        const keywordArray = keywords.split(' ').map(word=>(word.toLowerCase()));
         filter.keywords = {
             $all: keywordArray
         }
@@ -500,7 +500,7 @@ export const getUserForPasswordReset = async({
     }
 };
 
-// Generates some fake users and some roomate responses. All users are from Toronto.
+// Generates some fake users and some roomate responses. All users are from London.
 export const generateRoommateResponses = async({
     usersCollection = required('usersCollection'),
     roommateSurveysCollection = required('roommateSurveysCollection'),
@@ -546,7 +546,7 @@ export const generateRoommateResponses = async({
                 collection: roommateSurveysCollection,
                 document: {
                     userId: savedUser._id,
-                    city: 'Toronto',
+                    city: 'London',
                     ...randomAnswers
                 }
             });

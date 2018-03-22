@@ -68,19 +68,15 @@ const Profile = ({
             onDeleteConfirmedClicked={onDeleteConfirmedClicked}
             onEditClicked={onEditClicked}
             isDeletePending={isDeletePending}
+            navigateTo={navigateTo}
         />
     )
-
-    const myListings = !isEditing && user && user.isLandlord ? (
-        <Button onClick = { () => navigateTo('/my-listings') }>View my listings</Button>
-    ) : ('');
 
     return (
         <Container className='rootContainer'>
             <h1>Profile</h1>
             {redirectSection}
             {bodySection}
-            {myListings}
         </Container>
     );
 };

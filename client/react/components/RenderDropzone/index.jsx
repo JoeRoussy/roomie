@@ -17,16 +17,16 @@ const RenderDropzone = ({
 }) => {
   const files = input.value;
   return (
-    <div>
+    <div className='dropzoneWrapper'>
         <Dropzone
             name={name}
             onDrop={( filesToUpload, e ) => {
                 onImageDrop(filesToUpload);
             }}
-            style={{'width' : '30%', 'height' : '20%', 'border' : '3px solid green'}}
+            className='dropzone'
             {...dropZoneProps}
         >
-            <div>Upload images by dragging and dropping, or click to select files to upload.</div>
+            <div>Upload Images</div>
         </Dropzone>
         {
           touched &&

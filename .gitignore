@@ -62,3 +62,6 @@ typings/
 
 #Ignore uploaded assets
 app/assets/
+
+# Google Application Credentials for accessing Google Cloud APIs
+googleApplicationCredentials.json

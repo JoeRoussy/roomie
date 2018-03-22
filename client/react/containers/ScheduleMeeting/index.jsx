@@ -141,9 +141,12 @@ const ScheduleMeeting = ({
                 <div id='viewListingWrapper' className={listing ? '' : 'hidden'}>
                     <ListingDisplay
                         listing={listing ? listing.api_response : {}}
-                        singleImage={listing ? listing.image : null}
+                        carouselWidth='450px'
+                        centered
                     />
-                    <Button id='scheduleMeetingChooseDifferentListingButton' className='primaryColour' onClick={onClearListing}>Choose A Different Listing</Button>
+                <div className='centered'>
+                        <Button id='scheduleMeetingChooseDifferentListingButton' className='primaryColour' onClick={onClearListing}>Choose A Different Listing</Button>
+                    </div>
                 </div>
                 <Divider />
             </div>
@@ -224,7 +227,7 @@ const ScheduleMeeting = ({
     }
 
     return (
-        <Container id='scheduleMeetingContainer'>
+        <Container id='scheduleMeetingContainer' className='rootContainer'>
             {userRedirect}
             <h1>Book a Meeting</h1>
             {content}

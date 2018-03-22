@@ -1,6 +1,7 @@
 import { wrap as coroutine } from 'co';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
+import vision from '@google-cloud/vision';
 
 import { required, convertToObjectId, extendIfPopulated, convertToBoolean } from '../components/custom-utils';
 import { findListings, getListingByIdWithOwnerPopulated, getListingViewers} from '../components/data';
@@ -103,7 +104,7 @@ export const getListingById = ({
             message: 'No id in parameters for get listing by id'
         });
     }
-    
+
     //if user is logged in check if they have viewed listing before.
     const {
         user: {
@@ -229,7 +230,9 @@ export const updateListing = ({
 
     const {
         LISTING_ERRORS_GENERIC = required('LISTING_ERRORS_GENERIC'),
-        UPLOADS_RELATIVE_PATH = required('UPLOADS_RELATIVE_PATH')
+        UPLOADS_RELATIVE_PATH = required('UPLOADS_RELATIVE_PATH'),
+        GOOGLE_APPLICATION_CREDENTIALS = required('GOOGLE_APPLICATION_CREDENTIALS'),
+        ASSETS_ROOT = required('ASSETS_ROOT')
     } = process.env;
 
     /* Perform field validation. */
@@ -299,6 +302,39 @@ export const updateListing = ({
         })
     }
 
+    // Generate the keywords for all the images.
+    // Could be optimised if we check only new images and delete all keywords from the old images.
+    let keywords = [];
+
+    // Google vision client.
+    const client = new vision.ImageAnnotatorClient();
+
+    if(newImages.length) {
+        let requests = newImages.map((image) => client.labelDetection(`${process.cwd()}/app${image}`));
+
+        let responses = [];
+
+        try {
+            responses = yield Promise.all(requests);
+        } catch (e) {
+            logger.error(e, 'Error finding labels for images.');
+
+            return sendError({
+                res,
+                status: 500,
+                message: 'Error finding the labels for the images uploaded.'
+            });
+        }
+
+        responses.forEach((response) => {
+            const labels = response[0].labelAnnotations;
+
+            labels.forEach((label) => {
+                keywords.push(label.description);
+            });
+        });
+    }
+
     // Convert all the checkboxed strings to boolean values.
     const utilitiesBool = convertToBoolean(utilities);
     const furnishedBool = convertToBoolean(furnished);
@@ -323,6 +359,7 @@ export const updateListing = ({
     update = extendIfPopulated(update, 'laundry', laundryBool);
     update = extendIfPopulated(update, 'airConditioning', airConditioningBool);
     update = extendIfPopulated(update, 'images', newImages);
+    update = extendIfPopulated(update, 'keywords', keywords);
 
     let newListing;
 
@@ -386,7 +423,9 @@ export const createListing = ({
     const {
         LISTING_ERRORS_GENERIC = required('LISTING_ERRORS_GENERIC'),
         UPLOADS_RELATIVE_PATH = required('UPLOADS_RELATIVE_PATH'),
+        UPLOADS_RELATIVE_FILE_PATH = required('UPLOADS_RELATIVE_FILE_PATH'),
         MAPS_API = required('MAPS_API'),
+        GOOGLE_APPLICATION_CREDENTIALS = required('GOOGLE_APPLICATION_CREDENTIALS'),
         GEOLOCATION_ADDRESS = required('GEOLOCATION_ADDRESS'),
         LISTING_ERRORS_INVALID_ADDRESS = required('LISTING_ERRORS_INVALID_ADDRESS')
     } = process.env;
@@ -482,8 +521,36 @@ export const createListing = ({
     }
 
     let images = [];
+    let keywords = [];
+
+    // Google vision client.
+    const client = new vision.ImageAnnotatorClient();
 
     if(req.files) {
+        const requests = req.files.map((file) => client.labelDetection(file.path));
+
+        let responses = [];
+
+        try {
+            responses = yield Promise.all(requests);
+        } catch (e) {
+            logger.error(e, 'Error finding labels for images.');
+
+            return sendError({
+                res,
+                status: 500,
+                message: 'Error finding the labels for the images uploaded.'
+            });
+        }
+
+        responses.forEach((response) => {
+            const labels = response[0].labelAnnotations;
+
+            labels.forEach((label) => {
+                keywords.push(label.description);
+            });
+        });
+
         req.files.forEach((file) => {
             if (file.filename && file.mimetype && file.path) {
                 images.push(`${UPLOADS_RELATIVE_PATH}${file.filename}`);
@@ -575,7 +642,7 @@ export const createListing = ({
                 locationDisplay: formattedAddress,
                 images,
                 ownerId: convertToObjectId(req.user._id),
-                keywords: [],
+                keywords,
                 lat,
                 lng,
                 views: 0,

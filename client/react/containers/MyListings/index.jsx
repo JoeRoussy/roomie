@@ -140,7 +140,7 @@ export default class MyListings extends React.Component {
         ) : ('');
 
         return (
-            <Container>
+            <Container className='rootContainer'>
                 {redirectSection}
                 {body}
                 {deleteModal}

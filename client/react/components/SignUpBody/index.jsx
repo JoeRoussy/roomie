@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 
-import SignUpForm from '../signUpForm';
+import SignUpForm from '../SignupForm';
 import './styles.css'
 
 export default ({

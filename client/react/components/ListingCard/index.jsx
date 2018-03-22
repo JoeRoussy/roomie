@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Icon, Image, Button } from 'semantic-ui-react';
+import { Card, Icon, Image, Button, Label } from 'semantic-ui-react';
 
 import './styles.css';
 
@@ -12,22 +12,28 @@ const ListingCard = ({
     canDelete = false,
     deleteListing
 }) => (
-    <Card
-        header = { listing.name }
-        meta = { listing.address }
-        description = { listing.description }
-        extra = {
-                <span >
-                    <Icon name = 'user' />{ listing.views ? listing.views : '0' } Views
-                    {canLease ? (<Button color='blue' onClick={createLease}> Lease </Button>): ('')}
-                    <Button color='green' onClick = { viewListing } >View</Button>
-                    {
-                        canDelete ? (<Button color='red' onClick = { deleteListing } >Delete</Button>) : ('')
-                    }
-                </span>
-            }
-        key = { id }
-    />
+    <Card key = { id } className='listingCard'>
+        <Card.Content>
+            <Label color='blue' floating><Icon name = 'user' />&nbsp;{ listing.views ? listing.views : '0' } Views</Label>
+            {listing.images ? (
+                <Image floated='right' size='small' src={`${process.env.ASSETS_ROOT}${listing.images[0]}`} />
+            ) : (
+                ''
+            )}
+            <Card.Header>{listing.name}</Card.Header>
+            <Card.Meta>{listing.address}</Card.Meta>
+            <Card.Description>
+                <p className='price'>${listing.price}</p>
+                <p>{listing.description}</p>
+            </Card.Description>
+        </Card.Content>
+        <Card.Content extra>
+            <div className='ui two buttons'>
+                <Button basic color='green' onClick = { viewListing } >View</Button>
+                {canDelete ? (<Button basic color='red' onClick={deleteListing}>Delete</Button>) : ('')}
+            </div>
+        </Card.Content>
+    </Card>
 )
 
 export default ListingCard;

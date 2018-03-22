@@ -20,7 +20,7 @@ const ChangePassword = ({
     const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
     return (
-        <Container>
+        <Container className='rootContainer'>
             {redirectSection}
             <h1>Change Password</h1>
             <ChangePasswordForm

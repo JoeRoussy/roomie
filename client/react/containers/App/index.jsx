@@ -23,11 +23,6 @@ import ScheduleMeeting from '../ScheduleMeeting';
 import Lease from '../Lease';
 import './styles.css';
 
-
-const mainInlineStyles = {
-    paddingTop: '90px'
-};
-
 const App = ({
 
 }) => (
@@ -35,7 +30,7 @@ const App = ({
         <header>
             <Navbar />
         </header>
-        <main style={mainInlineStyles}>
+        <main>
             <ToastContainer />
             <Route exact path="/" component={Home} />
             <Route exact path="/sign-up" component={SignUp} />
@@ -54,9 +49,14 @@ const App = ({
             <Route exact path="/my-listings" component={MyListings} />
             <Route exact path="/lease" component={Lease} />
         </main>
-        <footer>
-            Copyright © 2018 Roomie
-        </footer>
+        { /* NOTE: This is a diry hack and should be taken out when we have a better map component */ }
+        {window.location.pathname.indexOf('/listings') !== -1 ? (
+            ''
+        ) : (
+            <footer>
+                Copyright © 2018 Roomie
+            </footer>
+        )}
     </div>
 )
 

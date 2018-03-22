@@ -111,12 +111,15 @@ export const postMessageToActiveChannel = (channel,message,user) => (dispatch) =
              payload: {res,
                  message:msg}
          });
+         const chatView = document.getElementById('chatView');
+         chatView.scrollTop = chatView.scrollHeight;
      }).catch(e => {
          console.log(e);
          dispatch({
              type: 'SEND_MESSAGE_REJECTED',
              payload: {e,message:msg}
          });
+
      });
 }
 
@@ -266,7 +269,7 @@ export const sendChannelInvite = (channel,userId) => (dispatch) =>{
 
 export const userSearch = (name) => ({
     type: 'CHAT_USER_SEARCH_BY_NAME',
-    payload: axios.get(`${process.env.API_ROOT}/api/users?name=${name}&type=${userTypes.tenant}`)
+    payload: axios.get(`${process.env.API_ROOT}/api/users?name=${name}`)
         .catch((e) => {
             toast.error('Something went wrong with the user search, please try again later');
 

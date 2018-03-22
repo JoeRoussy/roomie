@@ -63,8 +63,7 @@ export default class MyListings extends React.Component {
 
     mapLeases = (leases) => leases.map((lease, i) => (
         <LeaseCard
-            id = {i}
-            key = {lease._id}
+            id = {lease._id}
             lease={lease}
         />
     ));
@@ -147,7 +146,7 @@ export default class MyListings extends React.Component {
                 {deleteModal}
 
                 <Divider />
-                
+
                 <div>
                     {leaseCards}
                 </div>

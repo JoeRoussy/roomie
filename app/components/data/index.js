@@ -702,7 +702,7 @@ export const getListingViewers = async({
 // Returns an object with tenant ids and the keys and the associated listings as the values
 export const getLeaseEmailIdentifiersForTenants = ({
     tenantIds = required('tenants'),
-    listingId = required('listingId')
+    leaseId = required('leaseId')
 }) => {
     const {
         ENC_PRIVATE_KEY = required('ENC_PRIVATE_KEY')
@@ -711,7 +711,7 @@ export const getLeaseEmailIdentifiersForTenants = ({
     return tenantIds.reduce((accumulator, tenantId) => {
         const data = JSON.stringify({
             tenantId,
-            listingId
+            leaseId
         });
 
         let gcm = new GCM(ENC_PRIVATE_KEY);
@@ -735,5 +735,5 @@ export const getLeaseAndTenantFromEncryption = (encryption) => {
 
     const gcm = new GCM(ENC_PRIVATE_KEY);
 
-    return gcm.decrypt(encryption);
+    return JSON.parse(gcm.decrypt(encryption));
 }

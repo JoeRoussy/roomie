@@ -160,7 +160,7 @@ export const sendPasswordResetEmail = async({
 
 export const sendLeaseInviteEmail = async({
     user = required('user'),
-    indentifier = required('indentifier'),
+    identifier = required('indentifier'),
     lease = required('lease'),
     listing = required('listing'),
     landlordName = required('landlordName')
@@ -172,9 +172,8 @@ export const sendLeaseInviteEmail = async({
 
     const message = {
         context: {
-            userName,
-            acceptLink: ``,
-            declineLink: ``,
+            acceptLink: encodeURI(`${process.env.API_ROOT}/api/myListings/lease/${identifier}?response=accept`),
+            declineLink: encodeURI(`${process.env.API_ROOT}/api/myListings/lease/${identifier}?response=decline`),
             listing,
             lease,
             tenantName,

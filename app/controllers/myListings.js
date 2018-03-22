@@ -340,7 +340,7 @@ export const createLease = ({
     // Get the verification identifiers
     const tenantEmailIdentifiers = getLeaseEmailIdentifiersForTenants({
         tenantIds: tenants,
-        listingId
+        leaseId: lease._id
     });
 
     // Send the emails
@@ -349,7 +349,7 @@ export const createLease = ({
         identifier: tenantEmailIdentifiers[tenant._id.toString()],
         lease,
         listing: listingInLease,
-        landlordName: req.user
+        landlordName: req.user.name
     }))
 
     try {
@@ -387,10 +387,17 @@ export const updateLease = ({
     } = req.query;
 
     //decrypt it
-    const decryptedIdentifier = ''; //TOODO
-    const userId = decryptedIdentifier.userId;
-    const leaseId =decryptedIdentifier.leaseId;
+    const decryptedIdentifier = getLeaseAndTenantFromEncryption(identifier);
+
+    console.log("identifier", identifier);
+
+    console.log('decryptedIdentifier', decryptedIdentifier);
+
+    const userId = decryptedIdentifier.tenantId;
+    const leaseId = decryptedIdentifier.leaseId;
     const confirmed = response === 'accept';
+
+    console.log('userId', userId);
 
     //Perform Validation
     if(!userId){
@@ -424,7 +431,7 @@ export const updateLease = ({
     try {
         userValidation = yield getById({
             collection: usersCollection,
-            id: convertToObject(userId)
+            id: convertToObjectId(userId)
         })
     } catch(e) {
         logger.error(e, 'Error retrieving user in database');
@@ -439,7 +446,7 @@ export const updateLease = ({
     try {
         leaseValidation = yield getById({
             collection: leasesCollection,
-            id: convertToObject(leaseId)
+            id: convertToObjectId(leaseId)
         })
     } catch(e) {
         logger.error(e, 'Error retrieving lease in database');
@@ -454,7 +461,7 @@ export const updateLease = ({
     let result;
     try {
         const updatedTenants = leaseValidation.tenants.map(user => {
-            if(user._id.equals(convertToObject(userId))){
+            if(user.userId.equals(convertToObjectId(userId))){
                 return {
                     ...userId,
                     confirmed
@@ -465,8 +472,8 @@ export const updateLease = ({
 
         result = yield findAndUpdate({
             collection: leasesCollection,
-            query: {_id: leaseId},
-            document: {updatedTenants}
+            query: { _id: leaseId },
+            update: { updatedTenants }
         })
     } catch (e) {
         logger.error(e, 'Error updating the tenant conformation for lease')
@@ -478,7 +485,5 @@ export const updateLease = ({
     }
 
     //Return result
-    return res.json({
-        result
-    });
+    return res.redirect(`${process.env.FRONT_END_ROOT}`);
 });

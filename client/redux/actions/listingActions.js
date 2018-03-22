@@ -84,6 +84,8 @@ export const submitUpdateForm = (formValues, id) => (dispatch) => {
 
             toast.success('You have updated the listing!');
 
+            dispatch(getListingById(listing._id));
+
             dispatch({
                 type: 'UPDATE_LISTING_FULFILLED',
                 payload: res
@@ -91,6 +93,7 @@ export const submitUpdateForm = (formValues, id) => (dispatch) => {
         })
         .catch(e => {
             console.log(e);
+            dispatch(getListingById(listing._id));
             dispatch({
                 type: 'UPDATE_LISTING_REJECTED',
                 payload: e

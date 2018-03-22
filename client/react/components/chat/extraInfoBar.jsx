@@ -14,7 +14,7 @@ const InviteSearch = ({
     if(isAdmin){
         return(
             <div id='extraInfoSearchWrapper'>
-                Invite User:
+                <span id="extraInfoSearchHeading">Invite User:</span>
                 <Search
                     fluid
                     results={searchResults}

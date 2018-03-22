@@ -65,10 +65,22 @@
     float: none;
 }
 
+#extraInfoBar #extraInfoSearchWrapper #extraInfoSearchHeading {
+    font-weight: bold;
+}
+
 #extraInfoBar #extraInfoSearchWrapper .ui.input {
     margin-top: 15px;
 }
 
 #extraInfoBar #extraInfoSearchWrapper #extraInfoInviteButton {
     margin-top: 15px;
+}
+
+#chatInputWrapper {
+    width: 95%;
+}
+
+#chatInputWrapper .ui.input.chatInput input {
+    border-width: 2px;
 }

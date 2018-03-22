@@ -94,7 +94,7 @@ class Home extends Component {
     }
 
     createChatWithRoommate(roommate){
-        this.props.dispatch(createChannelWithUser(roommate.name,roommate));
+        this.props.dispatch(createChannelWithUser(this.props.user.name + ' + ' +roommate.name,roommate));
         navigateTo(this.props.dispatch)('/chat');
     }
 

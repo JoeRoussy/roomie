@@ -473,7 +473,7 @@ export const fetchRecommenedRoommates = ({
     }
 
     if (!recommendedRoommates.length) {
-        logger.error(e, `No recommended roommates found for user with id: ${userId}`);
+        logger.error(`No recommended roommates found for user with id: ${userId}`);
 
         return sendError({
             res,

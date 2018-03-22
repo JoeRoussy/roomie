@@ -8,12 +8,16 @@ import ListingForm from '../../components/ListingForm';
 import ListingDisplay from '../../components/ListingDisplay';
 import MapComponent from '../../components/Map';
 import { addLandlord, setListing } from '../../../redux/actions/scheduleMeetingActions';
+import { navigateTo } from '../../../components';
+import { createChannelWithUser } from '../../../redux/actions/chatActions';
 import {
     getListingById,
     editListing,
     submitUpdateForm,
     cancelEditListing
 } from '../../../redux/actions/listingActions';
+
+import './styles.css';
 
 @connect(({
     listingReducer: {
@@ -50,6 +54,7 @@ export default class Listing extends React.Component {
         this.onImageRemove = this.onImageRemove.bind(this);
         this.onEditCancelClicked = this.onEditCancelClicked.bind(this);
         this.onBookMeetingClicked = this.onBookMeetingClicked.bind(this);
+        this.createChatWithLandlord = this.createChatWithLandlord.bind(this);
     }
 
     componentWillMount() {
@@ -88,6 +93,11 @@ export default class Listing extends React.Component {
         this.props.dispatch(arrayRemove('listingForm', 'images', imageIndex));
     }
 
+    createChatWithLandlord(landlord){
+        this.props.dispatch(createChannelWithUser(landlord.name,landlord));
+        navigateTo(this.props.dispatch)('/chat');
+    }
+
     render() {
         const {
             listing,
@@ -101,7 +111,12 @@ export default class Listing extends React.Component {
         let editButton;
 
         editButton = (user && listing && user.isLandlord && user._id === listing.ownerId) ? (
-            <Button onClick = { this.editListing }>Edit listing</Button>
+            <Button className='primaryColour' onClick={ this.editListing }>Edit listing</Button>
+        ) : ('');
+
+        let startChatButton;
+        startChatButton = (user && !user.isLandlord) ? (
+            <Button color='green' onClick={()=>this.createChatWithLandlord(listing.owner)}>Message Landlord</Button>
         ) : ('');
 
         let bodySection;
@@ -131,11 +146,10 @@ export default class Listing extends React.Component {
                     <ListingDisplay
                         listing={ listing }
                     />
-                    <div style= {{margin:'auto'}}>
-                        { (()=><MapComponent position={{lat: this.props.listing.lat, lng: this.props.listing.lng}} />)() }
-                    {/*<MapComponent position={position} />*/}
+                    {startChatButton}
+                    <div id='mapsComponentWrapper'>
+                        <MapComponent position={{lat: this.props.listing.lat, lng: this.props.listing.lng}} />
                     </div>
-                    {editButton}
                 </div>
             );
         } else {
@@ -143,8 +157,9 @@ export default class Listing extends React.Component {
         }
 
         return (
-            <Container>
+            <Container id='listingContainer' className='rootContainer'>
                 {bodySection}
+                {editButton}
                 <Button className='primaryColour' onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
             </Container>
         )

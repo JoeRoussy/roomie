@@ -1,8 +1,10 @@
 import { wrap as coroutine } from 'co';
+import jwt from 'jsonwebtoken';
 
 import { findVerificationDocument } from '../components/data';
 import { findAndUpdate } from '../components/db/service';
 import { sendError } from './utils';
+import { transformUserForOutput } from '../components/transformers';
 
 export const verifyEmail = ({
     verificationsCollection = required('verificationsCollection'),
@@ -55,9 +57,11 @@ export const verifyEmail = ({
         });
     }
 
+    let updatedUser;
+
     // Find the user defined by the verification document and mark them as confirmed
     try {
-        yield findAndUpdate({
+        updatedUser = yield findAndUpdate({
             collection: usersCollection,
             query: {
                 _id: verificationDocument.userId
@@ -97,6 +101,9 @@ export const verifyEmail = ({
         });
     }
 
+    // Make a new jwt for the user
+    const jwtToken = jwt.sign(transformUserForOutput(updatedUser), process.env.JWT_SECRET);
+
     // Everything has worked well so redirect to the homepage
-    return res.redirect(`${FRONT_END_ROOT}/`);
+    return res.redirect(`${FRONT_END_ROOT}/?newToken=${jwtToken}`);
 });

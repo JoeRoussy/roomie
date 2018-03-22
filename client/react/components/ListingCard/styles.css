@@ -1,7 +1,4 @@
-.rightAligned {
-    text-align: right;
-}
-
-.signUpForm {
-    margin-top: 15px;
+.listingCard p.price {
+    font-size: bold;
+    color: #21ba45;
 }

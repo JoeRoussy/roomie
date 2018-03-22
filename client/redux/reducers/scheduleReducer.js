@@ -163,6 +163,33 @@ const scheduleReducer = (state = config, actions) => {
             break;
         }
 
+        case 'SCHEDULE_ACCEPT_MEETING_FULLFILED': {
+            state = {
+                ...state,
+                pendingMeetingLoading: false,
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_ACCEPT_MEETING_PENDING': {
+            state = {
+                ...state,
+                pendingMeetingLoading: true,
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_ACCEPT_MEETING_REJECTED': {
+            state = {
+                ...state,
+                pendingMeetingLoading: false,
+            };
+
+            break;
+        }
+
         case 'SCHEDULE_ACTIONS_SHOW_EVENT_DETAIL': {
             state = {
                 ...state,

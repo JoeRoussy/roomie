@@ -20,7 +20,8 @@ export const getListingsByOwner = async({
 }) => {
     try {
         return await listingsCollection.find({
-            ownerId: convertToObjectId(ownerId)
+            ownerId: convertToObjectId(ownerId),
+            isCurrentlyLeased: false
         }).toArray();
     } catch (e) {
         throw new RethrownError(e, `Error getting a listing with owner ${ownerId}`);

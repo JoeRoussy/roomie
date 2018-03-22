@@ -9,9 +9,9 @@ export const populateForm = (listing) => ({
 });
 
 
-export const submitForm = (values, tenants) => {
+export const submitForm = (values, listing, tenants) => {
     const mappedTenants = tenants.map(x=>(x.api_response._id));
-    const listingId = values.listing._id;
+    const listingId = listing._id;
 
     const submissionData = {
         ...values,

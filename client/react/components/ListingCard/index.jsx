@@ -7,6 +7,7 @@ const ListingCard = ({
     listing,
     id,
     createLease,
+    canLease,
     viewListing,
     canDelete = false,
     deleteListing
@@ -18,7 +19,7 @@ const ListingCard = ({
         extra = {
                 <span >
                     <Icon name = 'user' />{ listing.views ? listing.views : '0' } Views
-                    <Button color='blue' onClick={createLease}> Lease </Button>
+                    {canLease ? (<Button color='blue' onClick={createLease}> Lease </Button>): ('')}
                     <Button color='green' onClick = { viewListing } >View</Button>
                     {
                         canDelete ? (<Button color='red' onClick = { deleteListing } >Delete</Button>) : ('')

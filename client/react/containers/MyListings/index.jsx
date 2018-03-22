@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Card } from 'semantic-ui-react';
+import { Container, Card, Divider } from 'semantic-ui-react';
 import { Redirect } from 'react-router';
 import { push } from 'react-router-redux';
 import { populateForm } from '../../../redux/actions/leaseActions'
 import { getMyListings, deletingListing, cancelDeletingListing, deleteMyListing } from '../../../redux/actions/listingActions';
 import ListingCard from '../../components/ListingCard';
+import LeaseCard from '../../components/LeaseCard';
 import DeleteItemModal from '../../components/DeleteItemModal';
 
 import './styles.css';
@@ -33,6 +34,7 @@ export default class MyListings extends React.Component {
         super(props);
 
         this.mapListings = this.mapListings.bind(this);
+        this.mapLeases = this.mapLeases.bind(this);
         this.createLease = this.createLease.bind(this);
         this.viewListing = this.viewListing.bind(this);
         this.deletingListing = this.deletingListing.bind(this);
@@ -51,12 +53,21 @@ export default class MyListings extends React.Component {
             key = { i }
             listing = { listing }
             id = { i }
+            canLease = { true }
             canDelete = { true }
             createLease = { () => this.createLease(listing) }
             viewListing = { () => this.viewListing(listing) }
             deleteListing = { () => this.deletingListing(listing) }
         />
     )
+
+    mapLeases = (leases) => leases.map((lease, i) => (
+        <LeaseCard
+            id = {i}
+            key = {lease._id}
+            lease={lease}
+        />
+    ));
 
     // Called when a listing card is clicked.
     // Route to the appropriate listing page using the id.
@@ -96,12 +107,28 @@ export default class MyListings extends React.Component {
         const redirectSection = user ? '' : <Redirect to='/sign-in'/>;
 
         const body = myListings.length ? (
-            <Card.Group>
-                { this.mapListings(myListings) }
-            </Card.Group>
+            <div>
+                <h1> My listings </h1>
+                <Card.Group>
+                    { this.mapListings(myListings) }
+                </Card.Group>
+            </div>
         ) : (
             <p>No listings found.</p>
         );
+
+        let leaseCards = myLeases.length ? (
+            <div>
+                <h1> My leased listings </h1>
+                <Card.Group>
+                    {this.mapLeases(myLeases)}
+                </Card.Group>
+            </div>
+        ) : (
+            <h3> You currently have no listings leased </h3>
+        )
+
+
 
         const deleteModal = isDeleting && listingToDelete ? (
             <DeleteItemModal
@@ -119,8 +146,10 @@ export default class MyListings extends React.Component {
                 {body}
                 {deleteModal}
 
+                <Divider />
+                
                 <div>
-
+                    {leaseCards}
                 </div>
             </Container>
         )

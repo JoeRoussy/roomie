@@ -4,6 +4,7 @@ const config = {
     isEditing: false,
     isFormProcessing: false,
     myListings: [],
+    myLeases: [],
     isDeleting: false,
     listingToDelete: {},
     analyticsMessage: null
@@ -80,13 +81,15 @@ const listingReducer = (state = config, actions) => {
         case 'GET_MY_LISTINGS_FULFILLED': {
             const {
                 data: {
-                    listings: myListings
+                    listings: myListings,
+                    leases
                 } = {}
             } = payload;
 
             state = {
                 ...state,
-                myListings
+                myListings,
+                myLeases: leases
             }
 
             break;

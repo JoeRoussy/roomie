@@ -20,6 +20,7 @@ import roommateSurveyReducer from './roommateSurveyReducer';
 import forgotPasswordFormReducer from './forgotPasswordFormReducer';
 import forgotPasswordReducer from './forgotPasswordReducer';
 import locationReducer from './locationReducer';
+import leaseReducer from './leaseReducer';
 
 const reducers = combineReducers({
     listingReducer,
@@ -38,7 +39,8 @@ const reducers = combineReducers({
     roommateSurveyReducer,
     forgotPasswordFormReducer,
     forgotPasswordReducer,
-    locationReducer
+    locationReducer,
+    leaseReducer
 });
 
 export default reducers;

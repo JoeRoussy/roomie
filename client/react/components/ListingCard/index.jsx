@@ -6,6 +6,8 @@ import './styles.css';
 const ListingCard = ({
     listing,
     id,
+    createLease,
+    canLease,
     viewListing,
     canDelete = false,
     deleteListing

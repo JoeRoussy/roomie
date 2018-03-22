@@ -20,7 +20,7 @@ import ForgotPasswordForm from '../ForgotPasswordForm';
 import Schedule from '../Schedule';
 import MyListings from '../MyListings';
 import ScheduleMeeting from '../ScheduleMeeting';
-
+import Lease from '../Lease';
 import './styles.css';
 
 const App = ({
@@ -47,6 +47,7 @@ const App = ({
             <Route exact path="/schedule-meeting" component={ScheduleMeeting} />
             <Route exact path="/roommate-survey" component={RoommateSurvey} />
             <Route exact path="/my-listings" component={MyListings} />
+            <Route exact path="/lease" component={Lease} />
         </main>
         { /* NOTE: This is a diry hack and should be taken out when we have a better map component */ }
         {window.location.pathname.indexOf('/listings') !== -1 ? (

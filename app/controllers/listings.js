@@ -670,7 +670,8 @@ export const createListing = ({
                 keywords,
                 lat,
                 lng,
-                views: 0
+                views: 0,
+                isCurrentlyLease: false
             },
             returnInsertedDocument: true
         });

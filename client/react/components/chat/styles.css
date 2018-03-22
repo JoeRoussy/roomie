@@ -84,3 +84,7 @@
 #chatInputWrapper .ui.input.chatInput input {
     border-width: 2px;
 }
+
+#chatView .ui.comments .comment {
+    overflow: hidden;
+}

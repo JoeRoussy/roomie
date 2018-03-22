@@ -165,5 +165,31 @@ export const sendLeaseInviteEmail = async({
     listing = required('listing'),
     landlordName = required('landlordName')
 }) => {
-    
+    const {
+        name: tenantName,
+        email: userEmail
+    } = user;
+
+    const message = {
+        context: {
+            userName,
+            acceptLink: ``,
+            declineLink: ``,
+            listing,
+            lease,
+            tenantName,
+            landlordName
+        },
+        template: 'listingInvite'
+    };
+
+    try {
+        return await _sendMessage({
+            to: userEmail,
+            message,
+            subject: 'Your Lease Is Ready!'
+        });
+    } catch (e) {
+        throw new RethrownError(e, `Error sending sign up message to user with email: ${userEmail}`);
+    }
 }

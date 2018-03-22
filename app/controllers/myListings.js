@@ -3,9 +3,10 @@ import moment from 'moment';
 import { required, convertToObjectId } from '../components/custom-utils';
 import { sendError } from './utils';
 import { isPrice } from '../../common/validation';
+import { sendLeaseInviteEmail } from '../components/mail-sender';
 import {
     getListingsByOwner,
-    getLeasesByOwner
+    getLeasesByOwner,
     getListingByIdWithOwnerPopulated,
     getLeaseEmailIdentifiersForTenants,
     getLeaseAndTenantFromEncryption
@@ -134,12 +135,6 @@ export const createLease = ({
     usersCollection = required(usersCollection),
     logger = required('logger', 'You must pass a logger for this function')
 })=> coroutine(function* (req, res) {
-    let {
-        tenantIds: tenants,
-        listingId
-    } = req.body;
-
-    //TODO
     const {
         user: {
             _id: userId
@@ -153,6 +148,8 @@ export const createLease = ({
         end,
         price
     } = req.body;
+
+    // TODO: Make sure req.user is the owner of the listing in question
 
     //Perform Basic Validation
     if(!userId){
@@ -345,13 +342,30 @@ export const createLease = ({
     });
 
     // Send the emails
-    //const emailRequests = tenantsInLease.map()
+    const emailRequests = tenantsInLease.map((tenant) => sendLeaseInviteEmail({
+        user: tenant,
+        identifier: tenantEmailIdentifiers[tenant._id.toString()],
+        lease,
+        listing: listingInLease,
+        landlordName: req.user
+    }))
 
+    try {
+        yield Promise.all(emailRequests);
 
-    //Return result
-    return res.json({
-        lease
-    });
+        //Return result
+        return res.json({
+            lease
+        });
+    } catch (e) {
+        logger.error(e, `Failed to send lease email requests`);
+
+        return sendError({
+            res,
+            status: 500,
+            message: 'error udpating listing to leased status'
+        });
+    }
 });
 
 export const updateLease = ({

@@ -7,7 +7,7 @@ import { required, convertToObjectId, extendIfPopulated, convertToBoolean } from
 import { findListings, getListingByIdWithOwnerPopulated, getListingViewers} from '../components/data';
 import { sendError } from './utils';
 import { isPrice, isInteger, isFullOrHalfInt, isPostalCode } from '../../common/validation';
-import { listingTypes, provinces, cities } from '../../common/constants';
+import { listingTypes, provinces, cities, listingKeywords } from '../../common/constants';
 import {
     insert as insertInDb,
     getById,
@@ -193,8 +193,33 @@ export const getListingById = ({
         });
     }
 
+    let analyticsMessage;
+
+    // Check if the user that is logged in matches the ownerId.
+    if (result.ownerId.equals(convertToObjectId(userId)))
+    {
+        // If they match, look at all the keywords of this listing and compare with the keyword constants.
+        // If there is a keyword that does not exist in the keyword constants, we will return with a message.
+        let keywordsNotFound = [];
+        result.keywords.forEach((keyword) => {
+            if(!listingKeywords.find((item) => (item === keyword))) {
+                keywordsNotFound.push(keyword);
+            }
+        });
+
+        // Create a message to send the landlord about analytics.
+        if(keywordsNotFound.length) {
+
+            let removeWords = keywordsNotFound[0];
+            keywordsNotFound.slice(1,keywordsNotFound.length).forEach(word => (removeWords += ', ' +  word));
+
+            analyticsMessage = (`The most popular listings on our site feature the following concepts: <strong class='underlined'>kitchen, major appliance, recreation room, dishwasher</strong>. Your listing displays the following concepts: <strong class='underlined'>${removeWords}</strong>. We recommend you replace these images with some that showcase the former concepts.`);
+        }
+    }
+
     return res.json({
-        listing: result
+        listing: result,
+        analyticsMessage
     });
 });
 

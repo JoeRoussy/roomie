@@ -54,3 +54,7 @@ h1 {
 .centered {
     text-align: center;
 }
+
+.underlined {
+    text-decoration: underline;
+}

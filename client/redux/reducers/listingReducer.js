@@ -5,7 +5,8 @@ const config = {
     isFormProcessing: false,
     myListings: [],
     isDeleting: false,
-    listingToDelete: {}
+    listingToDelete: {},
+    analyticsMessage: null
 };
 
 const listingReducer = (state = config, actions) => {
@@ -44,22 +45,32 @@ const listingReducer = (state = config, actions) => {
         case 'GET_LISTING_BY_ID_FULFILLED' : {
             const {
                 data: {
-                    listing
+                    listing,
+                    analyticsMessage
                 } = {}
             } = payload;
 
             state = {
                 ...state,
-                listing
+                listing,
+                analyticsMessage
             }
 
             break;
         }
         case 'GET_LISTING_BY_ID_PENDING': {
+            state = {
+                ...state,
+                analyticsMessage: null
+            }
 
             break;
         }
         case 'GET_LISTING_BY_ID_REJECTED' : {
+            state = {
+                ...state,
+                analyticsMessage: null
+            }
 
             break;
         }

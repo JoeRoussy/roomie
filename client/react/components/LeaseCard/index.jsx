@@ -6,7 +6,7 @@ import './styles.css';
 const mapTenantsToDescription = (tenants) => {
     let description = "Participants: ";
     for(let i = 0; i < tenants.length; i++){
-        const response = !tenants.confirmed ? 'Unseen':tenants.confirmed;
+        const response = tenants[i].confirmed === null ? 'Unseen': tenants[i].confirmed ? "Accepted": "Declined";
         description += `\n${tenants[i].name} (${response})`;
     }
     return description;

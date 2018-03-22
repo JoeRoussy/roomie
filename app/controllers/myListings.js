@@ -140,7 +140,6 @@ export const createLease = ({
             _id: userId
         } = { }
     } = req;
-    console.log(req.body);
 
     const {
         tenantIds: tenants,
@@ -389,15 +388,10 @@ export const updateLease = ({
     //decrypt it
     const decryptedIdentifier = getLeaseAndTenantFromEncryption(identifier);
 
-    console.log("identifier", identifier);
-
-    console.log('decryptedIdentifier', decryptedIdentifier);
 
     const userId = decryptedIdentifier.tenantId;
     const leaseId = decryptedIdentifier.leaseId;
     const confirmed = response === 'accept';
-
-    console.log('userId', userId);
 
     //Perform Validation
     if(!userId){
@@ -463,8 +457,9 @@ export const updateLease = ({
         const updatedTenants = leaseValidation.tenants.map(user => {
             if(user.userId.equals(convertToObjectId(userId))){
                 return {
-                    ...userId,
-                    confirmed
+                    userId: user.userId,
+                    confirmed:confirmed,
+                    name: user.name
                 }
             }
             return user;
@@ -473,7 +468,7 @@ export const updateLease = ({
         result = yield findAndUpdate({
             collection: leasesCollection,
             query: { _id: leaseId },
-            update: { updatedTenants }
+            update: { tenants: updatedTenants }
         })
     } catch (e) {
         logger.error(e, 'Error updating the tenant conformation for lease')

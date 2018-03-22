@@ -81,6 +81,7 @@
     "react-router-redux": "5.0.0-alpha.9",
     "react-semantic-redux-form": "1.2.5",
     "react-semantic-ui-range": "0.4.0",
+    "react-text-truncate": "0.12.1",
     "react-toastify": "3.3.1",
     "react-typing-animation": "1.2.1",
     "read-chunk": "2.1.0",

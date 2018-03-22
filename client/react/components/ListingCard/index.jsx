@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Icon, Image, Button, Label } from 'semantic-ui-react';
+import TextTruncate from 'react-text-truncate';
 
 import './styles.css';
 
@@ -22,7 +23,13 @@ const ListingCard = ({
             <Card.Meta>{listing.address}</Card.Meta>
             <Card.Description>
                 <p className='price'>${listing.price}</p>
-                <p>{listing.description}</p>
+                <p>
+                    <TextTruncate
+                        line={3}
+                        truncateText="…"
+                        text={listing.description}
+                    />
+                </p>
             </Card.Description>
         </Card.Content>
         <Card.Content extra>

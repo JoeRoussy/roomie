@@ -111,12 +111,15 @@ export const postMessageToActiveChannel = (channel,message,user) => (dispatch) =
              payload: {res,
                  message:msg}
          });
+         const chatView = document.getElementById('chatView');
+         chatView.scrollTop = chatView.scrollHeight;
      }).catch(e => {
          console.log(e);
          dispatch({
              type: 'SEND_MESSAGE_REJECTED',
              payload: {e,message:msg}
          });
+
      });
 }
 

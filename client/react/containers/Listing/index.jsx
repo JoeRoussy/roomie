@@ -94,7 +94,7 @@ export default class Listing extends React.Component {
     }
 
     createChatWithLandlord(landlord){
-        this.props.dispatch(createChannelWithUser(landlord.name,landlord));
+        this.props.dispatch(createChannelWithUser(this.props.user.name + ' + ' +landlord.name,landlord));
         navigateTo(this.props.dispatch)('/chat');
     }
 

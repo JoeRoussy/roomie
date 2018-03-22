@@ -398,11 +398,6 @@ export const findRecommendedRoommates = async({
         throw new RethrownError(e, 'Error getting roommate survey responses');
     }
 
-    // If we have a small amount of people looking in the same city, just return them as we don't have any to sort through
-    if (roommateSurveyResponses.length <= maxRecommendedRoommates) {
-        return roommateSurveyResponses.map(transformRoommateResponseForOutput);
-    }
-
     const {
         userId: submittedUserId,
         createdAt,
@@ -410,6 +405,7 @@ export const findRecommendedRoommates = async({
     } = userSurveyResponse;
 
     // Compute the distance from our current user to each survey response.
+
     const roommateDistances = roommateSurveyResponses.map((response) => {
         const {
             _id,
@@ -419,7 +415,6 @@ export const findRecommendedRoommates = async({
             createdAt,
             ...questionResponses
         } = response;
-
         // Compute the Euclidean distance between the current response and our user
         const squaredDistance = Object.keys(questionResponses)
             .reduce((accumulator, responseKey) => {
@@ -447,10 +442,9 @@ export const findRecommendedRoommates = async({
     let recommendedRoommates = [];
 
     // Pick out the recommendedRoommates based on the number of recommended rommates in the config
-    for (let i = 0; i < surveyContants.maxRecommendedRoommates; i++) {
+    for (let i = 0; i < Math.min(surveyContants.maxRecommendedRoommates,roommateDistances.length); i++) {
         recommendedRoommates.push(roommateDistances[i]);
     }
-
     return recommendedRoommates.map(transformRoommateResponseForOutput);
 };
 

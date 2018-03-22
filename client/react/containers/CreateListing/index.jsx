@@ -79,7 +79,7 @@ export default class CreateListing extends React.Component {
             user
         } = this.props;
 
-        const redirectSection = !user.isLandlord ? (<Redirect to='/' />) : '';
+        const redirectSection = !user ? (<Redirect to='/sign-in' />) : '';
 
         return (
             <Container className='rootContainer'>

@@ -671,7 +671,7 @@ export const createListing = ({
                 lat,
                 lng,
                 views: 0,
-                isCurrentlyLease: false
+                isCurrentlyLeased: false
             },
             returnInsertedDocument: true
         });

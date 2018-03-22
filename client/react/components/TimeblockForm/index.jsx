@@ -102,6 +102,7 @@ const TimeblockForm = ({
                         options={availabilityOptions}
                     />
                     <br/>
+                    <br/>
                 </div>
 
                 {/* Calendar to choose date */}
@@ -114,6 +115,7 @@ const TimeblockForm = ({
                         component={WrappedDatePicker}
 
                     />
+                    <br/>
                     <br/>
                 </div>
 

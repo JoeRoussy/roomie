@@ -23,13 +23,11 @@ const ListingCard = ({
             <Card.Meta>{listing.address}</Card.Meta>
             <Card.Description>
                 <p className='price'>${listing.price}</p>
-                <p>
-                    <TextTruncate
-                        line={3}
-                        truncateText="…"
-                        text={listing.description}
-                    />
-                </p>
+                <TextTruncate
+                    line={3}
+                    truncateText="…"
+                    text={listing.description}
+                />
             </Card.Description>
         </Card.Content>
         <Card.Content extra>

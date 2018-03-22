@@ -140,10 +140,11 @@ export const createLease = ({
             _id: userId
         } = { }
     } = req;
+    console.log(req.body);
 
     const {
         tenantIds: tenants,
-        listing: listindId,
+        listing: listingId,
         start,
         end,
         price
@@ -170,7 +171,7 @@ export const createLease = ({
         })
     }
 
-    if(!listings){
+    if(!listingId){
         logger.error('Error no listings provided')
         return sendError({
             res,
@@ -295,6 +296,7 @@ export const createLease = ({
 
     const leaseObject = {
         listingId: listingInLease._id,
+        title: listingInLease.name,
         ownerId: listingInLease.ownerId,
         tenants: [...tenantsWithStatus],
         start: new Date(startMoment.toISOString()),
@@ -323,7 +325,7 @@ export const createLease = ({
     try {
         updatedListing = yield findAndUpdate({
             collection: listingsCollection,
-            query: {_id: listingInLease._id},
+            query: {_id: convertToObjectId(listingInLease._id)},
             update: {isCurrentlyLeased: true}
         })
     } catch (e) {

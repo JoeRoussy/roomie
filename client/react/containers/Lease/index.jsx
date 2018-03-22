@@ -80,9 +80,9 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onSubmit: (formValues, tenants) => () => {
-        dispatch(submitForm(formValues, tenants));
-        dispatch(push('/my-listing'));
+    onSubmit: (formValues, listing, tenants) => () => {
+        dispatch(submitForm(formValues, listing, tenants));
+        dispatch(push('/my-listings'));
     },
     onCancel: (path) => () => dispatch(push(path)),
     onSearchResultSelected: (e, data) => {

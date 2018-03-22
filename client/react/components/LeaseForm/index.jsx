@@ -69,9 +69,9 @@ const LeaseForm = ({
     if(locationDisplay) 
         placeholder = locationDisplay;
     return (
-        <Form onSubmit={onSubmit(formValues, tenants)} error={!!(errorMessage)}>
+        <Form onSubmit={onSubmit(formValues, listing, tenants)} error={!!(errorMessage)}>
             <Field
-                name = 'listing'
+                name = 'location'
                 component = {LabelInputField}
                 label = 'Listing'
                 placeholder = {placeholder}

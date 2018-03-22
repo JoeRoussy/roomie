@@ -67,7 +67,7 @@ const ScheduleMeetingForm = ({
     endTimeChange,
     isLoading
 }) => (
-    <Form onSubmit={onSubmit(formValues)} error={!!errorMessage}>
+    <Form id='scheduleMeetingTimeForm' onSubmit={onSubmit(formValues)} error={!!errorMessage}>
         <Message
             error
             header='Error'
@@ -83,10 +83,12 @@ const ScheduleMeetingForm = ({
                 selectedDate={selectedDate}
                 component={WrappedDatePicker}
             />
+            <br />
+            <br />
         </div>
 
         {/* Set up timeblock duration */}
-        <div>
+        <div id="timePickerWrapper">
             <Label size='large'>Duration:</Label>
             <br />
             <Field
@@ -108,6 +110,8 @@ const ScheduleMeetingForm = ({
                 labelPosition='left'
                 placeholder='End Time'
             />
+            <br />
+            <br />
         </div>
 
         <Button type='submit' color='green' content='Create Meeting' loading={isLoading} />

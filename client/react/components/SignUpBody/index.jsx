@@ -35,9 +35,11 @@ export default ({
     }
 
     return (
-        <div>
-            <Button onClick={() => chooseUser(process.env.USER_TYPE_TENANT)}>Choose Tenant</Button>
-            <Button onClick={() => chooseUser(process.env.USER_TYPE_LANDLORD)}>Choose Landlord</Button>
+        <div id='signUpBody'>
+            <div className='ui two buttons'>
+                <Button className='primaryColour' onClick={() => chooseUser(process.env.USER_TYPE_TENANT)}>Choose Tenant</Button>
+                <Button className='primaryColourAlt' onClick={() => chooseUser(process.env.USER_TYPE_LANDLORD)}>Choose Landlord</Button>
+            </div>
         </div>
     );
 }

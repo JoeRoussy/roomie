@@ -130,7 +130,7 @@ const CreateListingForm = ({
     cities,
     formData
 }) => (
-    <Form onSubmit={onSubmit(formData)} error={!!(errorMessage || provinceErrorMessage)}>
+    <Form id='createListingForm' onSubmit={onSubmit(formData)} error={!!(errorMessage || provinceErrorMessage)}>
         <Message
             error
             header='Error'
@@ -139,14 +139,14 @@ const CreateListingForm = ({
         <Field
             name='name'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='home' size='large' /> }}
+            label='Name'
             labelPosition='left'
             placeholder='Listing Name'
         />
         <Field
             name='country'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='globe' size='large' /> }}
+            label='Country'
             labelPosition='left'
             placeholder='Canada'
             readOnly
@@ -222,36 +222,38 @@ const CreateListingForm = ({
             labelPosition='left'
             placeholder=''
         />
-        <Field
-            name='utilities'
-            component={Checkbox}
-            label='Utilities'
-        />
-        <Field
-            name='furnished'
-            component={Checkbox}
-            label='Furnished'
-        />
-        <Field
-            name='parking'
-            component={Checkbox}
-            label='Parking'
-        />
-        <Field
-            name='internet'
-            component={Checkbox}
-            label='Internet'
-        />
-        <Field
-            name='laundry'
-            component={Checkbox}
-            label='Laundry'
-        />
-        <Field
-            name='airConditioning'
-            component={Checkbox}
-            label='Air Conditioning'
-        />
+        <div id='checkboxWrapper'>
+            <Field
+                name='utilities'
+                component={Checkbox}
+                label='Utilities'
+            />
+            <Field
+                name='furnished'
+                component={Checkbox}
+                label='Furnished'
+            />
+            <Field
+                name='parking'
+                component={Checkbox}
+                label='Parking'
+            />
+            <Field
+                name='internet'
+                component={Checkbox}
+                label='Internet'
+            />
+            <Field
+                name='laundry'
+                component={Checkbox}
+                label='Laundry'
+            />
+            <Field
+                name='airConditioning'
+                component={Checkbox}
+                label='Air Conditioning'
+            />
+        </div>
         <Field
             name='images'
             component={RenderDropzone}

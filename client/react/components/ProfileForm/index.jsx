@@ -54,18 +54,18 @@ const ProfileForm = ({
                 accept='image/x-png,image/jpeg'
                 iconName='image'
             />
-        <Button type='button' id='profileKeepOldPictureButton' onClick={onCancelPictureEditClicked}>Keep Old Profile Picture</Button>
+        <Button className='primaryColour' type='button' id='profileKeepOldPictureButton' onClick={onCancelPictureEditClicked}>Keep Old Profile Picture</Button>
         </Grid.Column>
     ) : (
         <Grid.Column>
-            <Button type='button' onClick={onPictureEditClicked}>Upload New Profile Picture</Button>
+            <Button className='primaryColour' type='button' onClick={onPictureEditClicked}>Upload New Profile Picture</Button>
         </Grid.Column>
 
     );
 
     return (
         <div id='profileEditFormWrapper'>
-            <Button onClick={onEditCancelClicked}>Back to Profile</Button>
+            <Button className='primaryColour' onClick={onEditCancelClicked}>Back to Profile</Button>
             <Form id='profileEditForm' onSubmit={onSubmit} error={!!errorMessage}>
                 <Message
                     error
@@ -79,7 +79,7 @@ const ProfileForm = ({
                     labelPosition='left'
                     placeholder='Name'
                 />
-            <Button type='button' onClick={() => navigateTo('/change-password')}>Change Password</Button>
+            <Button className='primaryColour' type='button' onClick={() => navigateTo('/change-password')}>Change Password</Button>
             <Grid columns={2}>
                 <Grid.Column>
                     <Image className='profilePicture' src={`${process.env.ASSETS_ROOT}${profilePictureLink}`} />

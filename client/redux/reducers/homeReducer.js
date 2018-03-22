@@ -1,5 +1,17 @@
+// const typedTextOptions = [
+//     'Toronto',
+//     'London',
+//     'Montreal',
+//     'Edmonton',
+//     'Vancouver'
+// ];
+
+import { cities } from '../../../common/constants';
+
 const config = {
     recommendedRoommates: [],
+    typedText: cities[0].value,
+    typedTextIndex: 0
 };
 
 const homeReducer = (state = config, actions) => {
@@ -58,6 +70,20 @@ const homeReducer = (state = config, actions) => {
             }
 
             break;
+        }
+
+        case 'GET_NEXT_TYPED_TEXT': {
+            let newIndex = ++state.typedTextIndex;
+
+            if (newIndex === cities.length) {
+                newIndex = 0;
+            }
+
+            state = {
+                ...state,
+                typedText: cities[newIndex].value,
+                typedTextIndex: newIndex
+            };
         }
     }
 

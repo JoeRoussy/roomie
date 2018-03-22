@@ -6,3 +6,11 @@
     position: relative;
     z-index: 1;
 }
+
+#listingContainer #listingForm {
+    margin-top: 30px;
+}
+
+#listingContainer h2 {
+    text-align: center;
+}

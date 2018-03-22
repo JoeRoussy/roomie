@@ -1,14 +1,30 @@
+#chatContainer {
+    width: 100%;
+}
+
+#chatRoot {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#chatRoot .ui.column {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .chatInput {
     width: 100%;
 }
 
-#chatSideBar {
-    min-height: 90vh;
+#chatLeftColumn, #chatMiddleColumn, #chatRightColumn {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 #chatView {
     width: 100%;
     max-width: none;
+    padding: 30px 30px 0;
     height: 73vh;
     overflow: auto;
 }

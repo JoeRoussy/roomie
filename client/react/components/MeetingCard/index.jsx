@@ -12,17 +12,17 @@ const MeetingCard = ({
     end,
     listing = ' '
 }) => (
-    <Card>
+    <Card className='meetingCard'>
         <Card.Content>
             <Card.Header>
                 {participants}
             </Card.Header>
-            <Card.Meta>
-                {listing} <br/>
-                {date} <br/>
-                Start: {start} <br/>
-                End: {end} <br/>
-            </Card.Meta>
+            <Card.Description>
+                <p className='first'>{listing}</p>
+                <p>{date}</p>
+                <p>Start: {start}</p>
+                <p>End: {end}</p>
+            </Card.Description>
         </Card.Content>
 
         <Card.Content extra>

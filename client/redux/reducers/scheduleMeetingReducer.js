@@ -16,6 +16,16 @@ const config = {
     meetingFormErrorMessage: null
 };
 
+const truncate = (str) => {
+    const maxLength = 150;
+
+    if (str.length <= maxLength) {
+        return str;
+    }
+
+    return `${str.substring(0, maxLength)}...`;
+}
+
 // NOTE: islandlord needs to be lowercase because it is not a normal dom element
 const mapUserForSearchResults = (user) => ({
     title: user.name,
@@ -27,7 +37,7 @@ const mapUserForSearchResults = (user) => ({
 const mapListingForSearchResults = (listing) => ({
     title: listing.name,
     image: `${process.env.ASSETS_ROOT}${listing.images[0]}`,
-    description: listing.description,
+    description: truncate(listing.description),
     price: `$${listing.price}`,
     api_response: listing
 });

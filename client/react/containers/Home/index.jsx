@@ -7,15 +7,17 @@ import queryString from 'query-string';
 import { Redirect } from 'react-router';
 import jwtDecode from 'jwt-decode';
 import { toast } from 'react-toastify';
+import Typing from 'react-typing-animation';
 
 import HomeSearch from '../../components/Search/HomeSearch';
 import ViewListingsSearch from '../../components/Search/ViewListingsSearch';
 import { navigateTo } from '../../../components';
 import ProfileCard from '../../components/ProfileCard';
+import TypeCursor from '../../components/TypeCursor';
 
 import { createChannelWithUser } from '../../../redux/actions/chatActions';
 import { search, handleLocationChange } from '../../../redux/actions/searchActions';
-import { getRoommateSuggestionsForUser } from '../../../redux/actions/homeActions';
+import { getRoommateSuggestionsForUser, getNextTypedText } from '../../../redux/actions/homeActions';
 import { setPasswordResetToken } from '../../../redux/actions/forgotPasswordFormActions';
 import { setCurrentUser} from '../../../redux/actions/userActions';
 
@@ -27,6 +29,7 @@ import './styles.css';
     user: store.userReducer.user,
     searchState: store.searchReducer,
     recommendedRoommates: store.homeReducer.recommendedRoommates,
+    currentTypeText: store.homeReducer.typedText,
     isRoommatesLoading: store.homeReducer.isLoadingRoommateSuggestions
 }))
 
@@ -41,6 +44,7 @@ class Home extends Component {
         this.navigateToRoommateSurvey = this.navigateToRoommateSurvey.bind(this);
         this.onPasswordResetToken = this.onPasswordResetToken.bind(this);
         this.createChatWithRoommate = this.createChatWithRoommate.bind(this);
+        this.onFinishedTyping = this.onFinishedTyping.bind(this);
     }
 
     componentWillMount() {
@@ -96,6 +100,10 @@ class Home extends Component {
     createChatWithRoommate(roommate){
         this.props.dispatch(createChannelWithUser(this.props.user.name + ' + ' +roommate.name,roommate));
         navigateTo(this.props.dispatch)('/chat');
+    }
+
+    onFinishedTyping() {
+        this.props.dispatch(getNextTypedText());
     }
 
     render(){
@@ -173,6 +181,12 @@ class Home extends Component {
                     <Container id='homeSearchWrapper'>
                         <h1 id='homeHeading'>Roomie</h1>
                         <h2 id='homeSubHeading'>Your new place is a search away</h2>
+                        <h3 id='homeTypingWrapper'>
+                            <Typing onFinishedTyping={this.onFinishedTyping} loop speed={200} cursor={<TypeCursor />}>
+                                <span>{this.props.currentTypeText}</span>
+                                <Typing.Backspace count={this.props.currentTypeText.length} speed={100}/>
+                            </Typing>
+                        </h3>
                         <HomeSearch
                             navigateToCreateListing={() => this.navigateToCreateListing(this.props.user)}
                             inputProps = {locationProps}

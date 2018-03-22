@@ -140,7 +140,7 @@ export default class MyListings extends React.Component {
         ) : ('');
 
         return (
-            <Container className='rootContainer'>
+            <Container id='myListingsWrapper' className='rootContainer'>
                 {redirectSection}
                 {body}
                 {deleteModal}

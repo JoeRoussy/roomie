@@ -5,3 +5,19 @@
 .signUpForm {
     margin-top: 15px;
 }
+
+#listingForm #checkboxWrapper {
+    margin-top: 30px;
+}
+
+#listingForm #checkboxWrapper .ui.checkbox {
+    margin-right: 15px;
+}
+
+#listingForm .dropzoneWrapper {
+    margin-top: 30px;
+}
+
+#listingForm #buttonsWrapper {
+    margin-top: 30px;
+}

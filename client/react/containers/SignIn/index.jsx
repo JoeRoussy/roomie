@@ -18,7 +18,7 @@ const SignIn = ({
     onForgotPasswordClick,
     navigateTo
 }) => (
-    <Container>
+    <Container className='rootContainer'>
         <h1>Log In</h1>
         {user ? (<Redirect to='/'/>) : ('')}
         <div id='forgotPasswordButtonWrapper'>

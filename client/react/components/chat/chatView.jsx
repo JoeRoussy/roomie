@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import moment from 'moment';
 
+import './styles.css';
+
 const ProcessBody = ({
     message
 }) => {

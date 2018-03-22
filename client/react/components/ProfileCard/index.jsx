@@ -9,7 +9,7 @@ const ProfileCard = ({
     raised = false,
     ...props
 }) => (
-    <Card raised {...props}>
+    <Card className='profileCard' raised {...props}>
         {topExtras}
         <Card.Content>
             <Image size='tiny' floated='right' src={`${process.env.ASSETS_ROOT}${user ? user.profilePictureLink : ''}`} />

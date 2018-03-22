@@ -82,7 +82,9 @@
     "react-router-redux": "5.0.0-alpha.9",
     "react-semantic-redux-form": "1.2.5",
     "react-semantic-ui-range": "0.4.0",
+    "react-text-truncate": "0.12.1",
     "react-toastify": "3.3.1",
+    "react-typing-animation": "1.2.1",
     "read-chunk": "2.1.0",
     "redux": "^3.7.2",
     "redux-form": "7.2.1",
@@ -90,6 +92,7 @@
     "redux-thunk": "2.2.0",
     "semantic-ui-react": "^0.77.2",
     "style-loader": "^0.19.1",
+    "styled-components": "3.2.3",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.0"
   },

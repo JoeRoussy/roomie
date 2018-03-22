@@ -58,3 +58,7 @@ h1 {
 .underlined {
     text-decoration: underline;
 }
+
+footer {
+    padding-top: 50px;
+}

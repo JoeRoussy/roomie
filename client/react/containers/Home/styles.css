@@ -96,3 +96,9 @@
 #homeRoommatesSection #retakeSurvey {
     margin-top: 30px;
 }
+
+#homeTypingWrapper {
+    font-size: 2.5em;
+    min-height: 50px;
+    text-align: center;
+}

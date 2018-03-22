@@ -7,7 +7,7 @@ const chatInput = ({
     text,
     disabled
 }) => (
-    <Container fluid >
+    <Container fluid id="chatInputWrapper">
             <Input
                 className='chatInput'
                 placeholder='Write a message'

@@ -7,6 +7,8 @@ import RenderDropzone from '../RenderDropzone';
 import { isInteger, isPrice, isFullOrHalfInt } from '../../../../common/validation';
 import { listingTypes } from '../../../../common/constants';
 
+import './styles.css';
+
 // TODO: Add validation
 const validate = (values) => {
     let errors = {};
@@ -83,7 +85,7 @@ const ListingForm = ({
     onImageRemove,
     formData
 }) => (
-    <Form onSubmit={onSubmit(formData)} error={!!(errorMessage)}>
+    <Form id='listingForm' onSubmit={onSubmit(formData)} error={!!(errorMessage)}>
         <Message
             error
             header='Error'
@@ -92,7 +94,7 @@ const ListingForm = ({
         <Field
             name='name'
             component={LabelInputField}
-            label={{ content: <Icon color='blue' name='home' size='large' /> }}
+            label='Name'
             labelPosition='left'
             placeholder='Listing Name'
         />
@@ -130,36 +132,38 @@ const ListingForm = ({
             labelPosition='left'
             placeholder=''
         />
-        <Field
-            name='utilities'
-            component={Checkbox}
-            label='Utilities'
-        />
-        <Field
-            name='furnished'
-            component={Checkbox}
-            label='Furnished'
-        />
-        <Field
-            name='parking'
-            component={Checkbox}
-            label='Parking'
-        />
-        <Field
-            name='internet'
-            component={Checkbox}
-            label='Internet'
-        />
-        <Field
-            name='laundry'
-            component={Checkbox}
-            label='Laundry'
-        />
-        <Field
-            name='airConditioning'
-            component={Checkbox}
-            label='Air Conditioning'
-        />
+        <div id="checkboxWrapper">
+            <Field
+                name='utilities'
+                component={Checkbox}
+                label='Utilities'
+            />
+            <Field
+                name='furnished'
+                component={Checkbox}
+                label='Furnished'
+            />
+            <Field
+                name='parking'
+                component={Checkbox}
+                label='Parking'
+            />
+            <Field
+                name='internet'
+                component={Checkbox}
+                label='Internet'
+            />
+            <Field
+                name='laundry'
+                component={Checkbox}
+                label='Laundry'
+            />
+            <Field
+                name='airConditioning'
+                component={Checkbox}
+                label='Air Conditioning'
+            />
+        </div>
         <Field
             name='images'
             component={RenderDropzone}
@@ -168,8 +172,11 @@ const ListingForm = ({
             onImageRemove={onImageRemove}
             accept="image/*"
         />
-        <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update</Button>
-        <Button type='button' onClick={onEditCancelClicked} >Cancel</Button>
+    <div id='buttonsWrapper'>
+            <Button type='submit' color='green' loading={isProcessing} disabled={!valid || isProcessing}>Update</Button>
+            <Button type='button' onClick={onEditCancelClicked} >Cancel</Button>
+        </div>
+
     </Form>
 )
 

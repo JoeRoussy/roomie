@@ -1,6 +1,7 @@
 import faker from 'faker';
 import moment from 'moment';
 import { GCM } from 'node-crypto-gcm';
+import axios from 'axios';
 
 import {
     required,
@@ -373,97 +374,16 @@ export const findRecommendedRoommates = async({
 }) => {
     const {
         maxRecommendedRoommates,
-        minResponse,
-        maxResponse
     } = surveyContants;
 
-    // First get all the roommate survey responses that are looking for the same city as our user
-    let roommateSurveyResponses = [];
-
-    try {
-        roommateSurveyResponses = await roommateSurveysCollection.aggregate([
-            {
-                $match: {
-                    city: userSurveyResponse.city,
-                    userId: {
-                        $ne: userSurveyResponse.userId
-                    }
-                }
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'users'
-                }
-            }
-        ]).toArray();
-
-        // NOTE: Cheesey map to take 1 user out of the users because we don't have time to deal with the db upgrade to 3.4
-        roommateSurveyResponses = roommateSurveyResponses
-            .map(({
-                users,
-                userId,
-                ...rest
-            }) => ({
-                user: users[0],
-                ...rest
-            }))
-            .filter(x => !x.user.isLandlord);
-
-    } catch (e) {
-        throw new RethrownError(e, 'Error getting roommate survey responses');
-    }
-
-    const {
-        userId: submittedUserId,
-        createdAt,
-        ...submittedUserQuestionResponses
-    } = userSurveyResponse;
-
-    // Compute the distance from our current user to each survey response.
-
-    const roommateDistances = roommateSurveyResponses.map((response) => {
-        const {
-            _id,
-            city,
-            user,
-            userId,
-            createdAt,
-            ...questionResponses
-        } = response;
-        // Compute the Euclidean distance between the current response and our user
-        const squaredDistance = Object.keys(questionResponses)
-            .reduce((accumulator, responseKey) => {
-                const componentDistance = Math.pow(submittedUserQuestionResponses[responseKey] - questionResponses[responseKey], 2);
-
-                return accumulator + componentDistance;
-            }, 0);
-
-        const distance = Math.sqrt(squaredDistance);
-        const maxDistance = Object.keys(questionResponses).length * Math.pow(maxResponse - minResponse, 2);
-        const percentMatch = 100 - distance / maxDistance;
-
-        return {
-            user: {
-                ...user,
-                percentMatch
-            },
-            distance
-        };
+    const result = await axios.get(`${process.env.JAVA_FIND_ROOMMATE_URL}`,{
+        'headers':{
+            userId: userSurveyResponse.userId,
+            city: userSurveyResponse.city,
+            maxResults: maxRecommendedRoommates
+        }
     });
-
-    // Sort the roommates by distance from low to high
-    roommateDistances.sort((a, b) => a.distance - b.distance);
-
-    let recommendedRoommates = [];
-
-    // Pick out the recommendedRoommates based on the number of recommended rommates in the config
-    for (let i = 0; i < Math.min(surveyContants.maxRecommendedRoommates,roommateDistances.length); i++) {
-        recommendedRoommates.push(roommateDistances[i]);
-    }
-    return recommendedRoommates.map(transformRoommateResponseForOutput);
+    return result.data
 };
 
 // Returns a user wrapped in an envalope: { user }

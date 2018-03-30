@@ -367,7 +367,7 @@ function transformRoommateResponseForOutput(response) {
     };
 }
 
-// Uses minimum Euclidean distance with respect to question responses to find recommended roommates (who are also looking in the same city)
+// Make a call to the java service to find recommended roommates for a user
 export const findRecommendedRoommates = async({
     roommateSurveysCollection = required('roommateSurveysCollection'),
     userSurveyResponse = required('userSurveyResponse')
@@ -376,20 +376,25 @@ export const findRecommendedRoommates = async({
         maxRecommendedRoommates,
     } = surveyContants;
 
-    var result;
+    const {
+        JAVA_FIND_ROOMMATE_URL = required('JAVA_FIND_ROOMMATE_URL')
+    } = process.env;
+
+    let result;
+
     try{
-        result = await axios.get(`${process.env.JAVA_FIND_ROOMMATE_URL}`,{
-            'params':{
+        result = await axios.get(`${JAVA_FIND_ROOMMATE_URL}`, {
+            params: {
                 userId: String(userSurveyResponse.userId),
                 city: userSurveyResponse.city,
                 maxResults: maxRecommendedRoommates
             }
         });
     } catch (e) {
-        throw new RethrownError(e,`Error getting roommate matches`);
+        throw new RethrownError(e, 'Error getting roommate matches');
     }
 
-    return result.data
+    return result.data;
 };
 
 // Returns a user wrapped in an envalope: { user }

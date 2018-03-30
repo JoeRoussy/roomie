@@ -376,13 +376,19 @@ export const findRecommendedRoommates = async({
         maxRecommendedRoommates,
     } = surveyContants;
 
-    const result = await axios.get(`${process.env.JAVA_FIND_ROOMMATE_URL}`,{
-        'headers':{
-            userId: userSurveyResponse.userId,
-            city: userSurveyResponse.city,
-            maxResults: maxRecommendedRoommates
-        }
-    });
+    var result;
+    try{
+        result = await axios.get(`${process.env.JAVA_FIND_ROOMMATE_URL}`,{
+            'params':{
+                userId: String(userSurveyResponse.userId),
+                city: userSurveyResponse.city,
+                maxResults: maxRecommendedRoommates
+            }
+        });
+    } catch (e) {
+        throw new RethrownError(e,`Error getting roommate matches`);
+    }
+
     return result.data
 };
 

@@ -1,66 +1,37 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import {Map, Marker, InfoWindow, GoogleApiWrapper} from 'google-maps-react';
+import { compose, withProps } from 'recompose';
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 
-class MapComponent extends Component {
-    constructor(props){
-        super(props)
-        this.fetchPlaces = this.fetchPlaces.bind(this);
-    }
-
-    fetchPlaces() {
-        const {
-            google
-        } = this.props;
-        const maps = google.maps;
-        const mapRef = this.refs.map;
-        const node = ReactDOM.findDOMNode(mapRef);
-        const center = new maps.LatLng(this.props.position.lat, this.props.position.lng);
-        const mapConfig = Object.assign({},{
-            center: center,
-            zoom: 15
-        })
-        this.map = new maps.Map(node, mapConfig);
-    }
-
-
-    render(){
-        const style = {
-            width: '68%',
-            top: '120px'
-        }
-        const zoom = 15;
-        const {
-            position
-        } = this.props
-
-        const marker = <Marker
-            position = {position}
-        />
-
-        if(!this.props.loaded){
-            return (
-                <Dimmer active>
-                    <Loader>Loading Map...</Loader>
-                </Dimmer>
-            )
-        }
-
+export default compose(
+    withProps({
+        googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBQMMJ8Tjvh9dFmshAM_eMGCqOHzBFUwRw&v=3.exp&libraries=geometry,drawing,places",
+        loadingElement: <div style={{ height: '100%' }} />,
+        containerElement: <div style={{ height: '75vh' }} />,
+        mapElement: <div style={{ height: '100%' }} />,
+    }),
+    withScriptjs,
+    withGoogleMap
+)(({
+    position,
+    loaded
+}) => {
+    if(loaded){
         return (
-            <Map
-                google = {this.props.google}
-                style = {style}
-                zoom = {zoom}
-                initialCenter={position}
-            >
-                {marker}
-            </Map>
-        )
+            <Dimmer active>
+                <Loader>Loading Map...</Loader>
+            </Dimmer>
+        );
     }
-}
 
-export default GoogleApiWrapper({
-  apiKey: 'AIzaSyBQMMJ8Tjvh9dFmshAM_eMGCqOHzBFUwRw'
-})(MapComponent)
+    return (
+        <GoogleMap
+            defaultZoom={15}
+            defaultCenter={position}
+        >
+            <Marker position={position} />
+        </GoogleMap>
+    );
+});

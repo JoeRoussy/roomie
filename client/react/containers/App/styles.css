@@ -60,5 +60,6 @@ h1 {
 }
 
 footer {
-    padding-top: 50px;
+    background-color: #333;
+    color: white;
 }

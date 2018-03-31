@@ -21,6 +21,7 @@ import Schedule from '../Schedule';
 import MyListings from '../MyListings';
 import ScheduleMeeting from '../ScheduleMeeting';
 import Lease from '../Lease';
+import Footer from '../../components/Footer'
 import './styles.css';
 
 const App = ({
@@ -49,7 +50,9 @@ const App = ({
             <Route exact path="/my-listings" component={MyListings} />
             <Route exact path="/lease" component={Lease} />
         </main>
-        <footer></footer>
+        <footer>
+            <Footer />
+        </footer>
     </div>
 )
 

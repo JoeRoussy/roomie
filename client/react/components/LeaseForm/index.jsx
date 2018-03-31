@@ -49,6 +49,7 @@ const LeaseForm = ({
     tenants,
     searchResults,
     searchLoading,
+    searchValue,
     onSearchChange,
     onSearchResultSelected,
     onUserRemove,
@@ -86,6 +87,7 @@ const LeaseForm = ({
                 loading={searchLoading}
                 onResultSelect={onSearchResultSelected}
                 onSearchChange={onSearchChange}
+                value={searchValue}
             />
             
             <Field

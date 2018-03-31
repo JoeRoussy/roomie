@@ -4,7 +4,7 @@ import { change } from 'redux-form';
 import { push } from 'react-router-redux';
 import moment from 'moment'
 import LeaseForm from '../../components/LeaseForm';
-import { submitForm, searchForTenants, addTenant, removeTenant } from '../../../redux/actions/leaseActions';
+import { submitForm, searchForTenants, addTenant, removeTenant, setSearchValue } from '../../../redux/actions/leaseActions';
 
 const Lease = ({
     user,
@@ -13,6 +13,7 @@ const Lease = ({
     tenants,
     searchResults,
     searchLoading,
+    searchValue,
     onSubmit,
     onCancel,
     onUserRemove,
@@ -35,14 +36,15 @@ const Lease = ({
             searchResults={searchResults}
             searchLoading={searchLoading}
             onSearchChange={onSearchChange}
-            onUserRemove = {onUserRemove}
+            onUserRemove={onUserRemove}
             onSearchResultSelected={onSearchResultSelected}
-            startTimeChange = {startTimeChange}
-            endTimeChange = {endTimeChange}
-            startTime = {startTime}
-            endTime = {endTime}
-            formValues = {formValues}
-            initialValues = {{
+            startTimeChange={startTimeChange}
+            endTimeChange={endTimeChange}
+            startTime={startTime}
+            endTime={endTime}
+            formValues={formValues}
+            searchValue={searchValue}
+            initialValues={{
                 start: moment().startOf('hour'),
                 end: moment().startOf('month').add(1,'month')
             }}
@@ -59,7 +61,8 @@ const mapStateToProps = ({
         listing,
         tenants,
         searchLoading,
-        searchResults
+        searchResults,
+        searchValue
     } = {},
     form: {
         leaseForm: {
@@ -73,6 +76,7 @@ const mapStateToProps = ({
     tenants,
     searchLoading,
     searchResults,
+    searchValue,
     formValues,
     selectedDate: formValues ? formValues.date:null,
     startTime: formValues ? formValues.start:null,
@@ -89,12 +93,17 @@ const mapDispatchToProps = (dispatch) => ({
         const {
             result: selectedUser
         } = data;
+
+        dispatch(setSearchValue(''));
         dispatch(addTenant(selectedUser));
     },
     onSearchChange: (e, data) => {
         const {
             value
         } = data;
+
+        dispatch(setSearchValue(value));
+
         if(value.length >= 3){
             dispatch(searchForTenants(value))
         }

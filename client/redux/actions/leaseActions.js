@@ -40,6 +40,11 @@ export const searchForTenants = (values) => ({
         })
 });
 
+export const setSearchValue = (value) => ({
+    type: 'LEASE_TENANT_SEARCH_SET_VALUE',
+    payload: value
+});
+
 export const addTenant = (tenant) => ({
     type: 'LEASE_ADD_TENANT',
     payload: tenant

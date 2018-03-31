@@ -8,7 +8,7 @@
 
 #footerParent .heading {
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
 
 #footerParent a {
@@ -25,6 +25,6 @@
     max-height: 80px;
 }
 
-#footerContactSection div {
+#footerContactSection .row {
     margin: 1em 0;
 }

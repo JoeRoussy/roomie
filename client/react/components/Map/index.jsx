@@ -29,7 +29,7 @@ export default compose(
     return (
         <GoogleMap
             defaultZoom={15}
-            defaultCenter={position}
+            center={position}
         >
             <Marker position={position} />
         </GoogleMap>

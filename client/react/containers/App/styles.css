@@ -45,6 +45,8 @@ h1 {
 
 .rootContainer {
     margin-top: 30px;
+    padding-bottom: 150px;
+    min-height: 70vh;
 }
 
 .hidden {

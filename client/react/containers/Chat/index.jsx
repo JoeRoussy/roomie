@@ -30,8 +30,8 @@ import {
     stopTimer,
     modifyUserToInvite,
     sendChannelInvite,
-    userSearch
-
+    userSearch,
+    setUserSearchValue
 } from '../../../redux/actions/chatActions';
 
 import './styles.css';
@@ -51,6 +51,7 @@ import './styles.css';
     displayLeaveChannelModal: store.ChatReducer.displayLeaveChannelModal,
     channelToLeave: store.ChatReducer.channelToLeave,
     userToInvite: store.ChatReducer.userToInvite,
+    searchValue: store.ChatReducer.searchValue,
     user: store.userReducer.user
 }))
 class Chat extends React.Component{
@@ -149,6 +150,8 @@ class Chat extends React.Component{
         return this.props.channelToLeave;
     }
     setUserToInvite(user){
+        // NOTE: The user here is a search result object
+        this.props.dispatch(setUserSearchValue(user.title));
         this.props.dispatch(modifyUserToInvite(user));
     }
     getUserToInvite(){
@@ -213,10 +216,14 @@ class Chat extends React.Component{
             }
         }
     }
+
     onUserSearchChange(e, data){
         const {
             value
         } = data;
+
+        this.props.dispatch(setUserSearchValue(value));
+
         if (value.length >= 3) {
             this.props.dispatch(userSearch(value));
         }
@@ -228,26 +235,33 @@ class Chat extends React.Component{
         } = data;
         this.setUserToInvite(selectedUser);
     }
+
     displayLeaveChannelModal(channel){
         this.props.dispatch(modifyDisplayLeaveChannelModal(true,channel));
     }
+
     acceptLeaveChannel(){
         this.props.dispatch(leaveChannel(this.getChannelToLeave(),this.getUser()._id))
         this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
     }
+
     declineLeaveChannel(){
         this.props.dispatch(modifyDisplayLeaveChannelModal(false,{}));
     }
+
     isUserAdmin(){
         return this.getActiveChannel().admin === this.getUser()._id;
     }
+
     inviteUserToChannel(){
         const user = this.getUserToInvite();
         const channel = this.getActiveChannel();
         if(user.api_response._id && channel._id){
             this.props.dispatch(sendChannelInvite(channel,user.api_response._id));
+            this.props.dispatch(setUserSearchValue(''));
         }
     }
+
     updateChat(){
         this.props.dispatch(getChannels());
         const channel = this.getActiveChannel();
@@ -255,6 +269,7 @@ class Chat extends React.Component{
             this.props.dispatch(loadActiveChannel(channel));
         }
     }
+
     componentWillMount() {
         this.props.dispatch(getChannels());
         //Start timer to update chat
@@ -322,6 +337,7 @@ class Chat extends React.Component{
                         searchLoading={this.getIsUserSearchLoading()}
                         searchOnSelect={this.onUserSearchResultSelected}
                         searchOnChange={this.onUserSearchChange}
+                        searchValue={this.props.searchValue}
                         inviteUser={this.inviteUserToChannel}
                         show={!!this.getActiveChannel()._id}
                     />

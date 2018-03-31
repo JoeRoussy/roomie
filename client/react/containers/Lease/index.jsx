@@ -24,33 +24,31 @@ const Lease = ({
     endTime,
     startTimeChange,
     endTimeChange
-}) =>{
-    return (
-        <LeaseForm
-            errorMessage={errorMessage}
-            onSubmit={onSubmit}
-            onCancel={onCancel}
-            user={user}
-            listing={listing}
-            tenants={tenants}
-            searchResults={searchResults}
-            searchLoading={searchLoading}
-            onSearchChange={onSearchChange}
-            onUserRemove={onUserRemove}
-            onSearchResultSelected={onSearchResultSelected}
-            startTimeChange={startTimeChange}
-            endTimeChange={endTimeChange}
-            startTime={startTime}
-            endTime={endTime}
-            formValues={formValues}
-            searchValue={searchValue}
-            initialValues={{
-                start: moment().startOf('hour'),
-                end: moment().startOf('month').add(1,'month')
-            }}
-        />
-    )
-}
+}) => (
+    <LeaseForm
+        errorMessage={errorMessage}
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+        user={user}
+        listing={listing}
+        tenants={tenants}
+        searchResults={searchResults}
+        searchLoading={searchLoading}
+        onSearchChange={onSearchChange}
+        onUserRemove={onUserRemove}
+        onSearchResultSelected={onSearchResultSelected}
+        startTimeChange={startTimeChange}
+        endTimeChange={endTimeChange}
+        startTime={startTime}
+        endTime={endTime}
+        formValues={formValues}
+        searchValue={searchValue}
+        initialValues={{
+            start: moment().startOf('hour'),
+            end: moment().startOf('month').add(1,'month')
+        }}
+    />
+)   
 
 const mapStateToProps = ({
     userReducer: {

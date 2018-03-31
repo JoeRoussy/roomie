@@ -109,7 +109,7 @@ export const findListings = async({
             $all: keywordArray
         }
     }
-    console.log(filter)
+
     if(furnished){
         filter.furnished = furnished == "Yes" ? true: false;
     }
@@ -144,8 +144,6 @@ export const findListings = async({
             ...filter
         }
     });
-
-    console.log(aggregationOperator)
 
     try {
         return await listingsCollection.aggregate(aggregationOperator).toArray();

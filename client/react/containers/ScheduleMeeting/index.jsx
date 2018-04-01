@@ -26,7 +26,8 @@ import {
     clearListing,
     getAggregateSchedules,
     submitMeetingForm,
-    setLandlordSearchValue
+    setLandlordSearchValue,
+    setListingSearchValue
 } from '../../../redux/actions/scheduleMeetingActions';
 
 import './styles.css';
@@ -59,6 +60,7 @@ const ScheduleMeeting = ({
     isListingSearchLoading,
     onListingSeachResultSelected,
     onListingSearchChange,
+    listingSearchValue,
     onClearListing,
     onUserRemove,
     onMeetingSubmit,
@@ -138,6 +140,7 @@ const ScheduleMeeting = ({
                         loading={isListingSearchLoading}
                         onResultSelect={onListingSeachResultSelected}
                         onSearchChange={invitedLandlord ? onListingSearchChange(invitedLandlord.api_response._id) : null}
+                        value={listingSearchValue}
                     />
                 </div>
                 <div id='viewListingWrapper' className={listing ? '' : 'hidden'}>
@@ -257,6 +260,7 @@ const mapStateToProps = ({
         isLandlordSearchLoading,
         listingSearchResults,
         isListingSearchLoading,
+        listingSearchValue,
         meetingFormErrorMessage
     } = {},
     scheduleReducer: {
@@ -284,6 +288,7 @@ const mapStateToProps = ({
     isLandlordSearchLoading,
     listingSearchResults,
     isListingSearchLoading,
+    listingSearchValue,
     formValues,
     meetingFormErrorMessage,
     selectedDate: formValues ? formValues.date : null,
@@ -344,6 +349,8 @@ const mapDispatchToProps = (dispatch) => ({
             value
         } = data;
 
+        dispatch(setListingSearchValue(value));
+
         if (value.length >= 3) {
             dispatch(listingSearch(id, value));
         }
@@ -353,6 +360,7 @@ const mapDispatchToProps = (dispatch) => ({
             result: selectedListing
         } = data;
 
+        dispatch(setListingSearchValue(''));
         dispatch(setListing(selectedListing));
     },
     onClearListing: () => dispatch(clearListing()),

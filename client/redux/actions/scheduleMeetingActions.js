@@ -108,6 +108,11 @@ export const listingSearch = (landlordId, location) => ({
         })
 });
 
+export const setListingSearchValue = (value) => ({
+    type: 'SCHEDULE_MEETING_SET_LISTING_SEARCH_VALUE',
+    payload: value
+});
+
 export const setListing = (listing) => ({
     type: 'SCHEDULE_MEETING_SET_LISTING',
     payload: listing

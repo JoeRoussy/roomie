@@ -12,6 +12,7 @@ const config = {
     isLandlordSearchLoading: false,
     isListingSearchLoading: false,
     listingSearchResults: [],
+    listingSearchValue: '',
     step: 1,
     meetingFormErrorMessage: null
 };
@@ -260,6 +261,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 ...state,
                 isListingSearchLoading: false,
                 listingSearchResults: []
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_SET_LISTING_SEARCH_VALUE': {
+            state = {
+                ...state,
+                listingSearchValue: payload
             };
 
             break;

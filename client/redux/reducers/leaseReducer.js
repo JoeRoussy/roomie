@@ -3,8 +3,8 @@ const config = {
     tenants: [],
     searchLoading: false,
     searchResults: [],
+    searchValue: '',
     errorMessage: null
-
 };
 
 const mapTenantsForSearchResults = (tenant) => ({
@@ -80,6 +80,15 @@ const leaseReducer = (state = config, actions) => {
                 searchLoading: false,
                 searchResults: []
             }
+        }
+
+        case 'LEASE_SET_SEARCH_VALUE': {
+            state = {
+                ...state,
+                searchValue: payload
+            };
+
+            break;
         }
     }
 

@@ -6,7 +6,7 @@ import moment from 'moment'
 import { Container } from 'semantic-ui-react';
 
 import LeaseForm from '../../components/LeaseForm';
-import { submitForm, searchForTenants, addTenant, removeTenant } from '../../../redux/actions/leaseActions';
+import { submitForm, searchForTenants, addTenant, removeTenant, setSearchValue } from '../../../redux/actions/leaseActions';
 
 import './styles.css';
 
@@ -18,6 +18,7 @@ const Lease = ({
     tenants,
     searchResults,
     searchLoading,
+    searchValue,
     onSubmit,
     onCancel,
     onUserRemove,
@@ -43,6 +44,7 @@ const Lease = ({
             searchResults={searchResults}
             searchLoading={searchLoading}
             onSearchChange={onSearchChange}
+            searchValue={searchValue}
             onUserRemove = {onUserRemove}
             onSearchResultSelected={onSearchResultSelected}
             startTimeChange = {startTimeChange}
@@ -67,7 +69,8 @@ const mapStateToProps = ({
         listing,
         tenants,
         searchLoading,
-        searchResults
+        searchResults,
+        searchValue
     } = {},
     form: {
         leaseForm: {
@@ -81,6 +84,7 @@ const mapStateToProps = ({
     tenants,
     searchLoading,
     searchResults,
+    searchValue,
     formValues,
     selectedDate: formValues ? formValues.date:null,
     startTime: formValues ? formValues.start:null,
@@ -97,12 +101,17 @@ const mapDispatchToProps = (dispatch) => ({
         const {
             result: selectedUser
         } = data;
+
+        dispatch(setSearchValue(''));
         dispatch(addTenant(selectedUser));
     },
     onSearchChange: (e, data) => {
         const {
             value
         } = data;
+
+        dispatch(setSearchValue(value));
+
         if(value.length >= 3){
             dispatch(searchForTenants(value))
         }

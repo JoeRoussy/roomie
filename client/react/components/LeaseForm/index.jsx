@@ -64,6 +64,7 @@ const LeaseForm = ({
     searchLoading,
     onSearchChange,
     onSearchResultSelected,
+    searchValue,
     onUserRemove,
     selectedDate,
     startTime,
@@ -91,6 +92,7 @@ const LeaseForm = ({
                 loading={searchLoading}
                 onResultSelect={onSearchResultSelected}
                 onSearchChange={onSearchChange}
+                value={searchValue}
             />
         </div>
         

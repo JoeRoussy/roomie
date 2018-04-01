@@ -24,12 +24,12 @@ export const getMyListings = ({
     leasesCollection = required('leasesCollection'),
     logger = required('logger', 'You must pass a logger for this function to use')
 }) => coroutine(function* (req, res) {
-    let result;
+    let listingsResult;
 
     try {
-        result = yield getListingsByOwner({
+        listingsResult = yield getListingsByOwner({
             listingsCollection,
-            ownerId: req.user._id
+            ownerId: convertToObjectId(req.user._id)
         });
     } catch (e) {
         logger.error(e, `Error finding listings for user ${req.user._id}`);
@@ -57,7 +57,7 @@ export const getMyListings = ({
     }
 
     return res.json({
-        listings: result,
+        listings: listingsResult,
         leases: leaseResults
     });
 });

@@ -3,13 +3,18 @@ import { connect } from 'react-redux';
 import { change } from 'redux-form';
 import { push } from 'react-router-redux';
 import moment from 'moment'
+import { Container } from 'semantic-ui-react';
+
 import LeaseForm from '../../components/LeaseForm';
 import { submitForm, searchForTenants, addTenant, removeTenant } from '../../../redux/actions/leaseActions';
+
+import './styles.css';
 
 const Lease = ({
     user,
     errorMessage,
     listing,
+    viewListing,
     tenants,
     searchResults,
     searchLoading,
@@ -23,14 +28,17 @@ const Lease = ({
     endTime,
     startTimeChange,
     endTimeChange
-}) =>{
-    return (
+}) => (
+    <Container id='leaseContainer' className='rootContainer'> 
+        {!user ? (<Redirect to='/sign-in' />) : ''}
+        <h1>Create A Lease</h1>
         <LeaseForm
             errorMessage={errorMessage}
             onSubmit={onSubmit}
             onCancel={onCancel}
             user={user}
             listing={listing}
+            viewListing={viewListing(listing)}
             tenants={tenants}
             searchResults={searchResults}
             searchLoading={searchLoading}
@@ -47,8 +55,8 @@ const Lease = ({
                 end: moment().startOf('month').add(1,'month')
             }}
         />
-    )
-}
+    </Container>
+)
 
 const mapStateToProps = ({
     userReducer: {
@@ -104,7 +112,7 @@ const mapDispatchToProps = (dispatch) => ({
     },
     startTimeChange: (time) => dispatch(change('leaseForm', 'start', time)),
     endTimeChange: (time) => dispatch(change('leaseForm', 'end', time)),
-
+    viewListing: (listing) => () => dispatch(push(`/listings/${listing._id}`))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Lease);

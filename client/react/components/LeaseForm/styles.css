@@ -1,0 +1,12 @@
+#createLeaseForm .ui.divider {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+#createLeaseForm #leaseFormRoommateSearch, #createLeaseForm .wrappedDatePicker, #createLeaseForm .field {
+    margin-top: 25px;
+}
+
+#createLeaseForm #createLeaseFormSubmitSectionWrapper {
+    margin-top: 50px;
+}

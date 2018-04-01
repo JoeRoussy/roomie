@@ -16,6 +16,7 @@ import {
     nextStep,
     previousStep,
     userSearch,
+    setUserSearchValue,
     addParticipant,
     removeParticipant,
     clearLandlord,
@@ -50,6 +51,7 @@ const ScheduleMeeting = ({
     userSearchResults,
     onUserSearchResultSelected,
     onUserSearchChange,
+    userSearchValue,
     onLandlordClear,
     landlordSearchResults,
     landlordSearchValue,
@@ -166,6 +168,7 @@ const ScheduleMeeting = ({
                     loading={isUserSearchLoading}
                     onResultSelect={onUserSearchResultSelected}
                     onSearchChange={onUserSearchChange}
+                    value={userSearchValue}
                 />
                 <Card.Group className='centered'>
                     {roommateParticipants}
@@ -255,6 +258,7 @@ const mapStateToProps = ({
         isUserSearchLoading,
         step,
         userSearchResults,
+        userSearchValue,
         landlordSearchResults,
         landlordSearchValue,
         isLandlordSearchLoading,
@@ -277,6 +281,7 @@ const mapStateToProps = ({
     participants,
     invitedLandlord,
     userSearchResults,
+    userSearchValue,
     aggregatedEvents,
     isUserSearchLoading,
     isMeetingFormLoading,
@@ -309,6 +314,8 @@ const mapDispatchToProps = (dispatch) => ({
             value
         } = data;
 
+        dispatch(setUserSearchValue(value));
+
         if (value.length >= 3) {
             dispatch(userSearch(value));
         }
@@ -319,6 +326,7 @@ const mapDispatchToProps = (dispatch) => ({
             result: selectedUser
         } = data;
 
+        dispatch(setUserSearchValue(''));
         dispatch(addParticipant(selectedUser));
     },
     onLandlordClear: () => {

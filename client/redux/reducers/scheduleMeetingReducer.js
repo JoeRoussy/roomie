@@ -7,6 +7,7 @@ const config = {
     isCalendarViewLoading: false,
     events: [],
     userSearchResults: [],
+    userSearchValue: '',
     landlordSearchResults: [],
     landlordSearchValue: '',
     isLandlordSearchLoading: false,
@@ -112,6 +113,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 ...state,
                 isUserSearchLoading: false,
                 userSearchResults: []
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_SET_USER_SEARCH_VALUE': {
+            state = {
+                ...state,
+                userSearchValue: payload
             };
 
             break;

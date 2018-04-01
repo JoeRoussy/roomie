@@ -53,6 +53,11 @@ export const userSearch = (name) => ({
         })
 });
 
+export const setUserSearchValue = (value) => ({
+    type: 'SCHEDULE_MEETING_SET_USER_SEARCH_VALUE',
+    payload: value
+});
+
 export const addParticipant = (user) => ({
     type: 'SCHEDULE_MEETING_ADD_PARTICIPANT',
     payload: user

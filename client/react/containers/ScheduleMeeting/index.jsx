@@ -25,7 +25,8 @@ import {
     setListing,
     clearListing,
     getAggregateSchedules,
-    submitMeetingForm
+    submitMeetingForm,
+    setLandlordSearchValue
 } from '../../../redux/actions/scheduleMeetingActions';
 
 import './styles.css';
@@ -109,6 +110,7 @@ const ScheduleMeeting = ({
                         loading={isLandlordSearchLoading}
                         onResultSelect={onLandlordSeachResultSelected}
                         onSearchChange={onLandlordSearchChange}
+                        value={landlordSearchValue}
                     />
                 </div>
                 <div id='landlordDisplayWrapper' className={`centered${invitedLandlord ? '' : ' hidden'}`}>
@@ -323,6 +325,8 @@ const mapDispatchToProps = (dispatch) => ({
             value
         } = data;
 
+        dispatch(setLandlordSearchValue(value));
+
         if (value.length >= 3) {
             dispatch(landlordSearch(value))
         }
@@ -332,6 +336,7 @@ const mapDispatchToProps = (dispatch) => ({
             result: selectedUser
         } = data;
 
+        dispatch(setLandlordSearchValue(''));
         dispatch(addLandlord(selectedUser));
     },
     onListingSearchChange: (id) => (e, data) => {

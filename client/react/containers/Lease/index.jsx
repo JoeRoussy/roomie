@@ -48,7 +48,7 @@ const Lease = ({
             end: moment().startOf('month').add(1,'month')
         }}
     />
-)   
+);
 
 const mapStateToProps = ({
     userReducer: {

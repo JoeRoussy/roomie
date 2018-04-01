@@ -220,6 +220,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
             break;
         }
 
+        case 'SCHEDULE_MEETING_SET_LANDLORD_SEARCH_VALUE': {
+            state = {
+                ...state,
+                landlordSearchValue: payload
+            };
+
+            break;
+        }
+
         case 'SCHEDULE_MEETING_LISTING_SEARCH_PENDING': {
             state = {
                 ...state,

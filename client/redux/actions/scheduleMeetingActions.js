@@ -82,6 +82,11 @@ export const landlordSearch = (name) => ({
         })
 });
 
+export const setLandlordSearchValue = (value) => ({
+    type: 'SCHEDULE_MEETING_SET_LANDLORD_SEARCH_VALUE',
+    payload: value
+});
+
 export const addLandlord = (landlord)  => ({
     type: 'SCHEDULE_MEETING_ADD_LANDLORD',
     payload: landlord

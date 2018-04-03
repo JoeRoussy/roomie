@@ -16,6 +16,7 @@ import {
     nextStep,
     previousStep,
     userSearch,
+    setUserSearchValue,
     addParticipant,
     removeParticipant,
     clearLandlord,
@@ -25,7 +26,9 @@ import {
     setListing,
     clearListing,
     getAggregateSchedules,
-    submitMeetingForm
+    submitMeetingForm,
+    setLandlordSearchValue,
+    setListingSearchValue
 } from '../../../redux/actions/scheduleMeetingActions';
 
 import './styles.css';
@@ -48,6 +51,7 @@ const ScheduleMeeting = ({
     userSearchResults,
     onUserSearchResultSelected,
     onUserSearchChange,
+    userSearchValue,
     onLandlordClear,
     landlordSearchResults,
     landlordSearchValue,
@@ -58,6 +62,7 @@ const ScheduleMeeting = ({
     isListingSearchLoading,
     onListingSeachResultSelected,
     onListingSearchChange,
+    listingSearchValue,
     onClearListing,
     onUserRemove,
     onMeetingSubmit,
@@ -109,6 +114,7 @@ const ScheduleMeeting = ({
                         loading={isLandlordSearchLoading}
                         onResultSelect={onLandlordSeachResultSelected}
                         onSearchChange={onLandlordSearchChange}
+                        value={landlordSearchValue}
                     />
                 </div>
                 <div id='landlordDisplayWrapper' className={`centered${invitedLandlord ? '' : ' hidden'}`}>
@@ -136,6 +142,7 @@ const ScheduleMeeting = ({
                         loading={isListingSearchLoading}
                         onResultSelect={onListingSeachResultSelected}
                         onSearchChange={invitedLandlord ? onListingSearchChange(invitedLandlord.api_response._id) : null}
+                        value={listingSearchValue}
                     />
                 </div>
                 <div id='viewListingWrapper' className={listing ? '' : 'hidden'}>
@@ -161,6 +168,7 @@ const ScheduleMeeting = ({
                     loading={isUserSearchLoading}
                     onResultSelect={onUserSearchResultSelected}
                     onSearchChange={onUserSearchChange}
+                    value={userSearchValue}
                 />
                 <Card.Group className='centered'>
                     {roommateParticipants}
@@ -250,11 +258,13 @@ const mapStateToProps = ({
         isUserSearchLoading,
         step,
         userSearchResults,
+        userSearchValue,
         landlordSearchResults,
         landlordSearchValue,
         isLandlordSearchLoading,
         listingSearchResults,
         isListingSearchLoading,
+        listingSearchValue,
         meetingFormErrorMessage
     } = {},
     scheduleReducer: {
@@ -271,6 +281,7 @@ const mapStateToProps = ({
     participants,
     invitedLandlord,
     userSearchResults,
+    userSearchValue,
     aggregatedEvents,
     isUserSearchLoading,
     isMeetingFormLoading,
@@ -282,6 +293,7 @@ const mapStateToProps = ({
     isLandlordSearchLoading,
     listingSearchResults,
     isListingSearchLoading,
+    listingSearchValue,
     formValues,
     meetingFormErrorMessage,
     selectedDate: formValues ? formValues.date : null,
@@ -302,6 +314,8 @@ const mapDispatchToProps = (dispatch) => ({
             value
         } = data;
 
+        dispatch(setUserSearchValue(value));
+
         if (value.length >= 3) {
             dispatch(userSearch(value));
         }
@@ -312,6 +326,7 @@ const mapDispatchToProps = (dispatch) => ({
             result: selectedUser
         } = data;
 
+        dispatch(setUserSearchValue(''));
         dispatch(addParticipant(selectedUser));
     },
     onLandlordClear: () => {
@@ -323,6 +338,8 @@ const mapDispatchToProps = (dispatch) => ({
             value
         } = data;
 
+        dispatch(setLandlordSearchValue(value));
+
         if (value.length >= 3) {
             dispatch(landlordSearch(value))
         }
@@ -332,12 +349,15 @@ const mapDispatchToProps = (dispatch) => ({
             result: selectedUser
         } = data;
 
+        dispatch(setLandlordSearchValue(''));
         dispatch(addLandlord(selectedUser));
     },
     onListingSearchChange: (id) => (e, data) => {
         const {
             value
         } = data;
+
+        dispatch(setListingSearchValue(value));
 
         if (value.length >= 3) {
             dispatch(listingSearch(id, value));
@@ -348,6 +368,7 @@ const mapDispatchToProps = (dispatch) => ({
             result: selectedListing
         } = data;
 
+        dispatch(setListingSearchValue(''));
         dispatch(setListing(selectedListing));
     },
     onClearListing: () => dispatch(clearListing()),

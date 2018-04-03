@@ -7,11 +7,13 @@ const config = {
     isCalendarViewLoading: false,
     events: [],
     userSearchResults: [],
+    userSearchValue: '',
     landlordSearchResults: [],
     landlordSearchValue: '',
     isLandlordSearchLoading: false,
     isListingSearchLoading: false,
     listingSearchResults: [],
+    listingSearchValue: '',
     step: 1,
     meetingFormErrorMessage: null
 };
@@ -111,6 +113,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 ...state,
                 isUserSearchLoading: false,
                 userSearchResults: []
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_SET_USER_SEARCH_VALUE': {
+            state = {
+                ...state,
+                userSearchValue: payload
             };
 
             break;
@@ -220,6 +231,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
             break;
         }
 
+        case 'SCHEDULE_MEETING_SET_LANDLORD_SEARCH_VALUE': {
+            state = {
+                ...state,
+                landlordSearchValue: payload
+            };
+
+            break;
+        }
+
         case 'SCHEDULE_MEETING_LISTING_SEARCH_PENDING': {
             state = {
                 ...state,
@@ -251,6 +271,15 @@ const scheduleMeetingReducer = (state = config, actions) => {
                 ...state,
                 isListingSearchLoading: false,
                 listingSearchResults: []
+            };
+
+            break;
+        }
+
+        case 'SCHEDULE_MEETING_SET_LISTING_SEARCH_VALUE': {
+            state = {
+                ...state,
+                listingSearchValue: payload
             };
 
             break;

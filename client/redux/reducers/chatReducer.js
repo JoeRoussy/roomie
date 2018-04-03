@@ -2,22 +2,23 @@ import moment from 'moment';
 const config = {
     channels: [],
     activeChannel: {},
-    activeChannelUsers:{},
+    activeChannelUsers: {},
     chatLog: [],
     pendingMessages: {},
-    newChannelName:'',
-    displayNewChannelModal:false,
-    displayInviteModal:false,
-    chatTimer:null,
+    newChannelName: '',
+    displayNewChannelModal: false,
+    displayInviteModal: false,
+    chatTimer: null,
     isUserSearchLoading: false,
     userSearchResults: [],
-    userToInvite:{},
-    displayLeaveChannelModal:false,
-    channelToLeave:{},
-    chatTimer:null
+    userToInvite: {},
+    displayLeaveChannelModal: false,
+    channelToLeave: {},
+    chatTimer: null,
+    searchValue: ''
 };
 
-// NOTE: islandlord needs to be lowercase because it is not a normal dom element
+// NOTE: islandlord needs to be lowercase because it is not a normal dom attribute
 const mapUserForSearchResults = (user) => ({
     title: user.name,
     image: `${process.env.ASSETS_ROOT}${user.profilePictureLink}`,
@@ -147,6 +148,7 @@ const ChatReducer = (state = config, actions) => {
             //console.log('Get active channel was rejected');
             break;
         }
+
         case 'MODIFY_PENDING_MESSAGE': {
             state = {
                 ...state,
@@ -156,7 +158,6 @@ const ChatReducer = (state = config, actions) => {
             }};
             break;
         }
-
 
         case 'SEND_MESSAGE_FULFILLED': {
             break;
@@ -199,9 +200,11 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+
         case 'ACCEPT_CHANNEL_INVITE_PENDING': {
             break;
         }
+
         case 'ACCEPT_CHANNEL_INVITE_REJECTED' : {
             break;
         }
@@ -219,9 +222,11 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+
         case 'DECLINE_CHANNEL_INVITE_PENDING': {
             break;
         }
+
         case 'DECLINE_CHANNEL_INVITE_REJECTED' : {
             break;
         }
@@ -239,9 +244,11 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+
         case 'DECLINE_CHANNEL_INVITE_PENDING': {
             break;
         }
+
         case 'DECLINE_CHANNEL_INVITE_REJECTED' : {
             break;
         }
@@ -265,9 +272,11 @@ const ChatReducer = (state = config, actions) => {
         case 'LEAVE_CHANNEL_PENDING': {
             break;
         }
+
         case 'LEAVE_CHANNEL_REJECTED' : {
             break;
         }
+
         case 'START_TIMER': {
             const tmr = setInterval(actions.payload.tick,actions.payload.interval);
             state = {
@@ -276,6 +285,7 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+
         case 'STOP_TIMER' : {
             const tmr = clearInterval(state.chatTimer);
             state = {
@@ -284,6 +294,7 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+
         case 'SEND_CHANNEL_INVITE_FULFILLED': {
             const channels = state.channels.map((channel)=>{
                 if(channel._id === actions.payload.data.channel._id){
@@ -297,9 +308,11 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+
         case 'SEND_CHANNEL_INVITE_PENDING': {
             break;
         }
+
         case 'SEND_CHANNEL_INVITE_REJECTED' : {
             break;
         }
@@ -338,6 +351,7 @@ const ChatReducer = (state = config, actions) => {
 
             break;
         }
+
         case 'MODIFY_USER_TO_INVITE': {
             state = {
                 ...state,
@@ -345,6 +359,7 @@ const ChatReducer = (state = config, actions) => {
             };
             break;
         }
+
         case 'RESET_CHAT':{
             let tmr = null;
             if(state.chatTimer){
@@ -356,7 +371,17 @@ const ChatReducer = (state = config, actions) => {
             }
             break;
         }
+
+        case 'CHAT_USER_SEARCH_SET_VALUE': {
+            state = {
+                ...state,
+                searchValue: actions.payload
+            };
+
+            break;
+        }
     }
+
     return state;
 }
 

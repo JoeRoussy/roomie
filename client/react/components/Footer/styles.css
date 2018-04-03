@@ -1,0 +1,30 @@
+#footerParent {
+    padding: 125px 0px;
+}
+
+#footerParent .besideIcon {
+    margin-left: 5px;
+}
+
+#footerParent .heading {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+#footerParent a {
+    color: white;
+    text-decoration: underline;
+}
+
+#footerParent a:hover {
+    text-decoration: none;
+}
+
+#footerLogo {
+    margin: 0 auto;
+    max-height: 80px;
+}
+
+#footerContactSection .row {
+    margin: 1em 0;
+}

@@ -58,7 +58,7 @@ const Lease = ({
             }}
         />
     </Container>
-)
+);
 
 const mapStateToProps = ({
     userReducer: {

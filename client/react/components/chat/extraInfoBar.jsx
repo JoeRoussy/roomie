@@ -9,6 +9,7 @@ const InviteSearch = ({
     searchLoading,
     searchOnSelect,
     searchOnChange,
+    searchValue,
     inviteUser
 })=>{
     if(isAdmin){
@@ -21,6 +22,7 @@ const InviteSearch = ({
                     loading={searchLoading}
                     onResultSelect={searchOnSelect}
                     onSearchChange={searchOnChange}
+                    value={searchValue}
                 />
             <Button id='extraInfoInviteButton' color='green' onClick={inviteUser}>Invite</Button>
             </div>
@@ -51,6 +53,7 @@ const ExtraInfoBar = ({
     searchLoading,
     searchOnSelect,
     searchOnChange,
+    searchValue,
     inviteUser,
     show
 }) => (
@@ -59,7 +62,7 @@ const ExtraInfoBar = ({
             <Menu id='extraInfoBar' float='right' vertical inverted fluid>
                 <Menu.Item header>User Information</Menu.Item>
                 {listUsers({users})}
-                <Menu.Item key={users.size}>{InviteSearch({isAdmin,searchResults,searchLoading,searchOnSelect,searchOnChange,inviteUser})}</Menu.Item>
+                <Menu.Item key={users.size}>{InviteSearch({isAdmin,searchResults,searchLoading,searchOnSelect,searchOnChange,inviteUser,searchValue})}</Menu.Item>
             </Menu>
         ) : (
             ''

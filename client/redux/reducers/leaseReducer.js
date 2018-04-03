@@ -19,6 +19,7 @@ const leaseReducer = (state = config, actions) => {
         type,
         payload
     } = actions;
+    
     switch(type){
         case 'POPULATE_FORM' : {
             state = {
@@ -82,7 +83,7 @@ const leaseReducer = (state = config, actions) => {
             }
         }
 
-        case 'LEASE_SET_SEARCH_VALUE': {
+        case 'LEASE_TENANT_SEARCH_SET_VALUE': {
             state = {
                 ...state,
                 searchValue: payload

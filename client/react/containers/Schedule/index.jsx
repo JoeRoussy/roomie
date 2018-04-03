@@ -93,8 +93,6 @@ class Schedule extends Component{
             values
         } = this.props.formInfo;
 
-        console.log(values)
-
         const user= this.props.userInfo;
         this.props.dispatch(createTimeblock(values, user));
     }

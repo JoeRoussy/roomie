@@ -176,7 +176,7 @@ export const isEmpty = (data) => {
 export const convertToBoolean = (value) => (value == 'true')
 
 // Generic function to convert a string for price to a number with two decimal places.
-export const convertToNumber = (value) => (value = +value)
+export const convertToNumber = (value) => (+value)
 
 // if passed a truth value, will return an extended version of obj with value set under the provided key
 export const extendIfPopulated = (obj, key, value) => {

@@ -575,14 +575,6 @@ export const createListing = ({
         })
     }
 
-    // Convert all the checkboxed strings to boolean values.
-    const utilitiesBool = convertToBoolean(utilities);
-    const furnishedBool = convertToBoolean(furnished);
-    const parkingBool = convertToBoolean(parking);
-    const internetBool = convertToBoolean(internet);
-    const laundryBool = convertToBoolean(laundry);
-    const airConditioningBool = convertToBoolean(airConditioning);
-
     // Combine address to store as location.
     const query = `address=${street} ${city},${province} ${postalCode},${country}`;
 

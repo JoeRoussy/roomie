@@ -9,13 +9,22 @@ const listChannels = ({
     channels,
     changeChannel,
     activeChannel,
-    leaveChannel
+    leaveChannel,
+    userId
 }) => {
-    return channels.map((element,i) => (
-        <Menu.Item key={i} onClick={()=>{changeChannel(element)}} active= {activeChannel._id === element._id}>
-            {element.name} <Button className='leaveChannelButton' size='tiny' circular icon='remove' onClick={()=>{leaveChannel(element)}}/>
-        </Menu.Item>
-    ));
+
+
+    return channels.map((element,i) => {
+        console.log(element.users)
+        const channelUser = element.users.find((user)=>{
+            return user.userId === userId;
+        });
+        return (
+            <Menu.Item key={i} className={channelUser.acceptedInvite?'':'chatNewChannel'} onClick={()=>{changeChannel(element)}} active= {activeChannel._id === element._id}>
+                {element.name} <Button className='leaveChannelButton' size='tiny' circular icon='remove' onClick={()=>{leaveChannel(element)}}/>
+            </Menu.Item>
+        )
+    });
 }
 
 const ChannelBar = ({
@@ -24,12 +33,13 @@ const ChannelBar = ({
     activeChannel,
     toggleDisplayNewChannelModal,
     displayNewChannelModal,
-    leaveChannel
+    leaveChannel,
+    userId
 }) => (
     <Container>
         <Menu id='chatSideBar' float='left' vertical inverted fluid>
             <Menu.Item header>Channels</Menu.Item>
-            {listChannels({channels,changeChannel,activeChannel,leaveChannel})}
+            {listChannels({channels,changeChannel,activeChannel,leaveChannel,userId})}
             <Menu.Item id='channelBarNewChannelButtonItem' key={channels.size} onClick={()=>{toggleDisplayNewChannelModal(!displayNewChannelModal)}}>New Channel <Icon id='plusIcon' name='plus' /></Menu.Item>
         </Menu>
     </Container>

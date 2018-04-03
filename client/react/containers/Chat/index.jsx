@@ -280,6 +280,7 @@ class Chat extends React.Component{
                         toggleDisplayNewChannelModal={this.setDisplayNewChannelModal}
                         displayNewChannelModal={this.getDisplayNewChannelModal()}
                         leaveChannel={this.displayLeaveChannelModal}
+                        userId={this.getUser()._id}
                     />
                     <CreateChannelModal
                         onChange={this.handleNewChannelNameChange}

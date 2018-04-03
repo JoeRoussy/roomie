@@ -80,12 +80,18 @@ const renderForm = (locationProps, submitSearch, errorMessage) => (
                     name='minPrice'
                     component={LabelInputField}
                     placeholder="Minimum price..."
+                    type='number'
+                    min='1'
+                    step='0.01'
                 />
                 -
                  <Field
                     name='maxPrice'
                     component={LabelInputField}
                     placeholder="Maximum price..."
+                    type='number'
+                    min='1'
+                    step='0.01'
                 />
             </div>
         </div>

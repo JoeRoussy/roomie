@@ -42,7 +42,7 @@ const validate = (values) => {
         };
     } else if(!isPrice(price)) {
         errors = {
-            price: 'Must input a price.',
+            price: 'Must input a valid price.',
             ...errors
         };
     }
@@ -104,6 +104,9 @@ const ListingForm = ({
             label='Price per month'
             labelPosition='left'
             placeholder=''
+            type='number'
+            min='1'
+            step='0.01'
         />
         <Field
             name='description'

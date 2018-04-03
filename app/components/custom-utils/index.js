@@ -172,8 +172,11 @@ export const isEmpty = (data) => {
     }
 }
 
-// Generic function to conert a string of true or false to a boolean.
+// Generic function to convert a string of true or false to a boolean.
 export const convertToBoolean = (value) => (value == 'true')
+
+// Generic function to convert a string for price to a number with two decimal places.
+export const convertToNumber = (value) => (+value)
 
 // if passed a truth value, will return an extended version of obj with value set under the provided key
 export const extendIfPopulated = (obj, key, value) => {

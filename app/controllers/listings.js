@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import vision from '@google-cloud/vision';
 
-import { required, convertToObjectId, extendIfPopulated, convertToBoolean } from '../components/custom-utils';
+import { required, convertToObjectId, extendIfPopulated, convertToBoolean, convertToNumber } from '../components/custom-utils';
 import { findListings, getListingByIdWithOwnerPopulated, getListingViewers} from '../components/data';
 import { sendError } from './utils';
 import { isPrice, isInteger, isFullOrHalfInt, isPostalCode } from '../../common/validation';
@@ -360,29 +360,21 @@ export const updateListing = ({
         });
     }
 
-    // Convert all the checkboxed strings to boolean values.
-    const utilitiesBool = convertToBoolean(utilities);
-    const furnishedBool = convertToBoolean(furnished);
-    const parkingBool = convertToBoolean(parking);
-    const internetBool = convertToBoolean(internet);
-    const laundryBool = convertToBoolean(laundry);
-    const airConditioningBool = convertToBoolean(airConditioning);
-
     // Make sure the update does not contain any null values.
     let update = {};
     update = extendIfPopulated(update, 'name', name);
     update = extendIfPopulated(update, 'description', description);
     update = extendIfPopulated(update, 'type', type);
-    update = extendIfPopulated(update, 'price', price);
+    update = extendIfPopulated(update, 'price', convertToNumber(price));
     update = extendIfPopulated(update, 'bedrooms', bedrooms);
     update = extendIfPopulated(update, 'bathrooms', bathrooms);
     update = extendIfPopulated(update, 'unit', unit);
-    update = extendIfPopulated(update, 'utilities', utilitiesBool);
-    update = extendIfPopulated(update, 'furnished', furnishedBool);
-    update = extendIfPopulated(update, 'parking', parkingBool);
-    update = extendIfPopulated(update, 'internet', internetBool);
-    update = extendIfPopulated(update, 'laundry', laundryBool);
-    update = extendIfPopulated(update, 'airConditioning', airConditioningBool);
+    update = extendIfPopulated(update, 'utilities', convertToBoolean(utilities));
+    update = extendIfPopulated(update, 'furnished', convertToBoolean(furnished));
+    update = extendIfPopulated(update, 'parking', convertToBoolean(parking));
+    update = extendIfPopulated(update, 'internet', convertToBoolean(internet));
+    update = extendIfPopulated(update, 'laundry', convertToBoolean(laundry));
+    update = extendIfPopulated(update, 'airConditioning', convertToBoolean(airConditioning));
     update = extendIfPopulated(update, 'images', newImages);
     update = extendIfPopulated(update, 'keywords', keywords);
 
@@ -583,14 +575,6 @@ export const createListing = ({
         })
     }
 
-    // Convert all the checkboxed strings to boolean values.
-    const utilitiesBool = convertToBoolean(utilities);
-    const furnishedBool = convertToBoolean(furnished);
-    const parkingBool = convertToBoolean(parking);
-    const internetBool = convertToBoolean(internet);
-    const laundryBool = convertToBoolean(laundry);
-    const airConditioningBool = convertToBoolean(airConditioning);
-
     // Combine address to store as location.
     const query = `address=${street} ${city},${province} ${postalCode},${country}`;
 
@@ -653,16 +637,16 @@ export const createListing = ({
                 street,
                 city,
                 type,
-                price,
+                price: convertToNumber(price),
                 bedrooms,
                 bathrooms,
                 unit,
-                utilities: utilitiesBool,
-                furnished: furnishedBool,
-                parking: parkingBool,
-                internet: internetBool,
-                laundry: laundryBool,
-                airConditioning: airConditioningBool,
+                utilities: convertToBoolean(utilities),
+                furnished: convertToBoolean(furnished),
+                parking: convertToBoolean(parking),
+                internet: convertToBoolean(internet),
+                laundry: convertToBoolean(laundry),
+                airConditioning: convertToBoolean(airConditioning),
                 location: formattedAddressWithCity,
                 locationDisplay: formattedAddress,
                 images,

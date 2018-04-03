@@ -8,7 +8,8 @@ import {
     print,
     convertToObjectId,
     RethrownError,
-    getUniqueHash
+    getUniqueHash,
+    convertToNumber
 } from '../custom-utils';
 
 import { insert as insertInDb } from '../db/service';
@@ -72,14 +73,14 @@ export const findListings = async({
     let filter = {};
     if(minPrice){
         filter.price = {
-            $gt: minPrice
+            $gte: convertToNumber(minPrice)
         }
     }
 
     if(maxPrice){
         filter.price = {
             ...filter.price,
-            $lt: maxPrice
+            $lte: convertToNumber(maxPrice)
         }
     }
 

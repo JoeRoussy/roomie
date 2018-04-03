@@ -296,9 +296,9 @@ const mapStateToProps = ({
     listingSearchValue,
     formValues,
     meetingFormErrorMessage,
-    selectedDate: formValues ? formValues.date : null,
-    startTime: formValues ? formValues.start : null,
-    endTime: formValues ? formValues.end : null,
+    selectedDate: formValues ? formValues.date : moment(),
+    startTime: formValues ? formValues.start : moment().startOf('hour'),
+    endTime: formValues ? formValues.end : moment().startOf('hour').add(1,'hour'),
     eventBeingViewed
 });
 
@@ -381,8 +381,8 @@ const mapDispatchToProps = (dispatch) => ({
         }));
     },
     onDateChange: (date) => dispatch(change('scheduleMeetingForm', 'date', date)),
-    onStartTimeChange: (time) => dispatch(change('timeblockForm', 'start', time)),
-    onEndTimeChange: (time) => dispatch(change('timeblockForm', 'end', time)),
+    onStartTimeChange: (time) => dispatch(change('scheduleMeetingForm', 'start', time)),
+    onEndTimeChange: (time) => dispatch(change('scheduleMeetingForm', 'end', time)),
     onShowEventDetail: (event) => dispatch(showEventDetail(event)),
     onHideDetailView: () => dispatch(clearEventDetail())
 });

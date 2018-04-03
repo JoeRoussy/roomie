@@ -3,8 +3,8 @@ const config = {
     tenants: [],
     searchLoading: false,
     searchResults: [],
+    searchValue: '',
     errorMessage: null
-
 };
 
 const mapTenantsForSearchResults = (tenant) => ({

@@ -8,8 +8,8 @@ const ListingCard = ({
     listing,
     id,
     createLease,
-    canLease,
     viewListing,
+    canLease = false,
     canDelete = false,
     deleteListing
 }) => (

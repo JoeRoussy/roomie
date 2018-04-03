@@ -35,8 +35,8 @@ class Schedule extends Component{
         this.state = {
             isEditingTimeblock: false,
             selectedDate: moment(),
-            selectedStartTime: moment(),
-            selectedEndTime: moment().add(1,'hour')
+            selectedStartTime: moment().startOf('hour'),
+            selectedEndTime: moment().startOf('hour').add(1,'hour')
         }
         BigCalendar.momentLocalizer(moment);
         this.dateChange = this.dateChange.bind(this);
@@ -78,7 +78,12 @@ class Schedule extends Component{
     }
 
     toggleForm(){
-        this.setState({isEditingTimeblock:!this.state.isEditingTimeblock});
+        this.setState({ 
+            isEditingTimeblock:!this.state.isEditingTimeblock,
+            selectedDate:moment(),
+            selectedStartTime: moment().startOf('hour'),
+            selectedEndTime: moment().startOf('hour').add(1,'hour')
+        });
     }
 
     submitTimeblock(){
@@ -87,6 +92,8 @@ class Schedule extends Component{
         const {
             values
         } = this.props.formInfo;
+
+        console.log(values)
 
         const user= this.props.userInfo;
         this.props.dispatch(createTimeblock(values, user));
@@ -154,7 +161,7 @@ class Schedule extends Component{
     }
 
     formatTime(t){
-        return moment(t).format("h:mm a");
+        return moment(t).format("hh:mm a");
     }
 
     getMeetingCards(){

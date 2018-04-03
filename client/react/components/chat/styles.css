@@ -47,8 +47,8 @@
     right: 15px;
     color: white;
     background-color: #db2828;
-    float: none;
     transform: translate(0, -50%);
+    float: none;
 }
 
 #channelBarNewChannelButtonItem {

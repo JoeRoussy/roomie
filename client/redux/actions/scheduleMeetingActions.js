@@ -53,6 +53,11 @@ export const userSearch = (name) => ({
         })
 });
 
+export const setUserSearchValue = (value) => ({
+    type: 'SCHEDULE_MEETING_SET_USER_SEARCH_VALUE',
+    payload: value
+});
+
 export const addParticipant = (user) => ({
     type: 'SCHEDULE_MEETING_ADD_PARTICIPANT',
     payload: user
@@ -82,6 +87,11 @@ export const landlordSearch = (name) => ({
         })
 });
 
+export const setLandlordSearchValue = (value) => ({
+    type: 'SCHEDULE_MEETING_SET_LANDLORD_SEARCH_VALUE',
+    payload: value
+});
+
 export const addLandlord = (landlord)  => ({
     type: 'SCHEDULE_MEETING_ADD_LANDLORD',
     payload: landlord
@@ -101,6 +111,11 @@ export const listingSearch = (landlordId, location) => ({
             // Return the error so other handlers can use it
             return e;
         })
+});
+
+export const setListingSearchValue = (value) => ({
+    type: 'SCHEDULE_MEETING_SET_LISTING_SEARCH_VALUE',
+    payload: value
 });
 
 export const setListing = (listing) => ({

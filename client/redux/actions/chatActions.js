@@ -278,6 +278,11 @@ export const userSearch = (name) => ({
         })
 });
 
+export const setUserSearchValue = (value) => ({
+    type: 'CHAT_USER_SEARCH_SET_VALUE',
+    payload: value
+});
+
 export const resetChat = () => ({
     type: 'RESET_CHAT'
 });

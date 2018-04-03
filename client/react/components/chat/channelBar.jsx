@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { Container,Icon, Menu, Button} from 'semantic-ui-react';
+import { Container, Icon, Menu, Button } from 'semantic-ui-react';
 
 import CreateChannelModal from './createChannelModal'
 
@@ -20,8 +20,13 @@ const listChannels = ({
             return user.userId === userId;
         });
         return (
-            <Menu.Item key={i} className={channelUser.acceptedInvite?'':'chatNewChannel'} onClick={()=>{changeChannel(element)}} active= {activeChannel._id === element._id}>
-                {element.name} <Button className='leaveChannelButton' size='tiny' circular icon='remove' onClick={()=>{leaveChannel(element)}}/>
+            <Menu.Item key={i} onClick={()=>{changeChannel(element)}} active= {activeChannel._id === element._id}>
+                {element.name}
+                {channelUser.acceptedInvite ? (
+                    <Button className='leaveChannelButton' size='tiny' circular icon='remove' onClick={()=>{leaveChannel(element)}}/>
+                ) : (
+                    <Icon className='newChannelButton' name='exclamation' color='white' circular />
+                )}
             </Menu.Item>
         )
     });

@@ -11,26 +11,20 @@ const listChannels = ({
     activeChannel,
     leaveChannel,
     userId
-}) => {
+}) => channels.map((element,i) => {
+    const channelUser = element.users.find((user)=> user.userId === userId);
 
-
-    return channels.map((element,i) => {
-        console.log(element.users)
-        const channelUser = element.users.find((user)=>{
-            return user.userId === userId;
-        });
-        return (
-            <Menu.Item key={i} onClick={()=>{changeChannel(element)}} active= {activeChannel._id === element._id}>
-                {element.name}
-                {channelUser.acceptedInvite ? (
-                    <Button className='leaveChannelButton' size='tiny' circular icon='remove' onClick={()=>{leaveChannel(element)}}/>
-                ) : (
-                    <Icon className='newChannelButton' name='exclamation' color='white' circular />
-                )}
-            </Menu.Item>
-        )
-    });
-}
+    return (
+        <Menu.Item key={i} onClick={()=>{changeChannel(element)}} active= {activeChannel._id === element._id}>
+            {element.name}
+            {channelUser.acceptedInvite ? (
+                <Button className='leaveChannelButton' size='tiny' circular icon='remove' onClick={()=>{leaveChannel(element)}}/>
+            ) : (
+                <Icon className='newChannelButton' name='exclamation' color='white' circular />
+            )}
+        </Menu.Item>
+    )
+});
 
 const ChannelBar = ({
     channels,

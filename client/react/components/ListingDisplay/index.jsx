@@ -14,7 +14,7 @@ const ListingDisplay = ({
     centered = false
 }) => {
     const imagePortion = listing.images ? (
-        <Carousel width={carouselWidth}>
+        <Carousel width={carouselWidth} dynamicHeight>
             {showImages(listing.images)}
         </Carousel>
     ) : (

@@ -157,10 +157,12 @@ export default class Listing extends React.Component {
             bodySection = (
                 <div>
                     <ListingDisplay
-                        listing={ listing }
+                        listing= { listing }
+                        message= { message }
                     />
+                    {editButton}
+                    {meetingButton}
                     {startChatButton}
-                    {message}
                     <div id='mapsComponentWrapper'>
                         <MapComponent position={{lat: this.props.listing.lat, lng: this.props.listing.lng}} />
                     </div>
@@ -173,8 +175,6 @@ export default class Listing extends React.Component {
         return (
             <Container id='listingContainer' className='rootContainer'>
                 {bodySection}
-                {editButton}
-                {meetingButton}
             </Container>
         )
     }

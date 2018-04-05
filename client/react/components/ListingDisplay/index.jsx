@@ -10,6 +10,7 @@ const showImages = (images) => images.map((image, i) =>
 
 const ListingDisplay = ({
     listing,
+    message,
     carouselWidth = '80%',
     centered = false
 }) => {
@@ -30,6 +31,7 @@ const ListingDisplay = ({
             </Header>
             <p className='address'>{ `${listing.street}, ${listing.city} ${listing.postalCode}` }</p>
             <p className='price' color='green'>${listing.price}</p>
+            <p className={`description${centered ? ' centered' : ''}`}>{message}</p>
             <p className={`description${centered ? ' centered' : ''}`}>{listing.description}</p>
             {imagePortion}
         </Container>

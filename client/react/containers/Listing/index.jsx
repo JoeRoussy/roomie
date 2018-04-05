@@ -126,6 +126,14 @@ export default class Listing extends React.Component {
             <Button className='primaryColour' onClick={this.onBookMeetingClicked(listing)}>Book a Meeting</Button>
         ) : ('');
 
+        let message;
+
+        message = analyticsMessage ? (
+            <Message warning>
+                <div dangerouslySetInnerHTML = {{ __html: analyticsMessage }}></div>
+            </Message>
+        ) : ('');
+
         let bodySection;
 
         if (isEditing && listing) {
@@ -152,6 +160,7 @@ export default class Listing extends React.Component {
                         listing={ listing }
                     />
                     {startChatButton}
+                    {message}
                     <div id='mapsComponentWrapper'>
                         <MapComponent position={{lat: this.props.listing.lat, lng: this.props.listing.lng}} />
                     </div>
@@ -161,18 +170,9 @@ export default class Listing extends React.Component {
             bodySection = '';
         }
 
-        let message;
-
-        message = analyticsMessage ? (
-            <Message warning>
-                <div dangerouslySetInnerHTML = {{ __html: analyticsMessage }}></div>
-            </Message>
-        ) : ('');
-
         return (
             <Container id='listingContainer' className='rootContainer'>
                 {bodySection}
-                {message}
                 {editButton}
                 {meetingButton}
             </Container>

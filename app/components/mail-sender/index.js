@@ -29,6 +29,9 @@ const _helpers = {
     },
     formatDate(date) {
         return moment(date).format('MMMM DD YYYY');
+    },
+    formatPrice(price){
+        return price.toFixed(2);
     }
 };
 

@@ -7,7 +7,8 @@ const config = {
     myLeases: [],
     isDeleting: false,
     listingToDelete: {},
-    analyticsMessage: null
+    analyticsMessage: null,
+    isLoading: true
 };
 
 const listingReducer = (state = config, actions) => {
@@ -54,7 +55,8 @@ const listingReducer = (state = config, actions) => {
             state = {
                 ...state,
                 listing,
-                analyticsMessage
+                analyticsMessage,
+                isLoading: false
             }
 
             break;
@@ -62,7 +64,8 @@ const listingReducer = (state = config, actions) => {
         case 'GET_LISTING_BY_ID_PENDING': {
             state = {
                 ...state,
-                analyticsMessage: null
+                analyticsMessage: null,
+                isLoading:true
             }
 
             break;
@@ -70,7 +73,8 @@ const listingReducer = (state = config, actions) => {
         case 'GET_LISTING_BY_ID_REJECTED' : {
             state = {
                 ...state,
-                analyticsMessage: null
+                analyticsMessage: null,
+                isLoading:false
             }
 
             break;

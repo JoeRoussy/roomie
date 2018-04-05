@@ -30,7 +30,7 @@ const ListingDisplay = ({
               </Header.Content>
             </Header>
             <p className='address'>{ `${listing.street}, ${listing.city} ${listing.postalCode}` }</p>
-            <p className='price' color='green'>${listing.price}</p>
+            <p className='price' color='green'>${listing.price.toFixed(2)}</p>
             <p className={`description${centered ? ' centered' : ''}`}>{message}</p>
             <p className={`description${centered ? ' centered' : ''}`}>{listing.description}</p>
             {imagePortion}

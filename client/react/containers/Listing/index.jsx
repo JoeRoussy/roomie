@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Button, Item, Icon, Image, Label, Message } from 'semantic-ui-react';
+import { Container, Button, Item, Icon, Image, Label, Message, Loader, Dimmer} from 'semantic-ui-react';
 import { push } from 'react-router-redux'; // TODO: Should probably use nagivateTo in components but there was wierd transpiling issues
 import { arrayPush, arrayRemove } from 'redux-form';
 
@@ -25,7 +25,8 @@ import './styles.css';
         isEditing,
         isFormProcessing,
         errorMessage,
-        analyticsMessage
+        analyticsMessage,
+        isLoading
     } = {},
     userReducer: {
         user
@@ -42,7 +43,8 @@ import './styles.css';
     isEditing,
     isFormProcessing,
     errorMessage,
-    analyticsMessage
+    analyticsMessage,
+    isLoading
 }))
 
 export default class Listing extends React.Component {
@@ -108,9 +110,9 @@ export default class Listing extends React.Component {
             isFormProcessing,
             errorMessage,
             formData,
-            analyticsMessage
+            analyticsMessage,
+            isLoading
         } = this.props;
-
         let editButton;
 
         editButton = (user && listing && user.isLandlord && user._id === listing.ownerId && !isEditing) ? (
@@ -136,6 +138,7 @@ export default class Listing extends React.Component {
 
         let bodySection;
 
+
         if (isEditing && listing) {
             bodySection = (
                 <div>
@@ -154,7 +157,13 @@ export default class Listing extends React.Component {
                 </div>
             );
         } else if (listing) {
-            bodySection = (
+            bodySection = isLoading ?
+            (
+                <Dimmer active>
+                    <Loader>Loading</Loader>
+                </Dimmer>
+            ) : 
+            (
                 <div>
                     <ListingDisplay
                         listing= { listing }

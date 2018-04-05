@@ -40,7 +40,7 @@ const mapListingForSearchResults = (listing) => ({
     title: listing.name,
     image: `${process.env.ASSETS_ROOT}${listing.images[0]}`,
     description: truncate(listing.description),
-    price: `$${listing.price}`,
+    price: `$${listing.price.toFixed(2)}`,
     api_response: listing
 });
 

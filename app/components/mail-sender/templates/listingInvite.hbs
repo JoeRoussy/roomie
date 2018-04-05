@@ -26,7 +26,7 @@
                     <td>
                         <p>Hello {{ tenantName }},</p>
                         <p>{{ landlordName }} has invited you to sign on to their listing titled {{ listing.name }} located at {{ listing.locationDisplay }}</p>
-                        <p>The monthly rent for this offer is ${{ listing.price }} and the least would start on {{formatDate lease.start}} and end on {{formatDate lease.end}}.</p>
+                        <p>The monthly rent for this offer is ${{formatPrice listing.price }} and the least would start on {{formatDate lease.start}} and end on {{formatDate lease.end}}.</p>
                         {{> cta text='Accept' href=acceptLink}}
                         {{> negativeButton text='Decline' href=declineLink}}
                         <p>Congratulations On Your Listing!</p>

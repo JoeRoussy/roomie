@@ -119,6 +119,7 @@ const LeaseForm = ({
             placeholder = 'Price per month'
             type = 'number'
             min = '1'
+            step='0.01'
         />
 
         <div id='createLeaseFormSubmitSectionWrapper'>

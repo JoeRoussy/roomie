@@ -24,7 +24,7 @@ const ListingCard = ({
             <Card.Header>{listing.name}</Card.Header>
             <Card.Meta>{listing.address}</Card.Meta>
             <Card.Description>
-                <p className='price'>${listing.price}</p>
+                <p className='price'>${listing.price.toFixed(2)}</p>
                 <TextTruncate
                     line={3}
                     truncateText="…"

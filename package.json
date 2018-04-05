@@ -8,7 +8,7 @@
     "client-dev": "webpack-dev-server --content-base public --no-inline --hot",
     "server-dev": "nodemon --inspect --watch app app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
+    "build": "webpack  --config webpack.prod.config.js",
     "start-prod": "node_modules/.bin/pm2 startOrGracefulReload app.json",
     "stop": "node_modules/.bin/pm2 stop app.json"
   },
@@ -98,6 +98,7 @@
     "webpack-dev-server": "^2.11.0"
   },
   "devDependencies": {
-    "nodemon": "1.14.11"
+    "nodemon": "1.14.11",
+    "webpack-merge": "^4.1.2"
   }
 }
